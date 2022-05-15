@@ -1,0 +1,90 @@
+\documentclass[a4paper,12pt]{ctexbook}  %中文书籍
+
+%各级标题的字体设置
+%\CTEXsetup[beforeskip={0pt}]{chapter}
+\ctexset { chapter = { beforeskip={0pt} } }	%这里设置的是章标题与上页边距的距离，默认时是比较大的，记得自己设置
+%\CTEXsetup[nameformat={\songti\zihao{2}\centering}]{chapter}%章标题格式
+\ctexset { chapter = { nameformat={\songti \zihao{2}\centering } } }	% 章标题格式
+%\CTEXsetup[titleformat={\songti\zihao{2}\centering}]{chapter}
+\ctexset { chapter = { titleformat={\songti \zihao{2}\centering} } }	% 章标题格式
+%\CTEXsetup[format={\heiti\zihao{3}\leftline}]{section}
+\ctexset { section = { format={\heiti \zihao{3}\leftline } } }			% 节标题格式
+%\CTEXsetup[format={\songti\zihao{3}}]{subsection}
+\ctexset { subsection = { format={\songti \zihao {3}} } }				% 小节标题格式
+
+\begin{document}
+
+\frontmatter %前言部分，页码为小写罗马字母格式；其后的\chapter 不编号。
+
+te
+
+%-----------------------------------  中英摘要  -------------------------------------
+
+\chapter[中文摘要]{摘要}
+
+%\chapter[英文摘要]{Abstract}
+
+%------------------------------------   目录  ------------------------------------
+
+%\tableofcontents %展现文章的章节目录
+
+%--------------------------------------  正文 --------------------------------------
+%\mainmatter    %表示开始正文部分的内容 使用数字进行页面编号，对其中的chapter进行编号（第一章、第二章……）
+
+\chapter{Introduction}
+\section{testing}
+
+
+设计工作报告主要包括以下内容：
+
+a) 概述（任务来源及工程设计依据）；
+
+b) 产品的组成、功能及工作原理；
+
+
+%\chapter{绪论}
+%\section{无线通信信道研究概况}
+%\section{无线通信信道模型的介绍}
+%\section{论文设计任务}
+%\section{本文结构安排}
+
+%\chapter{无线信道传输模型研究}
+%\section{Hata模型介绍}
+%\section{CCIR模型介绍}
+%\section{LEE模型介绍}
+%\section{COST-231 Walfisch-Ikegami模型介绍}
+%\section{各个室外模型的区别以及适用情况}
+%\
+%\chapter{无线传输模型的算法实现与分析}
+%\section{基于MATLAB的无线传输模型分析}
+%\subsection{Okumura-Hata模型}
+%\subsection{CCIR模型}
+%\subsection{COST-231 Walfisch-Ikegami模型}
+%\section{无线传播模型软件界面设计}
+%\subsection{设计目标}
+%\subsection{各个窗体功能设计}
+%\section{无线传播模型软件设计算法实现}
+%\subsection{主界面设计和程序优化}
+%\subsection{模型选择}
+%\subsection{室外模型计算实现}
+%\subsection{C\#调用gnuplot作图的实现}
+%\subsection{无线信道相关知识介绍的显示功能实现}
+%\subsection{实现不同的参数对传输损耗影响的分析}
+%\
+%\chapter{软件实现结果及性能分析}
+%\section{软件实现结果展示}
+%\section{软件性能分析}
+
+%--------------------------------------  总结和附录  --------------------------------------
+%\backmatter %后记部分，页码格式不变，继续正常计数；其后的\chapter 不编号。
+%\
+%\chapter{总结与体会}
+%\chapter{谢辞}
+%\chapter{参考文献}
+%\chapter{附录}
+%\section{附录1 MATLAB程序}
+%\section{附录2 C\#程序代码}
+%\section{附录3 外文资料原文}
+%\section{附录4 外文资料的中文翻译}
+
+\end{document}

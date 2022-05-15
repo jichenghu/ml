@@ -1,0 +1,409 @@
+﻿
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Maximum Entropy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Maximum Entropy Reinforcement Learning}
+
+% https://www.zhihu.com/column/c_1268690405400928256
+
+{\bf Entropy is the measure of uncertainty.} The concept originated from 
+physics, which it is used as a measure of disorder. It is applicable to 
+a statement in physics that an isolated system becomes less organized with 
+time, in other words, having a higher entropy.
+
+The principle of maximum entropy states that the probability distribution 
+which best represents the current state of knowledge about a system is the 
+one with largest entropy, in the context of precisely stated prior data 
+(such as a proposition that expresses testable information).
+
+\subsubsection{0. Background: Bellman Equation}
+
+\begin{itemize}
+\item
+Value function 描述的是：How good is a state?
+
+\item
+$Q$-Function 描述的是: How good is a state-action pair?
+\end{itemize}
+
+\begin{align*}
+V(s) &= \mathbb{E}[G_t | S_t = s] \\
+&= \mathbb{E}[R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \ldots | S_t = s] \\
+&= \mathbb{E}[R_{t+1} + \gamma (R_{t+2} + \gamma R_{t+3} + \ldots) | S_t = s] \\
+&= \mathbb{E}[R_{t+1} + \gamma G_{t+1} | S_t = s] \\
+&= \mathbb{E}[R_{t+1} + \gamma V(S_{t+1}) | S_t = s] 
+\end{align}
+其中$R_{t+1} + \gamma V(S_{t+1})$即所谓 temporal difference target。
+
+
+% https://blog.csdn.net/qq_27465499/article/details/88817436
+\subsubsection{1. Motivation of Maximum Entropy Reinforcement Learning}
+对于多峰的$Q$-Value，希望策略能含有概率达到任意一个峰值，而不是只收敛到最高的那个。
+而该策略就是最大熵强化学习目标的一个最优解。
+
+数学语言描述(能量形式定义)为：
+$\pi(a|s) \propto \exp Q(s,a)$
+
+将熵项加在reward上，设定了最大熵目标，那么求解时就有两条限制：
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1)]
+$V(s)$, $Q(s,a)$的估计都必须包含熵reward
+
+\item[2)]
+策略梯度是根据最大化熵目标推导出来的
+\end{itemize}
+
+\subsubsection{2. 强化学习中熵的使用算法分类}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+1991williams，soft Q，soft AC都遵循了上面这两点，是最大熵强化学习。
+将熵项加在reward上，其目的是鼓励exploration，希望学到的策略在优化目标的同时尽可能地随机，
+同时保持在各个有希望的方向上的可能性，而不是很快greedy收敛到一个局部最优。
+
+\item[2.]
+TRPO，PPO方法：都是Policy Gradient方法和神经网络结合下的变体。
+使用on-policy更新，所得到的梯度是对真实梯度的一阶近似，因此需要控制步长在合理范围，
+步长大了近似就不准确了。于是，在策略梯度后面增加了KL-散度（相对熵）正则项，
+目的是控制步长/学习率
+
+\item[3.]
+A3C：做法和2类似，宣称的目的和1类似，说自己的想法来自1991williams，
+没有更多的理论分析，只有几个实验验证。A3C没有遵循上面提到的两点，
+其$V(s)$的估计并没有考虑熵，同时也只是在策略梯度上增加了熵正则项，
+并没有理论证明或指出新的梯度优化的目标是什么。这就是最大熵和{\bf 熵正则}的根本区别。
+\end{itemize}
+
+
+\subsubsection{3. SAC 与 soft Q 的区别}
+
+soft $Q$也有策略网络和V，Q网络，但是：
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1)]
+在更新$Q$-Value时，其target $Q$-Value是一种soft-max $Q$-Value，
+而AC框架下target $Q$-Value是下一时刻策略的真实$Q$-Value（一个类似传统$Q$-learning，
+另一个类似传统Sarsa）
+
+\item[2)]
+在更新$Q$-Value时，soft Q并没有使用真实的relay buffer里面的数据，
+而是在其他分布中重新采样，策略网络对$Q$-Value网络没有直接影响
+\end{itemize}
+
+{\bf SAC避免了soft Q的复杂性和不稳定性}
+
+\subsubsection{4. SAC的策略更新}
+
+这里有一个关键的限制，就是一旦设定最大熵目标，那么现有的理论结果要求策略只能这样取：
+$$
+\pi(a|s) \propto \exp Q(s,a)
+$$
+才能保证最大熵目标, 因此有:
+$$
+J_\pi(\phi)=E_{s_t\sim D}\left[D_{KL}\left(\pi(\cdot|s_t)\parallel\frac{\exp(Q_\theta(s_t,\cdot))}{Z_\theta(s_t)}\right)\right]
+$$
+
+
+
+\section{Preliminaries}
+
+In this section, we introduce notation and summarize the standard and 
+maximum entropy reinforcement learning frameworks.
+
+
+\subsection{entropy regularized policy optimization problem}
+
+首先来定义一个熵正则化策略优化问题。在强化学习里面，最重要的一个问题就是
+exploration-exploitation 的 tradeoff。下面这个定义就是解决这样的问题的：
+$\tau$控制探索和利用的比例，$\tau$越大，熵项成为主导，就更倾向于随机策略（exploration 探索）；
+$\tau$小的时候奖励项是主导，就更偏向确定性策略（exploitation 利用）。
+
+Given $K$ actions and the corresponding reward vector $\bold q \in E^K$, 
+and $\pi$ is a probability distribution in action space. The entropy 
+regularized policy optimization problem:
+$$
+\max_\pi \left\{\pi\bold q + \tau\mathcal{H}(\pi)\right\}
+$$
+$r\geq 0$ controls the degree of exploration.
+
+Entropy of policy:
+$$
+\mathcal{H}(\pi) = - \sum_{\pi_a \in \pi} \pi_a\log(\pi_a)
+$$
+The entropy of deterministic policy is relatively low, and the entropy 
+of random policy is relatively high.
+\begin{emp_box}
+Since $\pi$ is a probability distribution in action space, we have
+$$
+\sum_{\pi_a \in \pi} \pi_a = 1
+$$
+\end{emp_box}
+
+
+\subsection{Softmax function}
+
+下面来定义softmax函数。我们希望不是单纯选择回报最大的动作，
+而是对所有的动作都有选择几率（回报大的值多选，反之少选），于是就有这样的softmax函数，
+他把一个奖励向量映射成一个不确定性的策略，向量的分量就是选择该动作的概率。
+
+The Softmax $\mathcal{F}_\tau$ function:
+$$
+\mathcal{F}_\tau (\bold q) = \tau \log \sum_a e^{q_a\tau}
+$$
+
+And we define the Soft-Indmax $\bold f_\tau$ function:
+$$
+\bold f_\tau(\bold q) = \nabla\mathcal{F}_\tau (\bold q) = 
+\frac{e^{\bold q/\tau}}{\Sigma_a e^{q_a/\tau}}
+= e^{(\bold q-\mathcal{F}_\tau (\bold q))/\tau}
+$$
+
+Soft-Indmax function gets the confidence of each action (different from Hardmax
+function), and it's possible to explore.
+
+
+\subsection{the connection}
+
+The connection between entropy regularized policy optimization problem and 
+Softmax function:
+$$
+\mathcal{F}_\tau (\bold q) = \max_\pi \{\pi\bold q + \tau\mathcal{H}(\pi)\}
+= \bold f_\tau(\bold q)\cdot \bold q + \tau\mathcal{H}(\bold f_\tau(\bold q))
+$$
+where $\pi^*=\bold f_\tau(\bold q)$ and
+$\mathcal{F}_\tau(\bold q)=q_a - \tau \log \pi_a$, $\forall a$.
+
+The Softmax value is the upper bound on the maximum value, and the gap 
+between them is the entropy of the policy.
+
+When $\tau\rightarrow 0$, The entropy regularized policy optimization 
+problem becomes the standard expected reward objective, where the optimal 
+solution is the hard-max policy.
+
+定义的softmax函数和我们开始定义的熵正则化策略优化问题产生了联系：
+softmax函数的值就是该问题的上界，而对应的策略就是soft-indmax给出的策略。
+下面是一个简单的证明。
+
+\noindent{\bf Proof:}
+
+The first equation: Let $\mathcal{F}_\tau^*$ denotes as conjugate of 
+$\mathcal{F}_\tau$:
+$$
+\mathcal{F}_\tau^*(\bold p) = \sup_{\bold q}\{\bold p \cdot \bold q - 
+\mathcal{F}_\tau(\bold q)\} = \tau\bold p\log\bold p
+$$
+
+For $\Sigma_{p\in P}\ p = 1$. Since $\mathcal{F}_\tau$ is closed and 
+convex, $\mathcal{F}_\tau = \mathcal{F}_\tau^{**}$:
+$$
+\mathcal{F}_\tau(\bold q)= \sup_{\bold p}\{\bold p\cdot\bold q - \tau\bold p\log\bold p \}
+$$
+
+The second equation uses Lagrange multiplier method:
+$$
+L = \pi(\bold q - \tau\log\pi) + \lambda(1 - \bold 1\cdot\pi)
+$$
+
+KKK condition:
+\begin{align*}
+1 - \bold 1\cdot\pi &= 0; \\
+\tau\log\pi &= \bold q - v(v=\lambda + \tau)
+\end{align}
+
+
+
+
+\subsection{Notation}
+
+We address policy learning in continuous action spaces. To that end, we 
+consider infinite-horizon Markov decision processes (MDP), defined by 
+the tuple $(S, A, p_s, r)$, where the state space $S$ and the action space 
+$A$ are assumed to be continuous, and the unknown state transition 
+probability $p_s : S \times S \times A \rightarrow [0, \infty)$ represents 
+the probability density of the next state $s_{t+1} \in S$ given the current 
+state $s_t \in S$ and action $a_t \in A$. The environment emits a reward 
+$r : S \times A \rightarrow [r_{\min}, r_{\max}]$ on each transition, which we 
+will abbreviate as $r_t \triangleq r(s_t, a_t)$ to simplify notation. We will 
+also use $\rho_\pi(s_t)$ and $\rho_\pi(s_t, a_t)$ to denote the state and 
+state-action marginals of the trajectory distribution induced by a policy 
+$\pi(a_t|s_t)$.
+
+\subsection{Maximum Entropy Reinforcement Learning}
+
+%\usetheme{Madrid}
+%\begin{frame}
+%\frametitle{Test}
+%\setbeamercolor{block title}{fg=white,bg=red!75!black}
+%\begin{block}{First Kind Example}
+%This is example of the first kind.
+%\end{block}
+%\setbeamercolor{block title}{fg=white,bg=blue!75!black}
+%\begin{block}{Second Kind Example}
+%This is example of the second kind.
+%\end{block}
+%\end{frame}
+
+
+The standard objective used in reinforcement learning is to maximize the 
+expected sum of rewards $\sum_t \mathbb{E}_{(s_t,a_t)\sim\rho_\pi}[r_t]$. 
+%
+\tcbox[tcbox raise base]{收敛的速度（即求和的项数）也是个问题}%\hfill
+%
+We will consider a more general maximum entropy objective, which favors
+stochastic policies by augmenting the objective with the expected entropy 
+of the policy over $\rho_\pi (s_t)$:
+%
+\begin{equation}\label{entropy_of_policy}
+J(\pi) = \sum_{t=0}^{T-1} \mathbb{E}_{(s_t,a_t)\sim\rho_\pi}
+[r(s_t, a_t) + \alpha \mathcal{H}(\pi(\cdot | s_t))]
+\end{equation}
+%
+The temperature parameter $\alpha$ determines the relative importance of 
+the entropy term against the reward, and thus controls the stochasticity 
+of the optimal policy. The maximum entropy objective differs from the 
+standard maximum expected reward objective used in conventional reinforcement
+learning, though the conventional objective can be recovered in the limit as 
+$\alpha \rightarrow 0$. For the rest of this chapter, we will omit writing 
+the temperature explicitly, as it can always be subsumed into the reward
+by scaling it by $\alpha^{-1}$. The maximum entropy objective has a number 
+of conceptual and practical advantages. First, the policy is incentivized 
+to explore more widely, while giving up on clearly unpromising avenues. 
+Second, the policy can capture multiple modes of near-optimal behavior. In 
+particular, in problem settings where multiple actions seem equally 
+attractive, the policy will commit equal probability mass to those actions. 
+Lastly, prior work has observed substantially improved exploration from 
+this objective (Haarnoja et al., 2017; Schulman et al., 2017), and in our 
+experiments, we observe that it considerably improves learning speed over 
+state-of-art methods that optimize the conventional objective function. If 
+we wish to extend the objective to infinite horizon problems, it is convenient 
+to also introduce a discount factor $\gamma$ to ensure that the sum of 
+expected rewards and entropies is finite. Writing down the precise maximum 
+entropy objective for the infinite horizon discounted case is more involved 
+(Thomas, 2014) and is deferred to Appendix A.
+
+
+
+\subsection{Why is the softmax function called that way?}
+
+% https://math.stackexchange.com/questions/1888141/why-is-the-softmax-function-called-that-way
+
+\begin{emp_box}
+I understand that the function "squashes" a real vector space between the 
+values 0 and 1.
+
+However I don't see what this has to do with the "max" function, or why that 
+makes it a "softer" version of the max function.
+\end{emp_box}
+
+The largest element in the input vector remains the largest element after 
+the softmax function is applied to the vector, hence the "max" part. The 
+"soft" signifies that the function keeps information about the other, 
+non-maximal elements in a reversible way (as opposed to a "hardmax", which 
+is just the standard maximum function).
+
+The function produces a probability distribution from any vector, and is 
+thus used in machine learning when inputs need to be classified. The output 
+of a neural network is normalised via this function, and this normalisation 
+is required for machine learning techniques to work.
+The softmax function is defined on a vector and outputs a vector.
+
+The "hardmax" function takes a vector and sets its largest element to 1, and 
+all others to 0. The softmax function does almost the same thing, but it is 
+continuous, and most machine learning techniques require this property to 
+train neural networks, hence the "soft" modifier.
+
+I always thought it was called softmax because it is differentiable ("soft") 
+at all points for all elements of the input vector. This explanation would 
+be analogous to what makes the softplus function,
+$f(x) = \ln(1 + e^x)$, the "soft" version of
+$f(x) = \max(0, x)$
+
+
+
+\section{连续的情况}
+
+% https://blog.csdn.net/weixin_44044411/article/details/119922423
+
+最大熵学习是一种Feature Matching的方法，其采用了最大熵原则消除匹配歧义。
+该原则基于一种假设——即专家系统轨迹生成自己的专家特征期望的策略是最优轨迹。
+
+正态分布是所有概率分布中熵最大的（原始会议presentation里面说均匀分布的信息熵最大，
+确认过是个{\bf 错误结论}，试想一下均匀分布的分布区间有限而正态无限）。
+
+\begin{emp_box}
+这里个人认为离散情况下均匀分布的信息熵最大，连续变量时则正态分布的信息熵最大。
+\end{emp_box}
+
+熵越大，先验信息越少。
+
+
+\subsection{算法原理}
+
+连续变量而言，信息熵通常表示为：
+$$
+Ent = \int_{x\sim\pi}-p(x)\log p(x)
+$$
+
+对于强化学习任务而言，最大化信息熵写为：
+$$
+\max\sum_{\zeta\in D}-P(\zeta|\theta)\log P(\zeta | \theta))
+$$
+
+$$
+s.t. 
+\begin{cases}
+\Sigma_{\zeta\in D} P(\zeta|\theta)f_\zeta = \hat{f} \\
+\Sigma_{\zeta\in D} P(\zeta|\theta) = 1
+\end{cases}
+$$
+
+构造拉格朗日函数
+$$
+L(P, \lambda, \mu) = \sum_{\zeta\in D} \left[P(\zeta|\theta)\log P(\zeta | \theta) 
++ \lambda (P(\zeta|\theta)f_\zeta - \hat{f})
++ \mu(P(\zeta|\theta) - 1)\right]
+$$
+
+应用拉格朗日函数的KKT条件:
+\begin{subequations}\label{max_entropy_lagrange}
+\begin{align}
+\nabla L_P &= \Sigma_{\zeta\in D}\log P(\zeta | \theta) + 1 + \lambda f_\zeta + \mu = 0 
+\tag{\ref{max_entropy_lagrange}{a}}\label{max_entropy_lagrange_a} \\
+\nabla L_\lambda &= \Sigma_{\zeta\in D} P(\zeta | \theta)f_\zeta - \hat{f} = 0 
+\tag{\ref{max_entropy_lagrange}{b}}\label{max_entropy_lagrange_b} \\
+\nabla L_\mu &= \Sigma_{\zeta\in D} P(\zeta | \theta) - 1 = 0
+\tag{\ref{max_entropy_lagrange}{c}}\label{max_entropy_lagrange_c}
+\end{align}
+\end{subequations}
+
+由公式(\ref{max_entropy_lagrange_a})及(\ref{max_entropy_lagrange_c})得
+$$
+P(\zeta | \theta) = 
+\frac{\exp(-1 -\mu - \lambda f_\zeta)}{\Sigma_{\zeta\in D}\exp(-1 - \mu - \lambda f_\zeta)}
+$$
+
+光靠这个式子肯定是解不出最优的$\theta$的，这就需要另一个假设——
+{\bf 使用$\theta$参数的Reward函数$R_\theta(\tau)$时，
+$\zeta$轨迹的概率$P(\zeta|\theta)$正比于$R_{\theta}(\zeta)$的自然指数}，
+再加上概率归一性约束，可得专家系统策略的轨迹概率为：
+$$
+P(\zeta | \theta) = 
+\frac{\exp(R_\theta(\zeta))}{\int_{\tau\in D}\exp(R_\theta(\tau))d\tau}
+$$
+需要注意的是，这里的$R(\theta)$指的是累积奖赏而非单步奖赏。
+
+
+
+
+

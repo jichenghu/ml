@@ -1,0 +1,133 @@
+
+%-------------------------------  标题页  -------------------------------------
+\begin{titlepage}
+\pagenumbering{}	% 不显示页码
+\songti\zihao{-4}	% 设置正文字体格式:宋体四号
+
+毕业设计（论文）题目：	无线电通信信道模拟计算方法研究
+
+学院：	XXX
+
+专业：	XXX
+
+年级：	XXX
+
+学生姓名：	xxx
+
+指导教师单位：	XXX
+
+指导教师姓名：	XXX
+
+指导教师职称：	XXX
+
+\end{titlepage}
+
+%-------------------------------------------------------------------
+
+\maketitle
+
+\frontmatter	% 前言部分，页码为小写罗马字母格式；其后的\chapter 不编号。
+
+
+%-----------------------------------  中英摘要  -------------------------------------
+
+\chapter[中文摘要]{摘要}
+
+\chapter[英文摘要]{Abstract}
+
+
+%------------------------------------   目录  ------------------------------------
+
+%\tableofcontents
+
+\thispagestyle{empty}
+
+%--------------------------------------  正文 --------------------------------------
+\mainmatter		% 表示开始正文部分的内容 使用数字进行页面编号，对其中的chapter进行编号（第一章、第二章……）
+
+\newpage
+
+\begin{spacing}{1.0}    % 行间距变为single-space
+
+\setcounter{page}{1}
+\chapter{INTRODUCTION}
+
+\begin{tcolorbox}
+This is my first \textbf{tcolorbox}.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+This is another \textbf{tcolorbox}.
+\tcblower
+Here, you see the lower part of the box.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = {I Love Sophia}]
+This is a \textbf{tcolorbox} with title.
+\tcblower
+Here, you see the lower part of the box.
+\end{tcolorbox}
+
+\tcbset{colframe = blue!50!black, colback = white,
+        colupper = red!50!black, fonttitle = \bfseries,
+        nobeforeafter, center title}
+
+Text \tcbox[tcbox raise base]{Hello World}\hfill
+%
+\tcbox[left = 0mm, right = 0mm, top = 0mm, bottom = 0mm, boxsep = 0mm,
+      toptitle = 0.5mm, bottomtitle = 0.5mm, title = {My table}]
+  {%\arrayrulecolor{blue!50!black}
+    \renewcommand{\arraystretch}{1.2}%
+    \begin{tabular}{r|c|l}
+      One & Two & Three \\
+      \hline\hline
+      Men   & Mice   & Lions \\\hline
+      Upper & Middle & Lower
+      \end{tabular}}\hfill
+%
+\tcbox[colback=blue!85!black,
+        left = 0mm, right = 0mm, top = 0mm, bottom = 0mm,
+        boxsep = 1mm, arc = 0mm, boxrule = 0.5pt, title = {My picture}]
+  {\includegraphics[width = 5cm]{example-image}}
+
+this is a test
+
+% pdflatex -halt-on-error -include-directory=f:\tex -output-directory=f:\tex\compiler -synctex=1 -interaction=nonstopmode learn.tex
+
+这是一个CTEX的utf-8编码例子，{\kaishu 这里是楷体显示}，{\songti 这里是宋体显示}，{\heiti 这里是黑体显示}，{\fangsong 这里是仿宋显示}。
+
+\section{Overview}
+
+this is a test
+
+\section{Notations}
+
+An agent is a Markov Decision Process $M = \langle S, A, R, P, d_0, \gamma \rangle$, where $S$ is
+the states space, $A$ is the set of actions, $R=R(s,a)$ is the reward function, $P: S \times A \times S \rightarrow [0,1]$ 
+is the transition dynamic function that determines the probability of transitioning between
+states given an action and $\gamma \in [0,1]$ is the discount factor. 
+
+
+\subsection{Hello Beijing} %comment
+
+你好，世界！
+
+北京是capital of China.
+
+Einstein's $E=mc^2$.
+
+\[ E=mc^2. \]
+
+\begin{equation}
+E=mc^2.
+\end{equation}
+
+\subsubsection{Hello Dongcheng District}
+\paragraph{Tian'anmen Square}
+is in the center of Beijing
+\subparagraph{Chairman Mao}
+is in the center of 天安门广场。
+\subsection{Hello 山东}
+\paragraph{山东大学} is one of the best university in 山东。
+
+

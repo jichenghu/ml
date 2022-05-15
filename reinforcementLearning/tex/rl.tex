@@ -1,0 +1,131 @@
+% A size substituation of 0.5pt is harmless, but if you want to avoid it load the fix-cm package:
+\RequirePackage{fix-cm}
+\documentclass{book}
+%\let\Tiny=\tiny
+\usepackage[UTF8]{ctex}
+\usepackage{import}
+
+%\usepackage{amsmath}
+%\usepackage{lmodern}
+\usepackage{amsfonts, amsmath, amssymb, amsthm, array, bm, cite, color, 
+fancyhdr, float, framed, geometry, graphicx, hyperref, listings, 
+mathrsfs, setspace, tcolorbox, xcolor}
+%\usepackage[keeplastbox]{flushend}
+%\fontsize{11pt}{12pt}\selectfont
+
+\lstset{numbers=left, %设置行号位置
+        numberstyle=\tiny, %设置行号大小
+        keywordstyle=\color{blue}, %设置关键字颜色
+        commentstyle=\color[cmyk]{1,0,1,0}, %设置注释颜色
+        frame=single, %设置边框格式
+        escapeinside=``, %逃逸字符(1左面的键)，用于显示中文
+        %breaklines, %自动折行
+        extendedchars=false, %解决代码跨页时，章节标题，页眉等汉字不显示的问题
+        xleftmargin=2em,xrightmargin=2em, aboveskip=1em, %设置边距
+        tabsize=4, %设置tab空格数
+        showspaces=false %不显示空格
+       }
+
+% hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta, 
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,}
+
+%\includeonly{entropy}
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{rl.bib}
+
+%\usetheme{Madrid}
+
+\geometry{left=1.5cm, right=1.2cm, top=2.5cm, bottom=2.0cm}
+\linespread{0.1}
+
+% pdflatex, xelatex
+
+\title{REINFORCEMENT LEARNING}
+\author{Jicheng Hu}
+\date{\today}
+
+\linespread{1.5}
+\definecolor{shadecolor}{RGB}{231, 231, 255}
+\newenvironment{emp_box}{\begin{shaded}\par\noindent}{\end{shaded}\par\noindent}
+\newcounter{problemname}
+\newcounter{examplename}
+\newenvironment{problem}{\begin{shaded}\stepcounter{problemname}\par\noindent\textbf{题目\arabic{problemname}. }}{\end{shaded}\par}
+\newenvironment{example}{\begin{shaded}\stepcounter{examplename}\par\noindent\textbf{例\arabic{examplename}. }}{\end{shaded}\par}
+\newenvironment{solution}{\par\noindent\textbf{解答. }}{\par}
+\newenvironment{note}{\par\noindent\textbf{题目\arabic{problemname}的注记. }}{\par}
+
+\newtheorem{definition}{定义}[subsection]%跟随三级标题排序
+\newtheorem{theorem}{定理}[subsection]%跟随⼆级标题排序改为section
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+%\renewcommand{\headrulewidth}{1pt} %页眉线宽，设为0可以去页眉线
+
+\newdimen\doublelineskip % 两横线间的距离
+\setlength\doublelineskip{2pt}
+
+\setlength\headheight{21pt}
+
+\fancypagestyle{headings}{
+  \renewcommand\headrulewidth{0.4pt}
+}
+\fancypagestyle{doubleline}[headings]{
+  \renewcommand\headrule{%
+    \hrule height\headrulewidth width\headwidth%
+    \vskip \doublelineskip%
+    \hrule height\headrulewidth width\headwidth}
+}
+
+%\pagestyle{headings}
+
+
+\begin{document}
+
+\frontmatter	% 前言部分，页码为小写罗马字母格式；其后的\chapter 不编号。
+
+%\setcounter{secnumdepth}{3}		%增加编号深度
+%\setcounter{tocdepth}{3}		%增加目录深度
+
+\tableofcontents
+
+\thispagestyle{empty}
+\mainmatter		% 表示开始正文部分的内容 使用数字进行页面编号，对其中的chapter进行编号（第一章、第二章……）
+
+\begin{spacing}{1.0}    % 行间距变为single-space
+
+\setcounter{page}{1}
+
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{front.tex}
+
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
+
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
+
+%\include{entropy}
+\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
+
+\import{D:/mygit/ml/reinforcementLearning/tex/}{sac.tex}
+
+% 逆强化学习
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{inverse_rl.tex}
+
+\chapter{附录}
+% 附件内容：最大熵
+\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy_max.tex}
+
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{back.tex}
+
+\printbibliography
+
+\end{document}

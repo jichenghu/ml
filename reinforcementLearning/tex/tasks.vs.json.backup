@@ -1,0 +1,41 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "xelatex",
+      "appliesTo": "*.tex",
+      "type": "default",
+      "command": "pdflatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-output-directory",
+        "${workspaceRoot}\\textemp\\",
+        "${file}"
+      ]
+    },
+    {
+      "taskLabel": "Biber",
+      "appliesTo": "*.tex",
+      "type": "default",
+      "command": "biber",
+      "args": [
+        "-input-directory",
+        "${workspaceRoot}\\textemp\\",
+        "-output-directory",
+        "${workspaceRoot}\\textemp\\",
+        "${fileBasename}"
+      ]
+    },
+    {
+      "taskLabel": "copy bib",
+      "appliesTo": "*.bib",
+      "type": "default",
+      "command": "${env.COMSPEC}",
+      "args": [
+        "copy ${file} ${workspaceRoot}\\textemp\\${fileBasename}.bib"
+      ]
+    }
+  ]
+}

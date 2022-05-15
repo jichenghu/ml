@@ -1,0 +1,157 @@
+﻿% A size substituation of 0.5pt is harmless, but if you want to avoid it load the fix-cm package:
+\RequirePackage{fix-cm}
+%\documentclass{book}
+\documentclass[a4paper,12pt]{ctexbook}	%A4纸，字体10pt，包封的，ctex书籍排版
+
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath}
+\usepackage{lmodern}
+
+% 下面一行使用 pdf 书签
+\usepackage[breaklinks,colorlinks,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+%\fontsize{11pt}{12pt}\selectfont
+
+\usepackage{geometry}	% 设置页边距的宏包
+\usepackage{titlesec}   % 设置页眉页脚的宏包
+
+\usepackage{fancyhdr}
+
+\geometry{a4paper,scale=0.8}
+%\geometry{a4paper,left=2cm,right=2cm,top=1cm,bottom=1cm}
+
+\newpagestyle{main}{            
+    \sethead{左页眉}{中页眉}{右页眉} %设置页眉
+    \setfoot{左页脚}{中页脚}{右页脚} %设置页脚，可以在页脚添加 \thepage  显示页数
+    \headrule   % 添加页眉的下划线
+    \footrule   %添加页脚的下划线
+}
+%\pagestyle{main}    %使用该style
+\fancyhf{}
+
+\lhead{\textnormal{\kaishu\rightmark}}
+\rhead{--\ \thepage\ --}
+\pagestyle{fancy}
+
+%各级标题的字体设置
+%\CTEXsetup[beforeskip={0pt}]{chapter}
+\ctexset { chapter = { beforeskip={0pt} } }	%这里设置的是章标题与上页边距的距离，默认时是比较大的，记得自己设置
+%\CTEXsetup[nameformat={\songti\zihao{2}\centering}]{chapter}%章标题格式
+\ctexset { chapter = { nameformat={\songti \zihao{2}\centering } } }	% 章标题格式
+%\CTEXsetup[titleformat={\songti\zihao{2}\centering}]{chapter}
+\ctexset { chapter = { titleformat={\songti \zihao{2}\centering} } }	% 章标题格式
+%\CTEXsetup[format={\heiti\zihao{3}\leftline}]{section}
+\ctexset { section = { format={\heiti \zihao{3}\leftline } } }			% 节标题格式
+%\CTEXsetup[format={\songti\zihao{3}}]{subsection}
+\ctexset { subsection = { format={\songti \zihao {3}} } }				% 小节标题格式
+
+% pdflatex, xelatex
+
+\title{Simulated Annealing Algorithm}
+\author{Jicheng Hu}
+\date{\today}
+
+\begin{document}
+
+
+%-------------------------------  标题页  -------------------------------------
+\begin{titlepage}
+%\pagestyle{empty}
+%\thispagestyle{empty}     %当前页码空，需紧跟在\maketitle后面使用
+\pagenumbering{}	% 不显示页码
+\songti\zihao{-4}	% 设置正文字体格式:宋体四号
+
+% 首行缩进， 可以在全文之前设置首行缩进：\parindent=19pt
+% 空格 \qquad \quad \  \; \, \! \!\!
+
+名\quad 称：	适配性评估系统
+
+单\quad 位：	计算机学院
+
+责任人：	
+
+手\quad 机：	
+
+\end{titlepage}
+
+%-------------------------------------------------------------------
+
+\maketitle
+
+\frontmatter	% 前言部分，页码为小写罗马字母格式；其后的\chapter 不编号。
+
+
+%-----------------------------------  中英摘要  -------------------------------------
+
+%\chapter[中文摘要]{摘要}
+
+%\chapter[英文摘要]{Abstract}
+
+
+%------------------------------------   目录  ------------------------------------
+
+%\tableofcontents %չ�����µ��½�Ŀ¼
+
+%--------------------------------------  正文 --------------------------------------
+\mainmatter		% 表示开始正文部分的内容 使用数字进行页面编号，对其中的chapter进行编号（第一章、第二章……）
+
+\chapter{Introduction}
+\section{testing}
+
+
+说明
+
+a) 是
+
+b) 一天
+
+c) ʵ�������
+
+d) ���弼��������ʵ�������
+
+
+%\chapter{����}
+%\section{����ͨ���ŵ��о��ſ�}
+%\section{����ͨ���ŵ�ģ�͵Ľ���}
+%\section{�����������}
+%\section{���Ľṹ����}
+
+%\chapter{�����ŵ�����ģ���о�}
+%\section{Hataģ�ͽ���}
+%\section{CCIRģ�ͽ���}
+%\section{LEEģ�ͽ���}
+%\section{COST-231 Walfisch-Ikegamiģ�ͽ���}
+%\section{��������ģ�͵������Լ��������}
+%\
+%\chapter{���ߴ���ģ�͵��㷨ʵ�������}
+%\section{����MATLAB�����ߴ���ģ�ͷ���}
+%\subsection{Okumura-Hataģ��}
+%\subsection{CCIRģ��}
+%\subsection{COST-231 Walfisch-Ikegamiģ��}
+%\section{���ߴ���ģ������������}
+%\subsection{���Ŀ��}
+%\subsection{�������幦�����}
+%\section{���ߴ���ģ���������㷨ʵ��}
+%\subsection{��������ƺͳ����Ż�}
+%\subsection{ģ��ѡ��}
+%\subsection{����ģ�ͼ���ʵ��}
+%\subsection{C\#����gnuplot��ͼ��ʵ��}
+%\subsection{�����ŵ����֪ʶ���ܵ���ʾ����ʵ��}
+%\subsection{ʵ�ֲ�ͬ�Ĳ����Դ������Ӱ��ķ���}
+%\
+%\chapter{���ʵ�ֽ�������ܷ���}
+%\section{���ʵ�ֽ��չʾ}
+%\section{������ܷ���}
+
+%--------------------------------------  �ܽ�͸�¼  --------------------------------------
+%\backmatter %��ǲ��֣�ҳ���ʽ���䣬������������������\chapter ����š�
+%\
+%\chapter{�ܽ������}
+%\chapter{л��}
+%\chapter{�ο�����}
+%\chapter{��¼}
+%\section{��¼1 MATLAB����}
+%\section{��¼2 C\#�������}
+%\section{��¼3 ��������ԭ��}
+%\section{��¼4 �������ϵ����ķ���}
+
+\end{document}

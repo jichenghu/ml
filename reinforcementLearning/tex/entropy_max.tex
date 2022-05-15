@@ -1,0 +1,872 @@
+﻿
+\section{The Maximum Entropy Principle}
+
+\subsection{信息量、熵}
+
+“{\bf 熵}”，用来描述系统中所含信息的不确定程度（系统的混乱程度）：
+\begin{equation}\label{entropy_of_info}
+H = - \sum p(x) \log p(x)
+\end{equation}
+
+在公式\eqref{entropy_of_info}中，如果$\log$以2为底数，熵的单位就是比特（bit）；
+以10为底数的话单位则是哈特（hat）；而如果是自然对数，单位则是奈特（nat）。
+
+“{\bf 信息量}”，用来衡量一个事件的不确定程度：一个事件发生的概率越大，不确定性越小，
+则它所携带的信息量就越小。假设$X$是一个离散型随机变量，其取值集合为$X$，概率分布函数为
+$p(x)=P(X=x)$，$x\in X$。我们定义事件$X=x_0$的信息量为：
+$I(x_0) = -\log(p(x_0))$。当$p(x_0)=1$时，熵将等于$0$，
+也就是说该事件的发生不会导致任何信息量的增加。
+
+可以看到，{\bf 熵是一个系统中信息量的总和}。
+
+【{\bf 例}】
+
+假如某项打靶运动的结果是一个0-1分布，其分布$X$的取值有{0：打中，1：脱靶}。
+假设小明和小王在这项打靶运动中打中的先验概率为10%，99.9%。
+根据上面的信息量的介绍，我们可以分别得到小明和小王打靶打中的信息量。
+如果我们想进一步度量小明打靶结果的不确定度，就可以用熵的概念。
+可以采用期望来进行度量，即对所有可能事件所带来的信息量求期望，其结果就能衡量小明打靶的不确定度：
+\begin{align*}
+H_A(x) &= - \left[ p(x_A)\log p(x_A) + (1-p(x_A))\log(1-p(x_A)) \right] \\
+&= 0.4690
+\end{align}
+与之对应的，小王的熵（打靶的不确定度）为：
+\begin{align*}
+H_B(x) &= - \left[ p(x_B)\log p(x_B) + (1-p(x_B))\log(1-p(x_B)) \right] \\
+&= 0.0114
+\end{align}
+
+虽然小明打靶结果的不确定度较低，毕竟十次有9次都脱靶(即脱靶的确定性高、不确定性低)；
+但是小王打靶结果的不确定度更低，1000次射击只有1次脱靶，结果相当的确定。
+
+
+\subsection{最大熵原理}
+最大熵原理中蕴含着最朴素最简洁的思想：包含已知信息，不做任何未知假设，把未知事件当成概率事件处理。
+
+\begin{emp_box}
+{\bf 最大熵原理：}
+
+１.　满足已知信息（约束条件）
+
+２.　不做任何未知假设（剩下的等概率）
+\end{emp_box}
+
+{\bf 熵表示不确定程度，熵最大即系统的不确定程度最大，亦即系统中没有任何主观假设。}
+
+
+\subsection{Relative Entropy (Kullback-Leibler Divergence)}
+
+\href{https://blog.csdn.net/wangshun_410/article/details/84956539}{KL距离（Kullback-Leibler Divergence）}
+
+KL距离，是Kullback-Leibler差异（Kullback-Leibler Divergence）的简称，
+也叫做相对熵（Relative Entropy）。它衡量的是相同事件空间里的两个概率分布的差异情况。
+并不是一种距离度量方式，其物理意义是：在相同事件空间里，概率分布$P(x)$对应的每个事件，
+若用概率分布$Q(x)$编码时，平均每个基本事件（符号）编码长度增加了多少比特。
+我们用$D(P||Q)$表示KL距离，计算公式如下：
+\begin{equation}\label{Kullback-Leibler_Divergence}
+D(P||Q) = \sum_{x\in X} P(x)\log\frac{P(x)}{Q(x)}
+\end{equation}
+【{\bf 注记}】
+
+若$P$表示样本的真实分布，$Q$表示模型所预测的分布，那么KL散度就可以计算两个分布的差异，
+也就是Loss损失值。$Q$的分布越接近$P$（$Q$分布越拟合$P$），那么散度值越小，即损失值越小。
+~\\	%一行空白
+
+有时会将KL散度称为KL距离，但它并不满足距离的性质(下面的4及5)。
+由公式(\ref{Kullback-Leibler_Divergence})可以知道如下性质：
+%
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+当$P(x)=Q(x)$时，$D(P||Q)=0$,即其相对熵为零；
+
+\item[2.]
+当$P(x)$和$Q(x)$相似度越高时，KL距离越小；
+
+\item[3.]
+$D(P||Q)$非负；
+
+\item[4.]
+不满足对称性，即$D(P||Q)\neq D(Q||P)$；
+
+\item[5.]
+不满足三角不等式。
+
+\end{itemize}
+%~\\ 
+%~\\[0.2]	%可加入任意间距的空白行
+~~~
+
+{\bf 几个用途：}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+衡量两个概率分布的差异；
+
+\item[2.]
+衡量利用概率分布Q 拟合概率分布P 时的能量损耗，也就是说拟合以后丢失了多少的信息；
+
+\item[3.]
+衡量两个概率分布的相似度，在运动捕捉里面可以衡量未添加标签的运动与已添加标签运动的相似程度，
+进而进行运动的分类。
+
+\end{itemize}
+
+DNN中最常使用的离散数值优化目标，莫过于交差熵。两个分布$p$，$q$的交差熵，
+与KL距离实际上是同一回事。
+$$
+H(p,q) = -\sum p\log(q) = D_{KL}(p\parallel q) - \sum p\log(p)
+$$
+交差熵实际上就是KL距离减去熵，在深度学习框架中主要用来判定实际的输出与期望的输出的接近程度。
+
+{\bf 例子：}
+在做分类的训练的时候，如果一个样本属于第$K$类，那么这个类别所对应的的输出节点的输出值应该为$1$，
+而其它节点的输出都为$0$，即$[0,0,1,0,\ldots, 0,0]$，这个数组也就是样本的Label，
+是神经网络最期望的输出结果。也就是说用它来衡量网络的输出与标签的差异，
+利用这种差异经过反向传播去更新网络参数。
+
+\begin{example}
+假设有一个字符发射器随机发射0和1两种字符，真实的发出概率分布为$A$，
+但实际不知道$A$的具体分布。通过观察，得到概率分布$B$与$C$，各分布的具体情况如下：
+\begin{align*}
+A(0) &= 1/2, \quad A(1) = 1/2 \\
+B(0) &= 1/4, \quad B(1) = 3/4 \\
+C(0) &= 1/8, \quad C(1) = 7/8
+\end{align}
+通过计算得到：
+\begin{align*}
+KL(A\paralle B) &= 1/2 \log\frac{1/2}{1/4} + 1/2 \long\frac{1/2}{3/4} = 1/2\log(4/3)\\
+KL(A\paralle C) &= 1/2 \log\frac{1/2}{1/8} + 1/2 \long\frac{1/2}{7/8} = 1/2\log(16/7)
+\end{align}
+由此可知，按照概率分布$B$进行编码，要比按照$C$进行编码，平均每个符号增加的比特数少。
+从分布上也可以看出，实际上$B$要比$C$更接近真实分布（因为其与$A$分布的相对熵更小）。
+\end{example}
+
+
+\subsection{Cross Entropy}
+
+
+
+{\bf 交叉熵}
+主要刻画的是实际输出（概率）与期望输出（概率）的距离，也就是交叉熵的值越小，
+两个概率分布就越接近。假设概率分布$p$为期望输出，概率分布$q$为实际输出， 
+$H(p,q)$为交叉熵，则
+\begin{equation}\label{Cross_Entropy}
+H(p,q) = -\sum_x\left[ p(x)\log q(x) + (1-p(x))\log (1-q(x)) \right]
+\end{equation}
+
+\begin{example}
+假设$N=3$，期望输出为$p={1,0,0}$，实际输出$q_1=(0.5,0.2,0.3)$, 
+$q_1=(0.8,0.1,0.1)$，那么：
+\begin{align*}
+H(p,q_1) &= -(1\log0.5 + 0\log0.2 + 0\log0.3 + 0\log0.5 + 1\log0.8 + 1\log0.7) 
+&= 0.55 \\
+H(p,q_2) &= -(1\log0.8 + 0\log0.1 + 0\log0.1 + 0\log0.2 + 1\log0.9 + 1\log0.9) 
+&= 0.19
+\end{align}
+通过上面可以看出，$q_2$与$p$更为接近，它的交叉熵也更小。
+\end{example}
+
+
+\subsubsection{机器学习中的交叉熵}
+
+我们将KL散度定义公式(\ref{Kullback-Leibler_Divergence})进行如下变形：
+\begin{align*}
+D(P||Q) &= \sum_{x\in X} P(x)\log\frac{P(x)}{Q(x)} \\
+&= \sum_{x\in X} P(x)\log P(x) - \sum_{x\in X} P(x)\log Q(x) \\
+&= - H(P(x)) + \left[ \sum_{x\in X} P(x)\log Q(x) \right]
+\end{align}
+最后结果的前面一项就是$P$的熵，而等式后一项则是机器学习中常用的交叉熵：
+\begin{equation}\label{Cross_Entropy_Loss}
+L(P,Q) = -\sum_{x\in X} P(x)\log Q(x)
+\end{equation}
+在机器学习中，我们需要评估label和predicts之间的差距，使用KL散度$D(P||Q)$刚刚好。
+由于KL散度中的前一部分$−H(P(x))$不变，故在优化过程中，
+只需要关注后一项交叉熵$L(P,Q)$就可以了。
+所以一般在机器学习中直接用用交叉熵做loss来评估模型。
+
+
+\subsubsection{Pytorch中的CrossEntropyLoss()函数}
+
+Pytorch中计算的交叉熵并不是采用(\ref{Cross_Entropy})，
+而是使用(\ref{Cross_Entropy_Loss})中的公式：
+它是机器学习中常使用的另一种方式的交叉熵。此小节之前的那个小节最后已经为此做了说明。
+
+% https://zhuanlan.zhihu.com/p/98785902
+
+由于KL散度中的前一部分$−H(P(x))$不变（{\bf 目标分布的熵为常数}），故在优化过程中，
+只需要关注交叉熵就可以了。但是如果目标分布是有变化的（如同为猫的样本，不同的样本，
+其值也会有差异），{\bf 那么就不能使用交叉熵}。例如蒸馏模型的损失函数就是KL散度，
+因为蒸馏模型的目标分布也是一个模型，该模型针对同类别的不同样本，
+会给出不同的预测值（如两张猫的图片a和b，目标模型对a预测为猫的值是0.6，对b预测为猫的值是0.8）。
+
+% https://blog.csdn.net/qq_43742590/article/details/115483032
+
+{\bf 不直接用距离相关的均方差：}
+
+假设神经网络的最后一层激活函数为sigmoid,它的两头异常的平，也就是说在那些地方的导数接近于0。
+而反向传播是需要求导的，用了均方差损失函数之后求导结果包含$y(y-1)$ ，
+$y$接近于$0$或者$1$的时候都趋于$0$，会导致梯度消失，网络训练不下去（梯度弥散）。
+但如果用相对熵衍生出来的交叉熵作为损失函数则没有这个问题。
+因此虽然相对熵的距离特性不是特别好，但总归好过直接梯度消失玩不下去，
+因此很多用sigmoid作为激活函数的神经网络还是选择了用相对熵衍生出来的交叉熵作为损失函数。
+
+
+{\bf 多使用交叉熵：}
+
+针对以上不足，有两个方向来避免，一是从激活函数下手，一是从损失函数下手。
+这里我们不换激活函数，还是用sigmoid函数，引入了交叉熵损失函数：
+$$
+L = \sum_i\left[ z_i\ln y_i + (1-z_i)\ln(1-y_i) \right]
+$$
+这时再看权重更新公式：
+$$
+\frac{\partial L}{\partial w_{ji}} 
+= \frac{\partial L}{\partial \text{node}_j}\frac{\partial \text{node}_j}{\partial w_{ji}}
+= \frac{\partial L}{\partial \text{node}_j}\frac{\partial \Sigma_i w_{ji}x_{ji}}{\partial w_{ji}}
+= \frac{\partial L}{\partial \text{node}_j}x_{ji}
+$$
+此时对于输出层，权重更新公式为：
+$$
+\frac{\partial L}{\partial w_{ji}} 
+= \frac{\partial L}{\partial y_j}\frac{\partial y_j}{\partial \text{node}_j}x_{ji}
+= x_{ji}(z_j-y_j)
+$$
+可以看到梯度下降已经不与sigmoid的导数相关了，而是由误差来影响。
+当误差较大时则下降较快，让梯度下降法更有效率，避免了训练慢的问题。
+与sigmoid的导数无关，从而避免了梯度弥散。
+
+
+\subsection{Lagrange乘数法的几何意义说明}
+
+\begin{emp_box}
+{\bf Lagrange乘数法：}
+\begin{align*}
+&\max f(x,y) \\
+&\text{约束条件：} g(x,y) = 0
+\end{align}
+\end{emp_box}
+
+对于一般的求极值问题我们都知道，求导等于0就可以了。但是如果我们不但要求极值，
+还要求一个满足一定约束条件的极值，那么此时就可以构造Lagrange函数，
+其实就是把约束项添加到原函数上，然后对构造的新函数求导。
+看下面的图就很容易理解了。
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.7]{pix/lagrange.jpg}
+\caption{Lagrange乘数法}
+%\label{fig:label}
+\end{figure}
+
+对于一个要求极值的函数$f(x,y)$，图上的蓝圈就是这个函数的等高图，就是说
+$f(x,y)=C_1,C_2,\cdots,C_n$分别代表不同的数值(每个值代表一圈，等高图)。
+现在要找到一组(x,y)，使它的$C_i$值越大越好，但是这点必须满足约束条件
+$g(x,y)$（在黄线上）。
+
+也就是说$f(x,y)$和$g(x,y)$相切，或者说它们的梯度$\nabla f$和$\nabla g$平行，
+因此它们的梯度（偏导）成倍数关系（假设为$\lambda$倍）。
+故而把约束条件加到原函数后再对它求导，其实就等价于满足下面的式子：
+\begin{align*}
+\frac{\partial f}{\partial x} &= \lambda \frac{\partial g}{\partial x} \\
+\frac{\partial f}{\partial y} &= \lambda \frac{\partial g}{\partial y}
+\end{align}
+
+
+
+\section{Maximum Likelihood Estimate}
+
+% https://www.zhihu.com/question/484044429
+% https://brilliant.org/wiki/maximum-likelihood-estimation-mle/
+
+假设您建立了一个预测公司股价的模型。您注意到夜深人静的时候，股票价格上涨得很快。
+背后可能有多种原因，找出可能性最大的原因便是最大似然估计的意义所在。
+这一概念常被用于经济学、MRIs、卫星成像等领域。
+
+Maximum likelihood estimation (MLE) is a technique used for estimating the 
+parameters of a given distribution, using some observed data. For example, 
+if a population is known to follow a normal distribution but the mean and 
+variance are unknown, MLE can be used to estimate them using a limited 
+sample of the population, by finding particular values of the mean and 
+variance so that the observation is the most likely result to have occurred.
+
+MLE is useful in a variety of contexts, ranging from econometrics to MRIs 
+to satellite imaging. It is also related to Bayesian statistics.
+
+% https://brilliant.org/wiki/bayesian-theory-in-science-and-math/
+
+在此节中，我们将研究最大似然估计(以下简称MLE)是如何工作的，
+以及它如何用于确定具有任何分布的模型的系数。理解MLE将涉及到概率和数学，
+但这里将尝试通过例子使它更通俗易懂。
+
+{\bf 局限性：}\\
+正态分布是缺省分布，也是最广泛使用的分布形式。
+但如果采用其它更为正确的分布，则可以得到更好的结果。
+最大似然估计是一种可以用于估计分布参数而不考虑所使用的分布的技术。
+对于建模问题，首先要看看数据的分布情况，思考有没有比正态分布更有意义的分布。
+
+
+\subsection{为什么要使用最大似然估计(MLE)？}
+
+假如想预测活动门票的销售情况，数据的直方图和密度如下：
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1.0]{pix/Histogram_of_Count_Variable.jpg}
+\caption{Histogram of Count Variable}
+%\label{fig:label}
+\end{figure}
+
+你将如何为这个变量建模？该变量不是正态分布的，而且是不对称的，因此不符合线性回归的假设。
+一种常用的方法是对变量进行对数、平方根（sqrt）、倒数等转换，使转换后的变量服从正态分布，
+并进行线性回归建模。让我们试试这些转换，看看结果如何。
+
+{\bf 对数转换：}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.4]{pix/Histogram_of_Count_Variable_log.png}
+\caption{Histogram of Count Variable: Log Trans}
+%\label{fig:label}
+\end{figure}
+
+{\bf 平方根转换：}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.4]{pix/Histogram_of_Count_Variable_sr.png}
+\caption{Histogram of Count Variable: Square Root}
+%\label{fig:label}
+\end{figure}
+
+{\bf 倒数转换：}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.4]{pix/Histogram_of_Count_Variable_reciprocal.png}
+\caption{Histogram of Count Variable: reciprocal}
+%\label{fig:label}
+\end{figure}
+
+所有这些都不接近正态分布，那么我们应该如何对这些数据进行建模，才能不违背模型的基本假设？
+如何利用正态分布以外的其他分布来建模这些数据呢？如果我们使用了不同的分布，又将如何来估计系数？
+这便是最大似然估计(MLE)的主要优势。
+
+
+\subsection{通过一个实例理解MLE}
+
+在研究统计和概率时，你肯定遇到过诸如$x＞100$的概率，因为$x$服从正态分布，平均值为$50$，
+标准差为$10$。在这些问题中，我们已经知道分布（在这种情况下是正态分布）及其参数（均值和标准差），
+但在实际生活问题中，这些参数是未知的，并且必须从数据中估计出来。
+MLE可以帮助我们确定给定数据的分布参数。
+
+下面用一个例子来加深理解：假设我们用数据来表示班级中学生的体重(以kg为单位)。
+数据如下图所示(还提供了用于生成数据图的R代码)：
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.6]{pix/weights_of_students.jpg}
+\caption{学生体重分布}
+\label{fig:weights_of_students}
+\end{figure}
+
+\begin{lstlisting}[language=R]
+x = as.data.frame(rnorm(50,50,10))
+ggplot(x, aes(x = x)) + geom_dotplot()
+\end{lstlisting}
+
+这似乎遵循正态分布。但是我们如何得到这个分布的均值和标准差呢？
+一种方法是直接计算给定数据的平均值和标准差，分别为49.8公斤和11.37公斤。
+这些值能很好地表示给定的数据，但还不能最好地描述总体情况。
+
+我们可以使用MLE来获得更稳健的参数估计。因此，
+{\bf MLE可以定义为从样本数据中估计总体参数(如均值和方差、泊松率(Lambda)等)的方法，
+从而使获得观测数据的概率(可能性)最大化。}
+
+为了加深对MLE的理解，尝试猜测下列哪一项会使观察上述数据的概率最大化？
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+
+\item[(1)]
+Mean = 100, SD = 10 均值=100，标准差=10
+
+\item[(2)]
+Mean = 50, SD = 10 均值=50 ，标准差=10
+
+\end{itemize}
+
+显然，如果均值为100，我们就不太可能观察到上述数据分布图形。
+
+
+
+\subsection{进一步了解技术细节}
+
+知道MLE能做什么之后，我们就可以深入了解什么是真正的似然估计，以及如何对它最大化。
+首先，我们从快速回顾分布参数开始。
+
+\subsubsection{分布参数}
+
+首先，来了解一下分布参数。维基百科对这个词的定义如下：“它是一个概率分布的量化指数”，
+可以将它视为样本总数的数值特征或一个统计模型。通过下面的图表来理解它：
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.6]{pix/distributed_para.png}
+\caption{分布参数}
+\label{fig:distributed_para}
+\end{figure}
+
+钟形曲线的宽度和高度由两个参数决定-均值和方差。这就是正态分布的分布参数。同样，
+泊松分布由一个参数lambda控制，即事件在时间或空间间隔内发生的次数
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.6]{pix/poison_distribution.png}
+\caption{Poison Distribution}
+\label{fig:poison_distribution}
+\end{figure}
+
+大多数分布都有一个或两个参数，但有些分布可以有多达4个参数，比如4参数β分布。
+
+
+\subsubsection{似然}
+
+我们先来直观理解一下极大似然(maximum-likelihood)背后的思想：
+在只有概率的情况下，忽略低概率事件直接将高概率事件当作真实事件（的模型）的思想。
+
+\begin{example}
+{\bf 离散的小球问题：} \\
+箱子里有一定数量的小球，每次随机拿取一个小球，查看颜色以后放回。
+已知拿到白球的概率p为0.7或者0.3。假设现在已经拿了三次，都不是白球，
+求拿到白球的概率的极大似然估计。
+\end{example}
+
+【{\bf 分析}】此处从数学上来讲，想要准确的求出拿到白球的概率是不可能的，
+所以此处求的是概率的极大似然估计。而这里的有放回的拿取，是高中数学中经典的独立重复事件，
+可以很简单的分别求出白球概率为0.7和0.3的时候拿三次都不是白球的概率。
+
+【{\bf 解答}】\\
+若拿到白球的概率为0.7，拿三次都不是白球的概率为：
+$$
+P_{0.7} = 0.3\times 0.3\times 0.3=0.027
+$$
+
+若拿到白球的概率为0.3，拿三次都不是白球的概率为：
+$$
+P_{0.3}=0.7\times 0.7\times 0.7=0.343
+$$
+
+由上：$P_{0.3}>P_{0.7}$，可知当前情况下白球概率为0.3的概率大于白球概率为0.7
+
+综上所述：\\
+拿到白球的概率的极大似然估计为0.3
+
+% https://blog.csdn.net/a_rose_for_tang/article/details/106566430
+
+极大似然估计的通常解法步骤：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[(1)]
+得到所要求的极大似然估计的概率$p$的范围; 
+\item[(2)]
+以$p$为自变量，推导出当前已知事件的概率函数式$Q(p)$;
+\item[(2)]
+求出能使得$Q(p)$最大的$p$。
+\end{itemize}
+这样便求出了极大似然估计值$p$，就是已知数据求参数的方法。
+
+最大似然估计是求参数$\theta$, 使似然函数$P(x_0|\theta)$最大（$\theta$看为固定的）。
+最大后验概率估计则是想求$\theta$使$P(x_0|\theta)P(\theta)$最大。
+求得的$\theta$不单单让似然函数大，$\theta$自己出现的先验概率也得大。
+（$\theta$的概率不是固定的)
+
+从图\ref{fig:distributed_para}和图\ref{fig:poison_distribution}中我们可以看到，
+给定一组分布参数，一些数据值比其他数据的概率更大。从图\ref{fig:weights_of_students}中，
+我们已经看到，当平均值是50而不是100时，给定的数据更有可能发生。然而，在现实中，
+我们已经观察到了这些数据。因此，我们面临着一个逆向问题：给定观测数据和一个感兴趣的模型，
+我们需要在所有概率密度中找到一个最有可能产生数据的概率密度函数/概率质量函数
+$f(x_\theta)$。
+
+为解决这一逆向问题，
+我们通过逆转$f(x=\theta)$中的数据向量$x$和（分布）参数向量$\theta$来定义似然函数，即
+$$
+L(\theta; x) = f(x | \theta)
+$$
+
+在MLE中，可以假定我们有一个似然函数$L(\theta; x)$，其中$\theta$是分布参数向量，
+$x$是观测集。我们感兴趣的是寻找具有给定观测值($x$值)的最大可能性的$\theta$值。
+
+
+\subsubsection{对数似然}
+
+如果假设观测集$\{x_i\}$是独立的同分布随机变量，
+概率分布为$f_0$(其中$f_0$=正态分布，例如图\ref{fig:weights_of_students})，
+那么手头的数学问题就变得简单了。似然函数可以简化为：
+$$
+L(\theta; x) = f_0(x_1, x_2, x_3, \ldots, x_n | \theta) = 
+f_0(x_1 | \theta)\cdot f_0(x_2 | \theta)\cdot f_0(x_3 | \theta)\cdots
+f_0(x_n | \theta)
+$$
+
+为了求这个函数的极大值/极小值，我们可以取此函数关于$\theta$的偏导数，
+并将其设为$0$(极值位于驻点)。因为这里是乘积，所以需要用到求导的链式法则，
+这对乘积来说是相当麻烦的。{\bf 一个聪明的诀窍是取似然函数的对数，并使其最大化。}
+这将乘积转换为加法，并且由于对数是一个严格递增的函数，因此不会影响$\theta$的结果值。
+所以我们有：
+\begin{align*}
+LL(\theta; x) &= \log\left[ 
+f_0(x_1 | \theta)\cdot f_0(x_2 | \theta)\cdot f_0(x_3 | \theta)\cdots
+f_0(x_n | \theta) \right] \\
+&= \log f_0(x_1 | \theta) + \log f_0(x_2 | \theta) + \ldots 
++ \log f_0(x_n | \theta)
+\end{align}
+
+
+\subsubsection{最大似然估计}
+
+为找到对数似然函数$LL(\theta; x)$的极大值，我们可以：
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+取$LL(\theta; x)$函数的一阶导数，并将其等于0
+
+\item[-]
+取$LL(\theta; x)$函数的二阶导数，并确认其为负值
+\end{itemize}
+
+在许多情况下，微积分对最大化似然估计没有直接帮助，但最大值仍然可以很容易地识别出来。
+在寻找最大对数似然值的参数值时，没有任何东西比一阶导数等于零具有更为 “优先”或特殊的位置。
+当需要估计一些参数时，它仅仅是一个方便的工具而已。
+
+在通常情况下，能对函数求最大值的argmax的方法都可能适合于寻找log似然函数的最大值。
+这是一个无约束的非线性优化问题.我们寻求一种优化算法以下列方式工作：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+从任意起始点可靠地收敛到局部最小化
+
+\item[2.]
+速度尽可能快
+\end{itemize}
+
+使用优化技术来最大化似然是非常常见的；
+可以有多种方法来实现(比如：牛顿法、Fisher评分法、各种基于共轭梯度的方法、最陡下降法、
+Nder-Mead型(单纯形)方法、BFGS法和多种其他技术)。
+
+结果表明，当模型假设为高斯时，MLE估计等价于一般的最小二乘法。
+你可以参考这里来证明它。
+
+
+
+\subsection{利用MLE确定模型系数}
+
+% https://www.zhihu.com/question/484044429
+
+
+\subsection{R语言的MLE实现}
+
+% https://www.zhihu.com/question/484044429
+
+
+
+
+\section{Maximum Likelihood vs Maximum Entropy}
+
+% https://zhuanlan.zhihu.com/p/137426616
+% https://www.cnblogs.com/Hi-Simon/p/15101289.html
+
+
+\subsection{relationship between Maximum Likelihood Estimation and the Maximum Entropy Principle}
+
+% https://stats.stackexchange.com/questions/504117/is-there-a-relationship-between-maximum-likelihood-estimation-and-the-maximum-en
+
+I know that both techniques can be used to estimate distribution from the 
+data, but I didn't see anything in common between the two and I haven't 
+found anything yet for the internet that relates the two.
+
+Yes there is a connection. Namely, fitting maximum likelihood in exponential 
+(Gibbs) family models is equivalent to doing maximum entropy with some 
+constraints. Formally speaking, there is a primal-dual relationship between 
+max entropy and max likelihood - see for example Section 3.6 in 
+\href{https://www.nowpublishers.com/article/Details/MAL-001}{Wainwright and Jordan (2008)}.
+
+To see why this is the case less formally (i.e. without going into convex 
+analysis and dual representations) let's first look at the maximum entropy 
+principle and its solution. The principle tells us to choose the distribution 
+$p^*$ which is "consistent with the data" and has maximum entropy, i.e.
+
+\begin{align}
+p^* &= \arg\max_{p\in \mathcal{P}} H(p)  \notag \\
+\text{subject to}\quad \mathbb{E}_p\phi_k(x) &= \hat{\mu}_k, \ \forall k=1, \ldots, K
+\label{max_entropy_subject}
+\end{align}
+where $H(\cdot)$ is Shannon entropy, $\mathcal{P}$ is the set of all possible 
+distributions and the constraints encode the aforementioned consistency with
+data.
+
+The optimal solution $p^*$ is of the form (e.g. see Section 3.1 in
+\href{https://www.nowpublishers.com/article/Details/MAL-001}{Wainwright and Jordan (2008)}
+or \href{https://en.wikipedia.org/wiki/Maximum_entropy_probability_distribution#Distributions_with_measured_constants}{Wikipedia}
+or derive by introducing Lagrange multipliers)
+%
+\begin{equation}\label{form_optimal_solution}
+p_\theta(x) \propto \exp\left\{
+\sum_{k=1}^K \theta_k \phi_k (x)
+\right\}
+\end{equation}
+%
+where $\theta_k$ are chosen to satisfy the constraints.
+
+Now suppose you do maximum likelihood, assuming a $k$-parameter exponential 
+family for our data, i.e.
+%
+\begin{equation}\label{k-parameter-exponential}
+p_\theta(x) = \exp\left\{
+\sum_{k=1}^K \theta_k \phi_k (x) - A(\theta)
+\right\}
+\end{equation}
+%
+where the parameters $\{\theta_k\}$ are unknown, the functions $\{\phi_k\}$ 
+are given (these are called sufficient statistics), and 
+$A(\theta) = \log\left(\int \exp\left\{\sum_{k=1}^K \theta_k \phi_k(x)\right\}dx\right)$ 
+is the log-normalising constant (aka log-partition function).
+
+Note that Equation (\ref{k-parameter-exponential}) is of the same form as 
+Equation (\ref{form_optimal_solution}). Hence, if we can show that the maximum 
+likelihood solution satisfies the moment matching constraints 
+(\ref{max_entropy_subject}) then we are done.
+
+Start by writing the log-likelihood of $n$ datapoints, setting $\theta=\{\theta_k\}$ 
+and $\phi(\cdot) = \{\phi_k(\cdot)\}$ for cleaner notation:
+%
+$$
+\ell(\theta; x_{1:n}) = \sum_{i=1}^n \log p_\theta(x_i) = \sum_{i=1}^n \theta^T\phi(x_i) - nA(\theta),
+$$
+%
+then differentiating and setting to zero gives us the maximum likelihood solution:
+%
+$$
+\nabla_\theta A(\theta) = \frac{1}{n}\sum\phi(x_i).
+$$
+%
+Finally note that the LHS $\nabla_\theta A(\theta) = \mathbb{E}_{p(\theta)}\phi(x)$, 
+while the RHS is exactly its empirical average and so we recover the 
+constraints (\ref{max_entropy_subject}).
+
+{\bf 问:}
+
+So in some sense maximum likelihood is a more general estimator, since it 
+can fit arbitrary distributions, not just the exponential family.
+
+
+{\bf 答:}
+
+I think you can still apply max entropy to non-exponential family 
+distributions (see eg 
+\url{https://www.pnas.org/doi/10.1073/pnas.1320578110}), 
+and I guess in these cases the two (ML and ME) might not give the same answer.
+
+\section{Temporal Difference Learning}
+
+\cite{ODSC2020}
+
+The temporal difference learning algorithm was introduced by Richard S. 
+Sutton in 1988.  The reason the temporal difference learning method became 
+popular was that it combined the advantages of dynamic programming and the 
+Monte Carlo method. But what are those advantages? 
+
+This section is an excerpt from the book  Deep Reinforcement Learning with 
+Python, Second Edition  by  Sudharsan Ravichandiran – a comprehensive guide 
+for beginners to become proficient in implementing state-of-the-art RL and 
+deep RL algorithms.  
+
+\subsection{the advantages and disadvantages of DP and the MC method}
+
+Dynamic programming — the advantage of the DP method is that it uses the 
+Bellman equation to compute the value of a state. That is, we have learned 
+that according to the Bellman equation, the value of a state can be obtained 
+as the sum of the immediate reward and the discounted value of the next 
+state. This is called bootstrapping. That is, to compute the value of a 
+state, we don't have to wait till the end of the episode, instead, using 
+the Bellman equation, we can estimate the value of a state just based on 
+the value of the next state, and this is called bootstrapping.  
+
+Remember how we estimated the value function in DP methods (value and policy 
+iteration)? We estimated the value function (the value of a state) as:
+$$
+V(s) = \sum_{s'}P_{ss'}^a\left[ R_{ss'}^a + \gamma V(s') \right]
+$$
+
+As you may recollect, we learned that in order to find the value of a state, 
+we didn't have to wait till the end of the episode. Instead, we bootstrap, 
+that is, we estimate the value of the current state $V(s)$ by estimating the 
+value of the next state $V(s')$. 
+
+However, the disadvantage of DP is that we can apply the DP method only when 
+we know the model dynamics of the environment. That is, DP is a model-based 
+method and we should know the transition probability in order to use it. 
+When we don't know the model dynamics of the environment, we cannot apply 
+the DP method.  
+
+Monte Carlo method — The advantage of the MC method is that it is a 
+modelfree method, which means that it does not require the model dynamics 
+of the environment to be known in order to estimate the value and $Q$ 
+functions.  
+
+However, the disadvantage of the MC method is that in order to estimate the 
+state value or $Q$ value we need to wait until the end of the episode, and 
+if the episode is long then it will cost us a lot of time. Also, we cannot 
+apply MC methods to continuous tasks (non-episodic tasks).  
+
+Now, let's get back to temporal difference learning. The TD learning 
+algorithm takes the benefits of the DP and the MC methods into account. So, 
+just like in DP, we perform bootstrapping so that we don't have to wait 
+until the end of an episode to compute the state value or $Q$ value, and 
+just like the MC method, it is a model-free method and so it does not 
+require the model dynamics of the environment to compute the state value 
+or $Q$ value. Now that we have the basic idea behind the TD learning 
+algorithm, let's get into the details and learn exactly how it works. 
+
+We can use the TD learning algorithm for both the prediction and control 
+tasks, and so we can categorize TD learning into:  
+\begin{itemize}
+\item
+TD prediction
+
+\item
+TD control
+\end{itemize}
+
+In the prediction method, a policy is given as an input and we try to 
+predict the value function or Q function using the given policy. If we 
+predict the value function using the given policy, then we can say how good 
+it is for the agent to be in each state if it uses the given policy. That 
+is, we can say what the expected return an agent can get in each state if 
+it acts according to the given policy.  
+
+In the control method, we are not given a policy as input, and the goal in 
+the control method is to find the optimal policy. So, we initialize a 
+random policy and then we try to find the optimal policy iteratively. That 
+is, we try to find an optimal policy that gives us the maximum return.  
+
+\subsection{Temporal Difference Learning Prediction}
+
+First, let’s see how to use TD learning to perform prediction task, and 
+then we will learn how to use TD learning for the control task. 
+
+In the TD prediction method, the policy is given as input and we try to 
+estimate the value function using the given policy. TD learning bootstraps 
+like DP, so it does not have to wait till the end of the episode, and like 
+the MC method, it does not require the model dynamics of the environment 
+to compute the value function or the $Q$ function. Now, let’s see how the 
+update rule of TD learning is designed, taking the preceding advantages 
+into account.
+
+In the MC method, we estimate the value of a state by taking its return:  
+$$
+V(s) \approx R(s)
+$$
+
+However, a single return value cannot approximate the value of a state 
+perfectly. So, we generate N episodes and compute the value of a state 
+as the average return of a state across N episodes:
+$$
+V(s) \approx \frac{1}{N} \sum_{i=1}^{N} R_i(s)
+$$
+
+But with the MC method, we need to wait until the end of the episode to 
+compute the value of a state and when the episode is long, it takes a 
+lot of time. One more problem with the MC method is that we cannot apply 
+it to non-episodic tasks (continuous tasks).  
+
+So, in TD learning, we make use of bootstrapping and estimate the value 
+of a state as:
+\begin{equation}\label{bootstrapping_TD}
+V(s) \approx r + \gamma V(s')
+\end{equation}
+
+The preceding equation tells us that we can estimate the value of the 
+state by only taking the immediate reward $r$ and the discounted value 
+of the next state $\gamma V(s')$.
+
+As you may observe from the preceding equation, similar to what we learned 
+in DP methods (value and policy iteration), we perform bootstrapping but 
+here we don’t need to know the model dynamics.  
+
+Thus, using temporal difference learning, the value of a state is 
+approximated as equation (\ref{bootstrapping_TD}). However, a single value 
+of $r + \gamma V(s')$ cannot approximate the value of a state perfectly. 
+So, we can take a mean value and instead of taking an arithmetic mean, 
+we can use the incremental mean.  
+
+In the MC method, we learned how to use the incremental mean to estimate 
+the value of the state and it given as follows:
+$$
+V(s) = V(s) + \alpha(R - V(s))
+$$
+
+Similarly, here in TD learning, we can use the incremental mean and 
+estimate the value of the state, as shown here:  
+\begin{equation}\label{learning_update_rule_TD}
+V(s) = V(s) + \alpha(r + \gamma V(s') - V(s))
+\end{equation}
+
+This equation is called the temporal difference learning update rule. As 
+we can observe, the only difference between the TD learning and the MC method 
+is that to compute the value of the state, in the MC method, we use the full 
+return R, which is computed using the complete episode, whereas in the TD 
+learning method, we use the bootstrap estimate $r + \gamma V(s')$ so that we 
+don’t have to wait until the end of the episode to compute the value of the 
+state. Thus, we can apply TD learning to non-episodic tasks as well. The 
+following shows the difference between the MC method and TD learning: 
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=1.0]{pix/comparison_MC_and_TD.png}
+\caption{A comparison between MC and TD learning}
+%\label{fig:label}
+\end{figure}
+\noindent Thus, our temporal difference learning update rule is equation 
+(\ref{learning_update_rule_TD}).
+
+We learned that $r + \gamma V(s')$ is an estimate of the value of state $V(s)$. 
+So, we can call $r + \gamma V(s')$ the TD target. Thus, subtracting $V(s)$ 
+from $r + \gamma V(s')$ implies that we are subtracting the predicted value 
+from the target value, and this is usually called the TD error. Okay, what 
+about that $\alpha$? It is basically the learning rate, also called the step 
+size. That is: 
+
+$$
+V(s) = V(s) + \underbrace{\alpha}_{\text{learning rate}}
+(\underbrace{r + \gamma V(s') - V(s)}_{\text{TD error})
+$$
+
+Our TD learning update rule basically implies:  
+
+Value of a state = value of a state + learning rate (reward + discount factor(value 
+of next state) – value of a state)  
+
+
+\subsection{Summary of Temporal Difference Learning}
+
+In this section, we explored the TD learning update rule and how temporal 
+difference learning is used to estimate the value of a state. Further study 
+should explore the TD prediction algorithm so readers can get a clearer 
+understanding of the TD learning method. Master classic RL, deep RL, 
+distributional RL, inverse RL, and more with OpenAI Gym and TensorFlow. 
+
