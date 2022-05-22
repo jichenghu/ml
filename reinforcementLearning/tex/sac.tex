@@ -31,7 +31,7 @@ $\pi$学习的是分布的参数：均值和标准差；这与DDPG不同，DDPG�
 输出直接就是action，而{\bf SAC学习的是个分布}，学习时action需要从分布中采样，
 是{\bf Stochastic}的。
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \includegraphics[scale=1.0]{pix/sac.jpg}
 \caption{SAC}
@@ -47,9 +47,14 @@ Soft，Smoothing，Stable。
 \begin{equation}\label{rl_objective_function}
 \sum_t\mathbb{E}_{(s_t,a_t)\sim\rho_\pi}\left[r(s_t, a_t)\right]
 \end{equation}
+上式也常常写为：
+\begin{equation}\label{rl_reward_function}
+\pi^* = \arg\max_\pi \mathbb{E}_{(s_t,a_t)\sim\rho_\pi}
+\Big[ \sum_t r(s_t, a_t) \Big]
+\end{equation}
 
-强化学习最大熵目标函数(maximum entropy objective)如下，比最初的累计奖赏，
-增加了policy $\pi$的信息熵。
+\noindent 而强化学习最大熵目标函数(maximum entropy objective)则如下，比上面这个最初的累计奖赏，
+增加了policy $\pi$的信息熵：
 
 \begin{equation}\label{maximum_entropy_objective}
 \pi^* = \arg\max_\pi \mathbb{E}_{(s_t,a_t)\sim\rho_\pi}
@@ -166,7 +171,7 @@ TD3的soft state value function V形式与Soft Policy Iteration中类似，
 通过$Q$和$\pi$网络近似$V$，注意$s$来自Experience Replay Buffer，
 但是$a$来自当前的$\pi$。
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.13]{pix/soft_state_value.png}
 \caption{Soft state value}
@@ -180,7 +185,7 @@ TD3的soft state value function V形式与Soft Policy Iteration中类似，
 $r(s,a)$是环境的即时奖赏；$s_{t+1}$来自环境，由于环境是model-free，
 可以理解成$s_{t+1}$是确定的。
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.2]{pix/soft_q_value.png}
 \caption{Soft Q value}
@@ -206,7 +211,7 @@ KL散度基于$Q$的分布近似忽略分母析分函数。
 采样之后，$a$是确定的，KL散度即熵的差容易求解，注意$Q$值来自神经网络，值可以scale，无需关注系数。
 \end{itemize}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.15]{pix/policy_objective.png}
 \caption{Policy objective function}
@@ -218,7 +223,7 @@ KL散度基于$Q$的分布近似忽略分母析分函数。
 
 整体采用Replay Buffer，三个目标函数分别进行梯度学习。
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.15]{pix/learning_process.png}
 \caption{Learning process}

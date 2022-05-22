@@ -257,7 +257,7 @@ $$
 其实就是把约束项添加到原函数上，然后对构造的新函数求导。
 看下面的图就很容易理解了。
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.7]{pix/lagrange.jpg}
 \caption{Lagrange乘数法}
@@ -315,7 +315,7 @@ to satellite imaging. It is also related to Bayesian statistics.
 
 假如想预测活动门票的销售情况，数据的直方图和密度如下：
 
-\begin{figure}[H]
+\begin{figure}[!htb]
 \centering
 \includegraphics[scale=1.0]{pix/Histogram_of_Count_Variable.jpg}
 \caption{Histogram of Count Variable}
@@ -763,110 +763,4 @@ In the control method, we are not given a policy as input, and the goal in
 the control method is to find the optimal policy. So, we initialize a 
 random policy and then we try to find the optimal policy iteratively. That 
 is, we try to find an optimal policy that gives us the maximum return.  
-
-\subsection{Temporal Difference Learning Prediction}
-
-First, let’s see how to use TD learning to perform prediction task, and 
-then we will learn how to use TD learning for the control task. 
-
-In the TD prediction method, the policy is given as input and we try to 
-estimate the value function using the given policy. TD learning bootstraps 
-like DP, so it does not have to wait till the end of the episode, and like 
-the MC method, it does not require the model dynamics of the environment 
-to compute the value function or the $Q$ function. Now, let’s see how the 
-update rule of TD learning is designed, taking the preceding advantages 
-into account.
-
-In the MC method, we estimate the value of a state by taking its return:  
-$$
-V(s) \approx R(s)
-$$
-
-However, a single return value cannot approximate the value of a state 
-perfectly. So, we generate N episodes and compute the value of a state 
-as the average return of a state across N episodes:
-$$
-V(s) \approx \frac{1}{N} \sum_{i=1}^{N} R_i(s)
-$$
-
-But with the MC method, we need to wait until the end of the episode to 
-compute the value of a state and when the episode is long, it takes a 
-lot of time. One more problem with the MC method is that we cannot apply 
-it to non-episodic tasks (continuous tasks).  
-
-So, in TD learning, we make use of bootstrapping and estimate the value 
-of a state as:
-\begin{equation}\label{bootstrapping_TD}
-V(s) \approx r + \gamma V(s')
-\end{equation}
-
-The preceding equation tells us that we can estimate the value of the 
-state by only taking the immediate reward $r$ and the discounted value 
-of the next state $\gamma V(s')$.
-
-As you may observe from the preceding equation, similar to what we learned 
-in DP methods (value and policy iteration), we perform bootstrapping but 
-here we don’t need to know the model dynamics.  
-
-Thus, using temporal difference learning, the value of a state is 
-approximated as equation (\ref{bootstrapping_TD}). However, a single value 
-of $r + \gamma V(s')$ cannot approximate the value of a state perfectly. 
-So, we can take a mean value and instead of taking an arithmetic mean, 
-we can use the incremental mean.  
-
-In the MC method, we learned how to use the incremental mean to estimate 
-the value of the state and it given as follows:
-$$
-V(s) = V(s) + \alpha(R - V(s))
-$$
-
-Similarly, here in TD learning, we can use the incremental mean and 
-estimate the value of the state, as shown here:  
-\begin{equation}\label{learning_update_rule_TD}
-V(s) = V(s) + \alpha(r + \gamma V(s') - V(s))
-\end{equation}
-
-This equation is called the temporal difference learning update rule. As 
-we can observe, the only difference between the TD learning and the MC method 
-is that to compute the value of the state, in the MC method, we use the full 
-return R, which is computed using the complete episode, whereas in the TD 
-learning method, we use the bootstrap estimate $r + \gamma V(s')$ so that we 
-don’t have to wait until the end of the episode to compute the value of the 
-state. Thus, we can apply TD learning to non-episodic tasks as well. The 
-following shows the difference between the MC method and TD learning: 
-
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=1.0]{pix/comparison_MC_and_TD.png}
-\caption{A comparison between MC and TD learning}
-%\label{fig:label}
-\end{figure}
-\noindent Thus, our temporal difference learning update rule is equation 
-(\ref{learning_update_rule_TD}).
-
-We learned that $r + \gamma V(s')$ is an estimate of the value of state $V(s)$. 
-So, we can call $r + \gamma V(s')$ the TD target. Thus, subtracting $V(s)$ 
-from $r + \gamma V(s')$ implies that we are subtracting the predicted value 
-from the target value, and this is usually called the TD error. Okay, what 
-about that $\alpha$? It is basically the learning rate, also called the step 
-size. That is: 
-
-$$
-V(s) = V(s) + \underbrace{\alpha}_{\text{learning rate}}
-(\underbrace{r + \gamma V(s') - V(s)}_{\text{TD error})
-$$
-
-Our TD learning update rule basically implies:  
-
-Value of a state = value of a state + learning rate (reward + discount factor(value 
-of next state) – value of a state)  
-
-
-\subsection{Summary of Temporal Difference Learning}
-
-In this section, we explored the TD learning update rule and how temporal 
-difference learning is used to estimate the value of a state. Further study 
-should explore the TD prediction algorithm so readers can get a clearer 
-understanding of the TD learning method. Master classic RL, deep RL, 
-distributional RL, inverse RL, and more with OpenAI Gym and TensorFlow. 
 

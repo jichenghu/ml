@@ -5,6 +5,23 @@
 \usepackage[UTF8]{ctex}
 \usepackage{import}
 
+% https://texample.net/tikz/examples/feature/trees/
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+
+% https://texample.net/tikz/examples/red-black-tree/
+\tikzset{
+  treenode/.style = {align=left, %center, 
+  inner sep=0pt, text centered,
+    font=\sffamily},
+  arn_n/.style = {treenode, circle, white, font=\sffamily\bfseries, draw=black,
+    fill=black, text width=1.0em},% arbre rouge noir, noeud noir
+  arn_r/.style = {treenode, circle, black, draw=black, 
+    text width=1.5em, very thick},% arbre rouge noir, noeud rouge
+  arn_x/.style = {treenode, rectangle, draw=black,
+    minimum width=0.5em, minimum height=0.5em}% arbre rouge noir, nil
+}
+
 %\usepackage{amsmath}
 %\usepackage{lmodern}
 \usepackage{amsfonts, amsmath, amssymb, amsthm, array, bm, cite, color, 
@@ -65,8 +82,8 @@ sorting=ynt
 \newenvironment{solution}{\par\noindent\textbf{解答. }}{\par}
 \newenvironment{note}{\par\noindent\textbf{题目\arabic{problemname}的注记. }}{\par}
 
-\newtheorem{definition}{定义}[subsection]%跟随三级标题排序
-\newtheorem{theorem}{定理}[subsection]%跟随⼆级标题排序改为section
+\newtheorem{definition}{Definition}[section]     % 跟随⼆级标题排序
+\newtheorem{theorem}{Theorem}[subsection]        % 跟随三级标题排序
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 
@@ -108,6 +125,9 @@ sorting=ynt
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{front.tex}
 
+% Markov Decision Processes
+\import{D:/mygit/ml/reinforcementLearning/tex/}{mdp.tex}
+
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
@@ -123,6 +143,10 @@ sorting=ynt
 \chapter{附录}
 % 附件内容：最大熵
 \import{D:/mygit/ml/reinforcementLearning/tex/}{entropy_max.tex}
+% 附件内容：dynamic programming
+\import{D:/mygit/ml/reinforcementLearning/tex/}{dp.tex}
+% 附件内容：Temporal-Difference
+\import{D:/mygit/ml/reinforcementLearning/tex/}{td.tex}
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{back.tex}
 
