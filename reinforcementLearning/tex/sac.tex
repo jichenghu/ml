@@ -1,19 +1,72 @@
 ﻿\chapter{Soft Actor-Critic}
 
 % https://blog.csdn.net/weixin_44436360/article/details/108077422
+% https://zhuanlan.zhihu.com/p/70360272
 
-PPO算法是主流的DRL算法，但是PPO是一种on-policy算法，
-存在sample inefficiency的缺点，需要巨量的采样才能学习。
+Robot Learning正在快速的发展，其中深度强化学习deep reinforcement learning（DRL），
+特别是面向连续控制continous control的DRL算法起着重要的作用。
+在这一领域中，目前有三类行之有效的modle free DRL算法：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+TRPO,PPO
+\item[-]
+DDPG及其拓展（D4PG,TD3等）
+\item[-]
+Soft Q-Learning, Soft Actor-Critic
+\end{itemize}
+
+
+PPO算法是主流的DRL算法，同时面向离散控制和连续控制，在OpenAI Five上取得了巨大成功。
+但是PPO是一种on-policy算法，存在sample inefficiency的缺点，需要巨量的采样才能学习。
 DDPG及其拓展是面向连续控制的off-policy的算法，相对于PPO来说更sample efficient，
-但是它存在对其超参数敏感，收敛效果差的问题。
+但是它存在对其超参数敏感，收敛效果差的问题。DDPG训练的是一种确定性策略deterministic policy，
+即每一个state下都只考虑最优的一个动作。DDPG的拓展版D4PG从paper中的结果看取得了非常好的效果，
+但是并没有开源，目前github上也没有人能够完全复现Deepmind的效果。
+
 SAC算法是面向最大熵强化学习开发的一种off-policy算法。
 与DDPG相比，SAC使用的是随机策略，相比确定性策略具有一定的优势。
+Soft Actor-Critic在公开的benchmark中取得了非常好的效果，并且能直接应用到真实机器人上。
+最关键的是，Soft Actor-Critic是完全开源的，因此，深入理解Soft Actor-Critic 算法具有非常重要的意义。
+
+\subsection{相关链接}
+
+Papers:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+\href{https://arxiv.org/abs/1801.01290}{Soft Actor-Critic: 
+Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor}
+\item[-]
+\href{https://arxiv.org/abs/1812.05905}{Soft Actor-Critic Algorithms and Applications}
+\item[-]
+\href{https://arxiv.org/abs/1702.08165}{Reinforcement Learning with Deep Energy-Based Policies (Soft Q-Learning)}
+\end{itemize}
+
+Codes:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+\href{https://github.com/rail-berkeley/softlearning}{rail-berkeley/softlearning (原作者实现）}
+\item[-]
+\href{https://github.com/vitchyr/rlkit}{vitchyr/rlkit}
+\item[-]
+\href{https://github.com/openai/spinningup}{openai/spinningup}
+\item[-]
+\href{https://github.com/hill-a/stable-baselines}{hill-a/stable-baselines}
+\end{itemize}
 
 
 \section{SAC}
 
-\noindent 最大熵强化学习算法SAC \\
-https://www.toutiao.com/article/6845540775015481870/
+% \noindent 最大熵强化学习算法SAC \\
+% https://www.toutiao.com/article/6845540775015481870/
 
 SAC：Soft Actor-Critic，Off-Policy Maximum Entropy Deep Reinforcement 
 Learning with a Stochastic Actor。
@@ -47,14 +100,14 @@ Soft，Smoothing，Stable。
 \begin{equation}\label{rl_objective_function}
 \sum_t\mathbb{E}_{(s_t,a_t)\sim\rho_\pi}\left[r(s_t, a_t)\right]
 \end{equation}
-上式也常常写为：
+其学习目标很直接，就是学习一个policy使得累加的reward期望值最大：
 \begin{equation}\label{rl_reward_function}
 \pi^* = \arg\max_\pi \mathbb{E}_{(s_t,a_t)\sim\rho_\pi}
 \Big[ \sum_t r(s_t, a_t) \Big]
 \end{equation}
 
 \noindent 而强化学习最大熵目标函数(maximum entropy objective)则如下，比上面这个最初的累计奖赏，
-增加了policy $\pi$的信息熵：
+增加了policy $\pi$的每一次输出的action的信息熵：
 
 \begin{equation}\label{maximum_entropy_objective}
 \pi^* = \arg\max_\pi \mathbb{E}_{(s_t,a_t)\sim\rho_\pi}
@@ -66,6 +119,7 @@ Soft，Smoothing，Stable。
 上式中的$\alpha$确定了熵项对于奖励的相对重要性。
 与传统的DRL学习目标不同，不仅想要长期的回报最大，
 还想要policy的每一次输出的action的熵最大。这样做其实就是为了让策略随机化，
+即输出的每一个action的概率尽可能分散，而不是集中在一个action上。
 也是在鼓励探索，为具有相似的$Q$值的动作分配近乎均等的概率，
 不会给动作范围内任何一个动作分配非常高的概率，避免了反复选择同一个动作而陷入次优。
 同时通过最大化奖赏，放弃明显没有前途的策略（放弃低奖赏策略）。

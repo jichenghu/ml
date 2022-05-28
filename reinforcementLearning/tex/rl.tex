@@ -30,6 +30,10 @@ mathrsfs, setspace, tcolorbox, xcolor}
 %\usepackage[keeplastbox]{flushend}
 %\fontsize{11pt}{12pt}\selectfont
 
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{subfigure}
+
 \lstset{numbers=left, %设置行号位置
         numberstyle=\tiny, %设置行号大小
         keywordstyle=\color{blue}, %设置关键字颜色
@@ -125,15 +129,20 @@ sorting=ynt
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{front.tex}
 
-% Markov Decision Processes
-\import{D:/mygit/ml/reinforcementLearning/tex/}{mdp.tex}
+% basic knowledge
+\import{D:/mygit/ml/reinforcementLearning/tex/}{rl_basic.tex}
 
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
+\import{D:/mygit/ml/reinforcementLearning/tex/}{q_learning.tex}
+
+% Markov Decision Processes
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{mdp.tex}
+
+\import{D:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
 
 %\include{entropy}
-\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
 
 \import{D:/mygit/ml/reinforcementLearning/tex/}{sac.tex}
 
@@ -142,11 +151,11 @@ sorting=ynt
 
 \chapter{附录}
 % 附件内容：最大熵
-\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy_max.tex}
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy_max.tex}
 % 附件内容：dynamic programming
 \import{D:/mygit/ml/reinforcementLearning/tex/}{dp.tex}
 % 附件内容：Temporal-Difference
-\import{D:/mygit/ml/reinforcementLearning/tex/}{td.tex}
+%\import{D:/mygit/ml/reinforcementLearning/tex/}{td.tex}
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{back.tex}
 
