@@ -70,6 +70,9 @@ v_\pi(s)=\mathbb{E}_\pi[G_t|S_t=s]
 \end{equation}
 \end{definition}
 
+状态值函数 $v_\pi(s)$ 可以评价当前状态的好坏，每个状态的值不仅由当前状态决定还要由后面的状态决定，
+所以状态的累计奖励求期望就可得出当前$s$的状态值函数 $v_\pi(s)$。
+
 \begin{definition} {\rm\bf (action-value function)}
 Similarly, we define the value of taking action a in state $s$ under a policy $\pi$, 
 denoted as $q_\pi(s,a)$, as the expected return starting from $s$, taking the 
@@ -116,6 +119,45 @@ $\gamma\in[0, 1]$ is a discount factor for future reward
 
 \end{itemize}
 \end{definition}
+
+
+\begin{definition}\label{def_FMDP} {\rm\bf (FMDP)}
+A Finite Markov Decision Process is given a tuple $<\mathcal{S}, \mathcal{A}, \mathcal{T}, 
+\mathcal{R}, H, \gamma>$
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Set of states $\mathcal{S}$
+
+\item[-]
+Set of actions $\mathcal{A}$
+
+\item[-]
+$\mathcal{T}: \mathcal{S}\times\mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
+\rightarrow [0,1]$ \\
+$\mathcal{T}_t(s,a,s')=P(s_{t+1}=s'|s_t=s,a_t=a)$
+
+\item[-]
+$R$: \mathcal{S}\times\mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
+\rightarrow \mathcal{R} \\
+$R_t(s,a,s')=\text{reward for} (s_{t+1}=s', s_t=s, a_t=a)$
+
+\item[-]
+$H$: horizon over which the agent will act
+
+\item[-]
+$\gamma\in[0, 1]$ is a discount factor for future reward
+
+\end{itemize}
+\end{definition}
+
+Goal: Find $\pi: \mathcal{S}\times\{0,1,\ldots,H\}\rightarrow \mathcal{A}$ that 
+maximizes expected sum of rewards, i.e., 
+$$
+\pi^*=\arg\max_\pi E\left[ \sum_{t=0}^H R_t(s_t, a_t, s_{t+1}) | \pi \right]
+$$
 
 
 \subsection{Optimal Policy and Optimal Value Function}
@@ -278,7 +320,7 @@ alternatives based only on local or immediate considerations, without considerin
 possibility that such a selection may prevent future access to even better alternatives. 
 Consequently, it describes policies that select actions based only on their short-term 
 consequences. The beauty of $v_*$ is that if one uses it to evaluate the short-term 
-consequences of actions��specifically, the one-step consequences��then a greedy policy is 
+consequences of actions—specifically, the one-step consequences—then a greedy policy is 
 actually optimal in the long-term sense in which we are interested because $v_*$ already 
 takes into consideration the reward consequences of all possible future behavior. By 
 means of $v_*$, the optimal expected long-term return is turned into a quantity that is 
@@ -289,8 +331,8 @@ Having $q_*$ makes choosing optimal actions even easier. With $q_*$, the agent d
 even have to do a one-step-ahead search: for any state $s$, it can simply find any 
 action that maximizes $q_*(s, a)$. The action-value function actively caches the results 
 of all one-step-ahead searches. It provides the optimal expected long-term return as a 
-value that is locally and immediately available for each state�Caction pair. Hence at the 
-cost of representing a function of state�Caction pairs, instead of just of states, the 
+value that is locally and immediately available for each state–action pair. Hence at the 
+cost of representing a function of state–action pairs, instead of just of states, the 
 optimal actionvalue function allows optimal actions to be selected without having to 
 know anything about possible successor states and their values, that is, without having 
 to know anything about the environment's dynamics.
@@ -315,4 +357,281 @@ to know anything about the environment's dynamics.
 % https://lilianweng.github.io/lil-log/2018/02/19/a-long-peek-into-reinforcement-learning.html
 
 % https://deepmind.com/research/case-studies/alphago-the-story-so-far
+
+
+\section{Canonical Example: Grid World}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+The agent lives in a grid, figure \ref{fig:mdp_Grid_world}
+
+\item
+Walls block the agent's path
+
+\item
+The agent's actions do not always go as planned:
+    \begin{itemize}
+    \item
+    $80\%$ of the time, the action North takes the agent North(if there is no wall there)
+
+    \item
+    $10\%$ of the time, North takes the agent West; $10\%$ East
+
+    \item
+    If there is a wall in the direction the agent would have been taken, the agent stays put
+
+    \end{itemize}
+
+\item
+Big rewards come at the end
+
+\end{itemize}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/Grid_world.png}
+\caption{Canonical Example: Grid world}
+\label{fig:mdp_Grid_world}
+\end{figure}
+
+{\bf Solving MDPs}
+
+\begin{itemize}
+\item
+In an MDP, we want an optimal \textcolor{red}{policy $\pi^*: S\times 0: H\rightarrow A$}
+
+    \begin{itemize}
+    \item
+    A policy $\pi$ gives an action for each state for each time, figure \ref{fig:action_for_each_state}
+
+    \begin{figure}[!htb]
+    \centering
+    \includegraphics[scale=0.618]{pix/mdp/action_for_each_state.png}
+    \caption{Canonical Example: action for each state}
+    \label{fig:action_for_each_state}
+    \end{figure}
+
+    \item
+    An optimal policy maximizes expected sum of rewards
+
+    \end{itemize}
+
+\item
+Contrast: In deterministic, want an optimal \textcolor{magenta}{plan}, or sequence 
+of actions, from start to a goal
+\end{itemize}
+
+Optimal Control
+
+$=$
+
+given an MDP $(\mathcal{S}, \mathcal{A}, \mathcal{T}, \mathcal{R}, \gamma, H)$
+
+find the optimal policy $\pi^*$
+
+Exact Methods:
+\begin{itemize}
+\item
+Value Iteration
+
+\item
+Policy Iteration
+
+\item
+Linear Programming
+\end{itemize}
+
+
+\subsection{Value iteration}
+
+Algorithm:
+\begin{itemize}
+\item
+Start with $V_0^*(s)=0$ for all $s$.
+
+\item
+For $i=1,\ldots, H$ \\
+Given $V_i^*$, calculate for all states $s\in\mathcal{S}$: \\
+\textcolor{magenta}{
+$$
+V_{i+1}^*(s) \leftarrow \max_a\sum_{s'}T(s,a,s')\left[
+R(s,a,s') + V_i^*(s') \right]
+$$
+}
+
+\item
+This is called a \textcolor{magenta}{value update} or \textcolor{magenta}{
+Bellman update/back-up}
+\end{itemize}
+
+\noindent where $V_i^*(s)$ is the expected sum of rewards accumulated when 
+starting from state $s$ and acting optimally for 
+\textcolor{red}{\bf a horizon of $i$ steps}
+
+
+\subsection{Value iteration in Gridworld}
+
+$\text{noise} = 0.2$, $\gamma=0.9$, two terminal states with $R=+1$ and $-1$. 
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_1.png}
+\caption{Grid World: Values after 1 iteration}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_2.png}
+\caption{Grid World: Values after 2 iterations}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_3.png}
+\caption{Grid World: Values after 3 iterations}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_4.png}
+\caption{Grid World: Values after 4 iterations}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_5.png}
+\caption{Grid World: Values after 5 iterations}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_100.png}
+\caption{Grid World: Values after 100 iterations}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_100.png}
+\caption{Grid World: Values after 1000 iterations}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+{\bf \textcolor{magenta}{当前进展总结：}}
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+当前能正确运行的代码的位置 $D:/mygit/reinforcement\_mdp/gridworld.py$
+
+\item[-]
+参数的设置位于 gridworld.py 的 ln494 及之后的一段
+
+\item[-]
+代码的来源及说明参见(修改后的代码运行结果经过检测满足Question 1的要求) \\
+\url{https://courses.cs.washington.edu/courses/csep573/19wi/assignments/reinforcement_mdp.html}
+\\
+网页被另存于本地位置 \\
+\url{file:///D:/webPages/mdp/Assignment%203_%20Markov%20Decision%20Processes%20-%20CSE%20P%20573.html}
+
+\item[-]
+代码修改的依据参见 \\
+\url{https://gitee.com/industry-ai/mdp}
+
+\end{itemize}
+
+
+\subsection{Example Analysis}
+
+% https://hub.packtpub.com/reinforcement-learning-mdp-markov-decision-process-tutorial/
+
+The Markov decision process, better known as MDP, is an approach in reinforcement 
+learning to take decisions in a gridworld environment. A gridworld environment 
+consists of states in the form of grids.
+
+The MDP tries to capture a world in the form of a grid by dividing it into states, 
+actions, models/transition models, and rewards. The solution to an MDP is called 
+a policy and the objective is to find the optimal policy for that MDP task.
+
+Thus, any reinforcement learning task composed of a set of states, actions, and 
+rewards that follows the Markov property would be considered an MDP.
+
+In this subsection, we will dig deep into MDPs, states, actions, rewards, policies, 
+and how to solve them using Bellman equations through the above gridworld example.
+
+\subsubsection{Markov decision processes}
+
+这里复习一下MDP的定义 \ref{def_FMDP}
+
+MDP is defined as the collection of the following:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+{\bf States:} $\mathcal{S}$
+
+\item[-]
+{\bf Actions:} $\mathcal{A}$
+
+\item[-]
+{\bf Transition model:} $\mathcal{T}: \mathcal{S}\times\mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
+\rightarrow [0,1]$ \\
+$\mathcal{T}_t(s,a,s')=P(s_{t+1}=s'|s_t=s,a_t=a)$ \\
+$T(s,a,s')\sim P(s'|s,a)$ 
+
+\item[-]
+{\bf Rewards:} $R$: \mathcal{S}\times\mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
+\rightarrow \mathcal{R} \\
+$R_t(s,a,s')=\text{reward for} (s_{t+1}=s', s_t=s, a_t=a)$ \\
+$R(s), R(s,a), R(s,a,s')$
+
+\item[-]
+{\bf Policy:} 
+$\pi: \mathcal{S}\times\{0,1,\ldots,H\}\rightarrow \mathcal{A}$ \\
+$\pi(s) \rightarrow \alpha$ \\
+$\pi^*$ is the optimal policy
+
+\end{itemize}
+
+In the case of an MDP, the environment is fully observable, that is, whatever 
+observation the agent makes at any point in time is enough to make an optimal 
+decision. In case of a partially observable environment, the agent needs a 
+memory to store the past observations to make the best possible decisions.
+
+Let's try to break this into different lego blocks to understand what this 
+overall process means.
+
+\subsubsection{The Markov property}
+
+In short, as per the {\bf Markov property}, in order to know the information 
+of near future (say, at time $t+1$) the present information at time $t$ matters.
+
+Given a sequence, $[x_1, x_2, \ldots, x_t]$, the first order of Markov says,
+$P(x_t | x_{t-1}, x_{t-2}, \ldots, x_1) = P(x_t | x_{t-1})$, that is,
+$x_t$ depends only on $x_{t-1}$. Therefore, $x_{t+1}$ will depend only on $x_t$. 
+The second order of Markov says, $P(x_t | x_{t-1}, x_{t-2}, \ldots, x_1) = 
+P(x_t | x_{t-1}, x_{t-2})$, that is, $x_t$ depends only on $x_{t-1}$ and 
+$x_{t-2}$.
+
+In our context, we will follow the first order of the Markov property from now 
+on. Therefore, we can convert any process to a Markov property if the probability 
+of the new state, say $x_{t+1}$, depends only on the current state, $x_t$, such 
+that the current state captures and remembers the property and knowledge from the 
+past. Thus, as per the Markov property, the world (that is, the environment) is 
+considered to be stationary, that is, the rules in the world are fixed.
+
+
+
+
+
 
