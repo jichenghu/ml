@@ -1,6 +1,25 @@
 ﻿
 \section{The Maximum Entropy Principle}
 
+Suppose that $p_1$ and $p_2$ are probabilities for independent events, the 
+information $I$ received from seeing both events is the information of seeing 
+each event added together.
+$$
+I(p_1p_2) = I(p_1) + I(p_2).
+$$
+\noindent{}See if you can deduce why these criteria imply that the information 
+of an event with probability $p$ can be suitably defined as 
+$I(p) \equiv \log \frac{1}{p}$.
+\noindent{}The Shannon entropy $\mathcal{H}$ is compactly defined as the 
+expected information content of a random variable $X$:
+$$
+\mathcal{H}(X) \equiv \mathbb{E}_{x\sim X}\left[I(p(x))\right].
+$$
+\noindent{}For simplicity, here we supress details about differential entropy, 
+which defines entropy for continuous random variables. For our purposes, the 
+equation above applies to any random variable.
+
+
 \subsection{信息量、熵}
 
 “{\bf 熵}”，用来描述系统中所含信息的不确定程度（系统的混乱程度）：

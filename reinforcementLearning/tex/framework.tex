@@ -1,0 +1,61 @@
+\chapter{RL Framework}
+
+强化学习框架代码
+
+关键类：
+\begin{itemize}
+\item[-]
+环境 `env`
+
+\item[-]
+模型 `model`
+
+\item[-]
+算法 `algorithm`
+
+\item[-]
+agent `agent`
+
+\item[-]
+回放内存 `rpm`
+\end{itemize}
+
+
+关键技术：
+\begin{itemize}
+\item
+方法的多态：如同调用父类中定义的 virtual 方法，子类中有不同的实现。
+	\begin{itemize}
+	\item
+	python 中不具备类似的类的 virtual 方法
+
+	\item
+	可将不同的对象放入同一个列表，遍历列表，调用对象的相同方法名的函数。
+	这种方式甚至可以调用不同类但具有相同方法名的对象（这些不同类可以无相同父类）
+
+	\item
+	可以把父类的子类的对象封装进一个链表，对父类 virtual 方法的调用对应为对链表中对象的同名方法的调用。
+	\end{itemize}
+
+\item
+Assign functions to a variable：
+\begin{lstlisting}[language=Python]
+# function defined
+def multiply_num(a):
+	b = 40
+	r = a*b
+	return r
+
+
+# drivercode
+# assigning function
+z = multiply_num
+
+# invoke function
+print(z(6))
+print(z(10))
+print(z(100))
+\end{lstlisting}
+
+\end{itemize}
+

@@ -1,7 +1,34 @@
 ﻿\chapter{Soft Actor-Critic}
 
+待重读的资源：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+\url{https://blog.csdn.net/weixin_44436360/article/details/108077422}
+
+\item[-]
+\url{https://www.pair.toronto.edu/csc2621-w20/assets/slides/lec4_sac.pdf}
+
+\item[-]
+\url{https://blog.csdn.net/weixin_44044411/article/details/119922423}
+
+\item[-]
+\url{https://www.ics.uci.edu/~dechter/courses/ics-295/winter-2018/papers/nips/soft-actor-critic-nips-2017.pdf}
+
+\item[-]
+\url{https://zhuanlan.zhihu.com/p/70360272}
+\end{itemize}
+
+
 % https://blog.csdn.net/weixin_44436360/article/details/108077422
 % https://zhuanlan.zhihu.com/p/70360272
+
+Soft actor-critic is based on the maximum entropy reinforcement learning 
+framework, which considers the entropy augmented objective where and are 
+the state and the action, and the expectation is taken over the policy and 
+the true dynamics of the system.
 
 Robot Learning正在快速的发展，其中深度强化学习deep reinforcement learning（DRL），
 特别是面向连续控制continous control的DRL算法起着重要的作用。
@@ -67,9 +94,49 @@ Codes:
 
 % \noindent 最大熵强化学习算法SAC \\
 % https://www.toutiao.com/article/6845540775015481870/
+% https://bair.berkeley.edu/blog/2018/12/14/sac/
+
 
 SAC：Soft Actor-Critic，Off-Policy Maximum Entropy Deep Reinforcement 
 Learning with a Stochastic Actor。
+
+Soft actor-critic is based on the maximum entropy reinforcement learning 
+framework, which considers the entropy augmented objective
+
+\begin{equation}\label{sac_entropy_augmented_objective}
+J(\pi) = \mathbb{E}_\pi\left[
+\sum_tr(s_t, a_t) - \alpha \log\left(\pi(a_t | s_t)\right)
+\right],
+\end{equation}
+\noindent{}where $s_t$ and $a_t$ are the state and the action, and the 
+expectation is taken over the policy and the true dynamics of the system. 
+In other words, the optimal policy not only maximizes the expected return 
+(first summand) but also the expected entropy of itself (second summand). 
+The trade-off between the two is controlled by the non-negative temperature 
+parameter $\alpha$, and we can always recover the conventional, maximum 
+expected return objective by setting $\alpha=0$. We can view this objective 
+as an entropy constrained maximization of the expected return, and learn 
+the temperature parameter automatically instead of treating it as a 
+hyperparameter. 
+\url{https://arxiv.org/abs/1812.05905}
+
+This objective can be interpreted in several ways. We can view the entropy 
+term as an uninformative (uniform) prior over the policy, but we can also 
+view it as a regularizer or as an attempt to trade off between exploration 
+(maximize entropy) and exploitation (maximize return). In 
+\href{https://bair.berkeley.edu/blog/2017/10/06/soft-q-learning/}{another post}, 
+the Berkeley group gave a broader overview and proposed applications that are 
+unique to maximum entropy RL, and a probabilistic view of the objective is 
+discussed in a \href{https://arxiv.org/abs/1805.00909}{tutorial}. 
+Soft actor-critic maximizes this objective by parameterizing a Gaussian policy 
+and a $Q$-function with a neural network, and optimizing them using approximate 
+dynamic programming. They defer further details of soft actor-critic to the 
+\href{https://arxiv.org/abs/1812.05905}{technical report}. In this section, 
+we will view the objective as a grounded way to derive better reinforcement 
+learning algorithms that perform consistently and are sample efficient enough 
+to be applicable to real-world robotic applications, and—perhaps surprisingly—can 
+yield state-of-the-art performance under the conventional, maximum expected 
+return objective (without entropy regularization) in simulated benchmarks.
 
 
 \subsection{模型结构}
@@ -84,9 +151,9 @@ $\pi$学习的是分布的参数：均值和标准差；这与DDPG不同，DDPG�
 输出直接就是action，而{\bf SAC学习的是个分布}，学习时action需要从分布中采样，
 是{\bf Stochastic}的。
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
-\includegraphics[scale=1.0]{pix/sac.jpg}
+\includegraphics[scale=0.7]{pix/sac.jpg}
 \caption{SAC}
 %\label{fig:label}
 \end{figure}

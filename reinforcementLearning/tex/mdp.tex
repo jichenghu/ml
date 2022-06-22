@@ -3,6 +3,21 @@
 
 % https://trunghng.github.io/artificial-intelligent/reinforcement-learning/2021/06/27/mdp-bellman-eqn.html
 
+待重读的资源：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+\url{http://www.cs.tulane.edu/~zzheng3/teaching/cmps6660/fall20/mdp.pdf}
+
+\item[-]
+\url{https://people.eecs.berkeley.edu/~pabbeel/cs287-fa12/slides/mdps-exact-methods.pdf}
+
+\item[-]
+\url{https://gibberblot.github.io/rl-notes/single-agent/MDPs.html}
+\end{itemize}
+
 
 \subsection{What is Reinforcement Learning?}
 
@@ -476,49 +491,49 @@ starting from state $s$ and acting optimally for
 
 $\text{noise} = 0.2$, $\gamma=0.9$, two terminal states with $R=+1$ and $-1$. 
 
-\begin{figure}[!htb]
+\begin{figure}[hp]
 \centering
 \includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_1.png}
 \caption{Grid World: Values after 1 iteration}
 %\label{fig:action_for_each_state}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[hp]
 \centering
 \includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_2.png}
 \caption{Grid World: Values after 2 iterations}
 %\label{fig:action_for_each_state}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[hp]
 \centering
 \includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_3.png}
 \caption{Grid World: Values after 3 iterations}
 %\label{fig:action_for_each_state}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[hp]
 \centering
 \includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_4.png}
 \caption{Grid World: Values after 4 iterations}
 %\label{fig:action_for_each_state}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[hp]
 \centering
 \includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_5.png}
 \caption{Grid World: Values after 5 iterations}
 %\label{fig:action_for_each_state}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[hp]
 \centering
 \includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_100.png}
 \caption{Grid World: Values after 100 iterations}
 %\label{fig:action_for_each_state}
 \end{figure}
 
-\begin{figure}[!htb]
+\begin{figure}[hp]
 \centering
 \includegraphics[scale=0.618]{pix/mdp/grid_world_value_iteration_100.png}
 \caption{Grid World: Values after 1000 iterations}
@@ -598,7 +613,7 @@ $R(s), R(s,a), R(s,a,s')$
 \item[-]
 {\bf Policy:} 
 $\pi: \mathcal{S}\times\{0,1,\ldots,H\}\rightarrow \mathcal{A}$ \\
-$\pi(s) \rightarrow \alpha$ \\
+$\pi(s) \rightarrow a$ \\
 $\pi^*$ is the optimal policy
 
 \end{itemize}
@@ -630,8 +645,501 @@ that the current state captures and remembers the property and knowledge from th
 past. Thus, as per the Markov property, the world (that is, the environment) is 
 considered to be stationary, that is, the rules in the world are fixed.
 
+\subsubsection{The state set}
+
+The state set $\mathcal{S}$ is a set of different states, which constitute the 
+environment. States are the feature representation of the data obtained from the 
+environment. Thus, any input from the agent's sensors can play an important role 
+in state formation. State spaces can be either discrete or continuous. The starts 
+from start state and has to reach the goal state in the most optimized path without 
+ending up in bad states (like the red colored state shown in the diagram below).
+
+Consider the following gridworld as having 12 discrete states, where the 
+green-colored grid is the goal state, red is the state to avoid, and black is a 
+wall that you'll bounce back from if you hit it head on:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_states.png}
+\caption{Grid World: states}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+The states can be represented as $1, 2, \ldots, 12$ or by coordinates, $(1,1),(1,2),
+\ldots, (3,4)$.
+
+\subsubsection{Actions}
+
+The {\bf actions} are the things an agent can perform or execute in a particular 
+state. In other words, actions are sets of things an agent is allowed to do in 
+the given environment. Like states, actions can also be either discrete or continuous.
+
+Consider the above gridworld example having 12 discrete states and 4 discrete 
+actions ({\bf UP}, {\bf DOWN}, {\bf RIGHT}, and {\bf LEFT}).
+The preceding example shows the action space to be a discrete set space, that is, 
+$a\in \mathcal{A}$ where, $\mathcal{A} = \{\text{UP}, \text{DOWN}, \text{RIGHT},
+\text{LEFT} \}$. It can also be treated as a function of state, that is, $a = A(s)$, 
+where depending on the state function, it decides which action is possible.
+
+\subsubsection{Transition model}
+
+The transition model $T(s, a, s')$ is a function of three variables, which are the 
+current state $s$, action $a$, and the new state $s'$, and defines the rules to 
+play the game in the environment. It gives probability $P(s'|s, a)$, that is, the 
+probability of landing up in the new $s'$ state given that the agent takes an action, 
+$a$, in given state, $s$.
+
+{\bf The transition model plays the crucial role in a stochastic world, unlike the case 
+of a deterministic world where the probability for any landing state other than the 
+determined one will have zero probability.}
+
+Let's consider the above environment (world) and consider different cases, 
+determined and stochastic:
+
+Since the actions $a\in \mathcal{A}$ where, $\mathcal{A} = \{\text{UP}, \text{DOWN}, 
+\text{RIGHT}, \text{LEFT} \}$.
+The behavior of these two cases depends on certain factors:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+{\bf Determined environment}: In a determined environment, if you take a certain 
+action, say {\bf UP}, you will certainly perform that action with probability $1$.
+
+\item[-]
+{\bf Stochastic environment}: In a stochastic environment, if you take the same 
+action, say {\bf UP}, there will certain probability say $0.8$ to actually perform 
+the given action and there is $0.1$ probability it can perform an action (either 
+{\bf LEFT} or {\bf RIGHT}) perpendicular to the given action, {\bf UP}. Here, for 
+the $s$ state and the {\bf UP} action transition model, 
+$T(s',\text{UP}, s) = P(s'| s,\text{UP}) = 0.8$.
+\end{itemize}
+
+Since $T(s,a,s') \sim P(s'|s,a)$, where the probability of new state depends on 
+the current state and action only, and none of the past states. Thus, the 
+transition model follows the first order Markov property.
+
+We can also say that our universe is also a stochastic environment, since the 
+universe is composed of atoms that are in different states defined by position 
+and velocity. Actions performed by each atom change their states and cause 
+changes in the universe.
+
+\subsubsection{Rewards}
+
+The {\bf reward} of the state quantifies the usefulness of entering into a state. 
+There are three different forms to represent the reward namely, $R(s)$, $R(s, a)$ 
+and $R(s, a, s')$, but they are all equivalent.
+
+For a particular environment, the domain knowledge plays an important role in the 
+assignment of rewards for different states as minor changes in the reward do 
+matter for finding the optimal solution to an MDP problem.
+
+There are two approaches we reward our agent for when taking a certain action. 
+They are:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+{\bf Credit assignment problem}: We look at the past and check which actions led 
+to the present reward, that is, which action gets the credit
+
+\item[-]
+{\bf Delayed rewards}: In contrast, in the present state, we check which action 
+to take that will lead us to potential rewards
+\end{itemize}
+
+Delayed rewards form the idea of foresight planning. Therefore, this concept is 
+being used to calculate the expected reward for different states. We will discuss 
+this in the later subsections.
+
+\subsubsection{Policy}
+
+Until now, we have covered the blocks that create an MDP problem, that is, states, 
+actions, transition models, and rewards, now comes the solution. The policy is 
+the solution to an MDP problem.
+
+\noindent{Policy:} $\pi(s) \rightarrow a$
+
+The policy is a function that takes the state as an input and outputs the action 
+to be taken. Therefore, the policy is a command that the agent has to obey.
+
+$\pi^*$ is called the optimal policy, which maximizes the expected reward. Among 
+all the policies taken, the optimal policy is the one that optimizes to maximize 
+the amount of reward received or expected to receive over a lifetime. For an MDP, 
+there's no end of the lifetime and you have to decide the end time.
+
+Thus, the policy is nothing but a guide telling which action to take for a given 
+state. It is not a plan but uncovers the underlying plan of the environment by 
+returning the actions to take for each state.
+
+\subsubsection{The Bellman equations}
+
+Since the optimal $\pi^*$ policy is the policy that maximizes the expected rewards, 
+therefore, 
+$$
+\pi^*=\arg\max_\pi E\left[ \sum_{t=0}^\infty \gamma^tR(s_t) | \pi \right],
+$$
+\noindent{where} $E\left[ \sum_{t=0}^\infty \gamma^tR(s_t) | \pi \right]$ means the 
+expected value of the rewards obtained from the sequence of states agent observes 
+if it follows the $\pi$ policy. Thus, $\arg\max_\pi$ outputs the $\pi$ policy that 
+has the highest expected reward.
+
+Similarly, we can also calculate the {\bf utility of the policy of a state}, that 
+is, if we are at the state $s$, given a policy $\pi$, then, the utility of the 
+policy $pi$ for the state $s$, that is, $U^\pi(s)$ would be the expected rewards 
+from that state onward:
+$$
+U^\pi(s) = E\left[ \sum_{t=0}^\infty \gamma^tR(s_t) | \pi, s_0 = s \right],
+$$
+\noindent{The} immediate reward of the state, that is, $R(s)$ is different than the 
+utility of the $U(s)$ state (that is, the utility of the optimal policy of the 
+$U^{\pi^*}(s)$ state) because of the concept of delayed rewards. From now on, the 
+utility of the $U(s)$ state will refer to the utility of the optimal policy of the 
+state, that is, the U^{\pi^*}(s)$ state.
+
+Moreover, the optimal policy can also be regarded as the policy that maximizes the 
+expected utility. Therefore,
+$$
+\pi^*=\arg\max_a \sum_{s'} T(s,a,s')U(s')
+$$
+\noindent{where}, $T(s,a,s')$ is the transition probability, that is, $P(s'|s,a)$ 
+and $U(s')$ is the utility of the new landing state after the action $a$ is taken on 
+the state $s$. $\sum_{s'} T(s,a,s')U(s')$ refers to the summation of all possible 
+new state outcomes for a particular action taken, then whichever action gives the 
+maximum value of $\pi^*=\arg\max_a \sum_{s'} T(s,a,s')U(s')$ that is considered to 
+be the part of the optimal policy and thereby, the utility of the state $s'$ is 
+given by the following Bellman equation,
+
+\begin{equation}\label{mdp_bellman_equation}
+U(s) = R(s) + \gamma\max_a \sum_{s'} T(s,a,s')U(s')
+\end{equation}
+
+\noindent{where}, $R(s)$ is the immediate reward and $\max_a \sum_{s'} T(s,a,s')U(s')$ 
+is the reward from future, that is, the discounted utilities of the state $s'$ where 
+the agent can reach from the given $s$ state if the action, $a$, is taken.
 
 
+\subsubsection{Solving the Bellman equation to find policies}
+
+Say we have some $n$ states in the given environment and if we see the Bellman 
+equation \ref{mdp_bellman_equation} we find out that $n$ states are given; therefore, 
+we will have $n$ equations and $n$ unknown but the $\max_a$ function makes it 
+non-linear. Thus, we cannot solve them as linear equations.
+
+Therefore, in order to solve:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Start with an arbitrary utility
+
+\item[-]
+Update the utilities based on the neighborhood until convergence, that is, update 
+the utility of the state using the Bellman equation based on the utilities of the 
+landing states from the given state
+\end{itemize}
+
+Iterate this multiple times to lead to the true value of the states. This process 
+of iterating to convergence towards the true value of the state is called value 
+iteration.
+
+For the terminal states where the game ends, the utility of those terminal state 
+equals the immediate reward the agent receives while entering the terminal state.
+
+Let's try to understand this by implementing an example.
 
 
+\subsection{An example of value iteration using the Bellman equation}
+
+Consider the following environment and the given information:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/mdp/grid_world_acx.png}
+\caption{Grid World: ACX}
+%\label{fig:action_for_each_state}
+\end{figure}
+
+Given information:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+$A$, $C$, and $X$ are the names of some states.
+
+\item[-]
+The green-colored state is the goal state, $G$, with a reward of $+1$.
+
+\item[-]
+The red-colored state is the bad state, $B$, with a reward of $-1$, try to 
+prevent your agent from entering this state
+
+\item[-]
+Thus, the green and red states are the terminal states, enter either and the 
+game is over. If the agent encounters the green state, that is, the goal state, 
+the agent wins, while if they enter the red state, then the agent loses the game.
+
+\item[-]
+$\gamma=1/2$, $R(s)=-0.04$ (that is, reward for all states except the $G$ and $B$ 
+states is $-0.04$),  (that is, the utility at the first time step is $0$, except 
+the $G$ and $B$ states).
+
+\item[-]
+Transition probability $T(s,a,s')$ equals $0.8$ if going in the desired direction; 
+otherwise, $0.1$ each if going perpendicular to the desired direction. For example, 
+if the action is UP then with $0.8$ probability, the agent goes UP but with $0.1$ 
+probability it goes RIGHT and $0.1$ to the LEFT.
+\end{itemize}
+
+Questions:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+Find $U_1(X)$, the utility of the $X$ state at time step $1$, that is, the agent 
+will go through one iteration
+
+\item[2.]
+Similarly, find $U_2(X)$.
+\end{itemize}
+
+Solution:
+
+\begin{align*}
+U_0(X) &= 0 \\
+U_1(X) &= R(X) + \gamma\max_a\sum_{s'} T(s,a,s') U_0(s') \\
+R(X) &= -0.04
+\end{align}
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_0(s')$ & $T(s,a,s')U_0(s')$ \\   
+\hline   RIGHT & G & $0.8$ & $+1$ & $0.8\times 1=0.8$ \\ 
+\hline   RIGHT & C & $0.1$ & $0$ & $0.1\times 0=0$ \\  
+\hline   RIGHT & X & $0.1$ & $0$ & $0.1\times 0=0$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{RIGHT}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_0(s') = 0.8 + 0 + 0 = 0.8\right]_{\text{right}}
+$$
+
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_0(s')$ & $T(s,a,s')U_0(s')$ \\   
+\hline   DOWN & C & $0.8$ & $0$ & $0.8\times 0=0$ \\ 
+\hline   DOWN & G & $0.1$ & $+1$ & $0.1\times 1=0.1$ \\  
+\hline   DOWN & A & $0.1$ & $0$ & $0.1\times 0=0$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{DOWN}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_0(s') = 0 + 0.1 + 0 = 0.1\right]_{\text{down}}
+$$
+
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_0(s')$ & $T(s,a,s')U_0(s')$ \\   
+\hline   UP & X & $0.8$ & $0$ & $0.8\times 0=0$ \\ 
+\hline   UP & G & $0.1$ & $+1$ & $0.1\times 1=0.1$ \\  
+\hline   UP & A & $0.1$ & $0$ & $0.1\times 0=0$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{UP}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_0(s') = 0 + 0.1 + 0 = 0.1\right]_{\text{up}}
+$$
+
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_0(s')$ & $T(s,a,s')U_0(s')$ \\   
+\hline   LEFT & A & $0.8$ & $0$ & $0.8\times 0=0$ \\ 
+\hline   LEFT & X & $0.1$ & $0$ & $0.1\times 0=0$ \\  
+\hline   LEFT & C & $0.1$ & $0$ & $0.1\times 0=0$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{LEFT}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_0(s') = 0 + 0 + 0 = 0\right]_{\text{left}}
+$$
+
+Therefore, among all actions,
+$$
+\max_a \sum_{s'} T(s,a,s') U_0(s') = 
+\left[\sum_{s'} T(s,a,s') U_0(s') = 0.8 + 0 + 0 = 0.8\right]_{\text{right}}
+= 0.8
+$$
+
+Therefore,
+$$
+U_1(X) = -0.04 + 0.5 \times 0.8 = 0.36,
+$$
+\noindent{where} $R(X) = -0.04$ and $\gamma=1/2=0.5$.
+
+Similarly, we calculate to get
+$U_1(A) = -0.04$ and $U_1(C) = -0.04$.
+
+Since,
+$U_1(X) = 0.36$, $U_1(A) = -0.04$, $U_1(C) = -0.04$, $U_1(G)=1$, $U_1(B)=-1$,
+and, $U_2(X) = R(X) + \gamma\max_a \sum_{s'} T(s,a,s')U_1(s')$, $R(X)=-0.04$
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_1(s')$ & $T(s,a,s')U_1(s')$ \\   
+\hline   RIGHT & G & $0.8$ & $+1$ & $0.8\times 1=0.8$ \\ 
+\hline   RIGHT & C & $0.1$ & $-0.04$ & $0.1\times -0.04=-0.004$ \\  
+\hline   RIGHT & X & $0.1$ & $0.36$ & $0.1\times 0.36=0.036$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{RIGHT}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_1(s') = 0.8 - 0.004 + 0.036 = 0.832\right]_{\text{right}}
+$$
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_1(s')$ & $T(s,a,s')U_1(s')$ \\   
+\hline   DOWN & C & $0.8$ & $-0.04$ & $0.8\times -0.04=-0.032$ \\ 
+\hline   DOWN & G & $0.1$ & $+1$ & $0.1\times 1=0.1$ \\  
+\hline   DOWN & A & $0.1$ & $-0.04$ & $0.1\times -0.04=-0.004$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{DOWN}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_1(s') = -0.032 + 0.1 - 0.004 = 0.064\right]_{\text{down}}
+$$
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_1(s')$ & $T(s,a,s')U_1(s')$ \\   
+\hline   UP & X & $0.8$ & $0.36$ & $0.8\times 0.36=0.288$ \\ 
+\hline   UP & G & $0.1$ & $+1$ & $0.1\times 1=0.1$ \\  
+\hline   UP & A & $0.1$ & $-0.04$ & $0.1\times -0.04=-0.004$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{UP}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_1(s') = 0.288 + 0.1 - 0.004 = 0.384\right]_{\text{up}}
+$$
+
+\begin{table}[htb]   
+\begin{center}   
+%\caption{title}  
+%\label{table:1} 
+\begin{tabular}{|c|c|c|c|c|}   
+\hline   Action $a$ & $s'$ & $T(s,a,s')$ & $U_1(s')$ & $T(s,a,s')U_1(s')$ \\   
+\hline   LEFT & A & $0.8$ & $-0.04$ & $0.8\times -0.04=-0.032$ \\ 
+\hline   LEFT & X & $0.1$ & $0.36$ & $0.1\times 0.36=0.036$ \\  
+\hline   LEFT & C & $0.1$ & $-0.04$ & $0.1\times -0.04=-0.004$ \\
+\hline
+\end{tabular}   
+\end{center}   
+\end{table}
+
+Thus, for action $a = \text{LEFT}$,
+$$
+\left[\sum_{s'} T(s,a,s') U_1(s') = -0.032 + 0.036 - 0.004 = 0\right]_{\text{left}}
+$$
+
+Therefore, among all actions,
+$$
+\max_a \sum_{s'} T(s,a,s') U_1(s') = 
+\left[\sum_{s'} T(s,a,s') U_1(s') = 0.8 - 0.004 + 0.036 = 0.832\right]_{\text{right}}
+= 0.832
+$$
+
+Therefore,
+$$
+U_2(X) = -0.04 + 0.5 \times 0.832 = 0.376,
+$$
+\noindent{where} $R(X) = -0.04$ and $\gamma=1/2=0.5$.
+
+Therefore, the answers to the preceding questions are:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+$U_1(X) = 0.36$
+
+\item[2.]
+$U_2(X) = 0.376$
+\end{itemize}
+
+
+\subsubsection{Policy iteration}
+
+The process of obtaining optimal utility by iterating over the policy and updating 
+the policy itself instead of value until the policy converges to the optimum is 
+called policy iteration. The process of policy iteration is as follows:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Start with a random policy, $\pi_0$
+
+\item[-]
+For the given $\pi_t$ policy at iteration step $t$, calculate $U_t=U_t^\pi$ by 
+using the following formula: \\
+$U_t(s) &= R(s) + \gamma\max_a\sum_{s'} T(s,\pi_t(s),s') U_{t-1}(s')$
+
+\item[-]
+Improve the $\pi_{t+1}$ policy by \\
+$\pi_{t+1} = \arg\max_a\sum_{s'} T(s,a,s')U_t(s')$
+\end{itemize}
+
+Here ends an interesting MDP example calculation.
 

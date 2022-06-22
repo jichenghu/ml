@@ -5,6 +5,15 @@
 
 \chapter{Maximum Entropy Reinforcement Learning}
 
+待重读的资源：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+\url{https://zhuanlan.zhihu.com/p/269082781}
+\end{itemize}
+
 % https://www.zhihu.com/column/c_1268690405400928256
 
 {\bf Entropy is the measure of uncertainty.} The concept originated from 
@@ -39,6 +48,41 @@ V(s) &= \mathbb{E}[G_t | S_t = s] \\
 
 % https://blog.csdn.net/qq_27465499/article/details/88817436
 \subsubsection{1. Motivation of Maximum Entropy Reinforcement Learning}
+
+Here we explain what {\bf Shannon entropy} is and why adding it to the classic 
+reinforcement learning (RL) formulation creates robust agents, ones that 
+tolerate unexpected, even adversarial, changes. We focus on intuition for why 
+agents with high entropy are robust, in particular to changes in reward or 
+changes in dynamics.
+
+Recall that RL aims to solve decision-making problems where a {\bf reward function} 
+$r(s,a)$ assigns numerical points to action $a$ in state $s$ of the problem. 
+Broadly, the goal is to determine how to score the most points (we'll make 
+this statement more concrete later).
+
+The agent's decision-making strategy, also known as its policy, denoted $\pi$, 
+can be deterministic or stochastic. When repeatedly confronted with the same 
+situation, a deterministic policy will always choose the same option whereas 
+a stochastic policy selects according to a probability distribution over options.
+
+For a concrete example of a stochastic policy, think of rock-paper-scissors. 
+You wouldn't play a deterministic policy against an intelligent opponent, 
+because then they, knowing which option beats yours, could always win. Instead, 
+you would make each option equiprobable, minimizing the opponent's ability to 
+exploit your strategy.
+
+In truth, a deterministic policy is a stochastic policy; it takes a single 
+action with probability $1$. Thus, RL formalism typically takes the policy as 
+a distribution over actions given the state, $\pi(a \mid s)$.
+
+Since the policy is randomized, the total reward over the course of an episode 
+of $T$ steps is a random variable. To collapse this into a scalar objective, 
+we take the expected value. The ideal policy maximizes this objective.
+\begin{equation}\label{eq_ideal_policy_rl}
+\pi^* = \arg\max_\pi\mathbb{E}_\pi\left[\sum_{t=1}^T r(s_t, a_t)\right].
+\end{equation}
+
+
 对于多峰的$Q$-Value，希望策略能含有概率达到任意一个峰值，而不是只收敛到最高的那个。
 而该策略就是最大熵强化学习目标的一个最优解。
 
@@ -292,6 +336,23 @@ expected rewards and entropies is finite. Writing down the precise maximum
 entropy objective for the infinite horizon discounted case is more involved 
 (Thomas, 2014) and is deferred to Appendix A.
 
+If we admit stochastic policies, reinforcement learning becomes a great 
+application area for information theoretic concepts.
+
+To that end, let's think about how the entropy of an agent's policy influences 
+its actions. Entropy creates surprisal, so an agent with high entropy will 
+actually have multiple strategies at its disposal simply by nature of policy's 
+randomness. In addition, we could interpret a maximum entropy policy 
+distribution as making fewer assumptions about the world it's in.
+
+Thus, we hypothesize that encouraging entropy in our agents has beneficial 
+properties. This formulation is exactly MaxEnt RL. We'll include an entropy 
+term as a bonus in the optimization. Added such entropy term to the equation
+\ref{eq_ideal_policy_rl} we have:
+\begin{equation}\label{eq_ideal_maxent_rl}
+\pi^* = \arg\max_\pi\left(\mathbb{E}_\pi\left[\sum_{t=1}^T r(s_t, a_t)\right]
+\textcolor{red}{+ \mathcal{H}(\pi(a|s))}\right).
+\end{equation}
 
 
 \subsection{Why is the softmax function called that way?}
@@ -299,7 +360,7 @@ entropy objective for the infinite horizon discounted case is more involved
 % https://math.stackexchange.com/questions/1888141/why-is-the-softmax-function-called-that-way
 
 \begin{emp_box}
-I understand that the function "squashes" a real vector space between the 
+\noindent{I} understand that the function "squashes" a real vector space between the 
 values 0 and 1.
 
 However I don't see what this has to do with the "max" function, or why that 

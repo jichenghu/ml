@@ -131,33 +131,74 @@ sorting=ynt
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{front.tex}
 
-% basic knowledge
-\import{D:/mygit/ml/reinforcementLearning/tex/}{rl_basic.tex}
+\def\allfiles{}
 
+% basic knowledge
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{rl_basic.tex}
+\fi
+
+% q-learning
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifx\allfiles\undefined
+\else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{q_learning.tex}
+\fi
 
 % Markov Decision Processes
+\ifx\allfiles\undefined
+\else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{mdp.tex}
+\fi
 
+% policy
+\ifx\allfiles\undefined
+\else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
+\fi
 
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
+% variational inference
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
+\fi
 
-%\include{entropy}
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
+% entropy
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
+\fi
 
+% SAC
+\ifx\allfiles\undefined
+\else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{sac.tex}
+\fi
 
 % 逆强化学习
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{inverse_rl.tex}
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{inverse_rl.tex}
+\fi
 
+% 框架代码
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{framework.tex}
+\fi
+
+% 附录
+\ifx\allfiles\undefined
+\else
 \chapter{附录}
 % 附件内容：最大熵
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy_max.tex}
+\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy_max.tex}
 % 附件内容：dynamic programming
 \import{D:/mygit/ml/reinforcementLearning/tex/}{dp.tex}
 % 附件内容：Temporal-Difference
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{td.tex}
+\import{D:/mygit/ml/reinforcementLearning/tex/}{td.tex}
+\fi
 
 %\import{D:/mygit/ml/reinforcementLearning/tex/}{back.tex}
 
