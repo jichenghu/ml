@@ -1,0 +1,1381 @@
+  This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex)
+   restricted \write18 enabled.
+  entering extended mode
+  (d:/mygit/ml/reinforcementLearning/tex/rl.tex
+  LaTeX2e <2021-11-15> patch level 1
+  L3 programming layer <2022-04-10>
+  (d:/texlive/2022/texmf-dist/tex/latex/base/fix-cm.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/base/ts1enc.def))
+  (d:/texlive/2022/texmf-dist/tex/latex/base/book.cls
+  Document Class: book 2021/10/04 v1.4n Standard LaTeX document class
+  (d:/texlive/2022/texmf-dist/tex/latex/base/bk10.clo))
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/ctex.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/l3kernel/expl3.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-xetex.def))
+  (d:/texlive/2022/texmf-dist/tex/latex/l3packages/xparse/xparse.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/ctexhook.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/ctexpatch.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/config/ctexopts.cfg)
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/engine/ctex-engine-xetex.def
+  (d:/texlive/2022/texmf-dist/tex/xelatex/xecjk/xeCJK.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/l3packages/xtemplate/xtemplate.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/fontspec/fontspec.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/fontspec/fontspec-xetex.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/base/fontenc.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/fontspec/fontspec.cfg)))
+  (d:/texlive/2022/texmf-dist/tex/xelatex/xecjk/xeCJK.cfg)))
+  (d:/texlive/2022/texmf-dist/tex/latex/zhnumber/zhnumber.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/zhnumber/zhnumber-utf8.cfg))
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/scheme/ctex-scheme-chinese.def
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/config/ctex-name-utf8.cfg))
+  (d:/texlive/2022/texmf-dist/tex/latex/tools/indentfirst.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/ctex-c5size.clo)
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/fontset/ctex-fontset-windows.def))
+  (d:/texlive/2022/texmf-dist/tex/latex/ctex/config/ctex.cfg)
+  (d:/texlive/2022/texmf-dist/tex/latex/import/import.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.tex)
+  ) (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/graphics/graphicx.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/graphics/keyval.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/graphics/graphics.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/graphics/trig.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+  (d:/texlive/2022/texmf-dist/tex/latex/graphics-def/xetex.def)))
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.tex)
+  ) (d:/texlive/2022/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-xetex.def
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-dvipdfmx.def
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.def))
+  ))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.tex
+  )
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.tex
+  )) (d:/texlive/2022/texmf-dist/tex/latex/xcolor/xcolor.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/graphics-cfg/color.cfg))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code.te
+  x)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonometric
+  .code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.code.t
+  ex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison.co
+  de.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.tex
+  )
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code.te
+  x)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.tex
+  )
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerarithm
+  etics.code.tex)))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.cod
+  e.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code.te
+  x)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.code
+  .tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformations.c
+  ode.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.tex)
+  
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing.co
+  de.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.tex
+  ))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.code
+  .tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.tex
+  ) (d:/texlive/2022/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex)))
+   (d:/texlive/2022/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.st
+  y)
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18.st
+  y)) (d:/texlive/2022/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+  (d:/texlive/2022/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers.co
+  de.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex)
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+  brarytopaths.code.tex)))
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzli
+  braryarrows.code.tex
+  (d:/texlive/2022/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
+  )) (d:/texlive/2022/texmf-dist/tex/latex/amsfonts/amsfonts.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/amsmath/amsmath.sty
+  For additional information on amsmath, use the `?' option.
+  (d:/texlive/2022/texmf-dist/tex/latex/amsmath/amstext.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/amsmath/amsgen.sty))
+  (d:/texlive/2022/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/amsmath/amsopn.sty))
+  (d:/texlive/2022/texmf-dist/tex/latex/amsfonts/amssymb.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/amscls/amsthm.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/tools/array.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/tools/bm.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/cite/cite.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/float/float.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/framed/framed.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/geometry/geometry.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/iftex/ifvtex.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/iftex/iftex.sty)))
+  (d:/texlive/2022/texmf-dist/tex/latex/hyperref/hyperref.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+  (d:/texlive/2022/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+  (d:/texlive/2022/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+  (d:/texlive/2022/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+  (d:/texlive/2022/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/hycolor/hycolor.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/auxhook/auxhook.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/hyperref/pd1enc.def)
+  (d:/texlive/2022/texmf-dist/tex/generic/intcalc/intcalc.sty)
+  (d:/texlive/2022/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/hyperref/puenc.def)
+  (d:/texlive/2022/texmf-dist/tex/latex/url/url.sty)
+  (d:/texlive/2022/texmf-dist/tex/generic/bitset/bitset.sty
+  (d:/texlive/2022/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+  (d:/texlive/2022/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+  (d:/texlive/2022/texmf-dist/tex/latex/hyperref/hxetex.def
+  (d:/texlive/2022/texmf-dist/tex/generic/stringenc/stringenc.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+  (d:/texlive/2022/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+  (d:/texlive/2022/texmf-dist/tex/latex/listings/listings.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/listings/lstmisc.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/listings/listings.cfg))
+  (d:/texlive/2022/texmf-dist/tex/xelatex/xecjk/xeCJK-listings.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/jknapltx/mathrsfs.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/setspace/setspace.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/tcolorbox/tcolorbox.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/tools/verbatim.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/environ/environ.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/trimspaces/trimspaces.sty))
+  (d:/texlive/2022/texmf-dist/tex/latex/etoolbox/etoolbox.sty))
+  (d:/texlive/2022/texmf-dist/tex/latex/caption/caption.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/caption/caption3.sty))
+  (d:/texlive/2022/texmf-dist/tex/latex/caption/subcaption.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.sty
+  
+  d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.sty:113: LaTeX Error: 
+  Command \c@subfigure already defined.
+                 Or name \end... illegal, see p.192 of the manual.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.113 \newcounter{subfigure}
+                              [figure]
+  
+  d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.sty:123: LaTeX Error: 
+  Command \l@subfigure already defined.
+                 Or name \end... illegal, see p.192 of the manual.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.123 ...xxxline{\ext@subfigure}{2}{3.8em}{2.5em}}
+                                                    
+  
+  d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.sty:126: LaTeX Error: 
+  Command \c@subtable already defined.
+                 Or name \end... illegal, see p.192 of the manual.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.126 \newcounter{subtable}
+                             [table]
+  
+  d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.sty:136: LaTeX Error: 
+  Command \l@subtable already defined.
+                 Or name \end... illegal, see p.192 of the manual.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.136 ...dxxxline{\ext@subtable}{2}{3.8em}{2.5em}}
+                                                    
+  ****************************************
+  * Local config file subfigure.cfg used *
+  ****************************************
+  (d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.cfg)
+  
+  d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.sty:220: LaTeX Error: 
+  Command \subfigure already defined.
+                 Or name \end... illegal, see p.192 of the manual.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.220       {\@subfigure[\@empty]}}
+                                     
+  
+  d:/texlive/2022/texmf-dist/tex/latex/subfigure/subfigure.sty:413: LaTeX Error: 
+  Command \subref already defined.
+                 Or name \end... illegal, see p.192 of the manual.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.413   \ref{sub@#1}}
+                       
+  ) (d:/texlive/2022/texmf-dist/tex/latex/biblatex/biblatex.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/logreq/logreq.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/logreq/logreq.def))
+  (d:/texlive/2022/texmf-dist/tex/latex/base/ifthen.sty)
+  
+  d:/texlive/2022/texmf-dist/tex/latex/biblatex/biblatex.sty:204: Package biblate
+D:\mygit\ml\reinforcementLearning\tex\EXEC : x error : Incompatible package 'cite'.
+  
+  See the biblatex package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.204 \blx@packageincompatibility
+                                   
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/blx-dm.def)
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/blx-unicode.def)
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/blx-compat.def)
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/biblatex.def)
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/bbx/alphabetic.bbx
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/bbx/standard.bbx))
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/cbx/alphabetic.cbx)
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/biblatex.cfg)
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty))
+  (D:\mygit\ml\textemp\/rl.aux)
+  *geometry* driver: auto-detecting
+  *geometry* detected driver: xetex
+  (d:/texlive/2022/texmf-dist/tex/latex/hyperref/nameref.sty
+  (d:/texlive/2022/texmf-dist/tex/latex/refcount/refcount.sty)
+  (d:/texlive/2022/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+  (D:\mygit\ml\textemp\/rl.out) (D:\mygit\ml\textemp\/rl.out)
+  
+  d:/mygit/ml/reinforcementLearning/tex/rl.tex:116: Package subcaption Error: Thi
+  s package can't be used in cooperation
+  (subcaption)                with the subfigure package.
+  
+  See the subcaption package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.116 \begin{document}
+                        
+  (d:/texlive/2022/texmf-dist/tex/latex/biblatex/lbx/english.lbx)
+  (D:\mygit\ml\textemp\/rl.bbl) (D:\mygit\ml\textemp\/rl.toc
+  (d:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsa.fd)
+  (d:/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd)
+  (d:/texlive/2022/texmf-dist/tex/latex/jknapltx/ursfs.fd)
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : LaTeX Font warning : Font shape `U/rsfs/m/n' in size <10.53937> not available
+  (Font)              size <10.95> substituted on input line 2.
+  
+  [1] [2] [3] [4]) [5] [6] (d:/mygit/ml/reinforcementLearning/tex/rl_basic.tex
+  Chapter 1.
+  [1] [2] [3]) (d:/mygit/ml/reinforcementLearning/tex/q_learning.tex [4]
+  Chapter 2.
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : LaTeX Font warning : Font shape `U/rsfs/m/n' in size <15.05624> not available
+  (Font)              size <14.4> substituted on input line 36.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 36.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 36.
+  
+  [5] [6]
+  Missing character: There is no �?(U+26A1) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  Missing character: There is no �?(U+FE0F) in font SimSun/OT:script=hani;languag
+  e=dflt;!
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 158.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 158.
+  
+  Runaway argument?
+  d:/mygit/ml/reinforcementLearning/tex/q_learning.tex:173: Paragraph ended befor
+  e \@vspace was complete.
+  <to be read again> 
+                     \par 
+  l.173 
+        
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 217.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 217.
+  
+  [7] [8] [9]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 304.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 304.
+  
+  [10] (d:/texlive/2022/texmf-dist/tex/latex/listings/lstlang1.sty) [11] [12]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 499.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 499.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 508.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 508.
+  
+  [13]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 539.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 539.
+  
+  [14]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 602.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 602.
+  
+  [15] [16] [17]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 850.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 850.
+  
+  [18] [19]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 978.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 978.
+  
+  [20] [21]) (d:/mygit/ml/reinforcementLearning/tex/mdp.tex [22]
+  Chapter 3.
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Difference (2) between bookmark levels is greater
+  (hyperref)                than one, level fixed on input line 22.
+  
+  [23]
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:158: LaTeX Error: \mathcal allowe
+  d only in math mode.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.158 $R$: \mathcal
+                     {S}\times\mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:158: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.158 $R$: \mathcal{S}\times
+                              \mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:160: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.160 $R_
+           t(s,a,s')=\text{reward for} (s_{t+1}=s', s_t=s, a_t=a)$
+  [24]
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:225: LaTeX Error: \begin{align*} 
+  on input line 216 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.225 \end{align}
+                   
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:236: LaTeX Error: \begin{align*} 
+  on input line 232 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.236 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:263: Undefined control sequence.
+  <argument> \tikzparentnode 
+                             \tikzparentanchor 
+  l.263 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:263: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.263 
+        
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:263: Undefined control sequence.
+  <argument> \tikzchildnode 
+                            \tikzchildanchor 
+  l.263 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:263: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.263 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:263: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.263 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:263: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.263 
+        
+  [25]
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:290: Undefined control sequence.
+  <argument> \tikzparentnode 
+                             \tikzparentanchor 
+  l.290 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:290: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.290 
+        
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:290: Undefined control sequence.
+  <argument> \tikzchildnode 
+                            \tikzchildanchor 
+  l.290 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:290: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.290 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:290: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.290 
+        
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:290: Package pgf Error: No shape 
+  named `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.290 
+        
+  [26]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 357.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `subscript' on input line 357.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 357.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 357.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `subscript' on input line 357.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 357.
+  
+  [27] [28] [29] [30] [31]
+  Overfull \hbox (19.21191pt too wide) in paragraph at lines 555--560
+  [][]$[][][][] [] [] [] [][] [] [][][][][][][][][] [] [][][] [] [][][][][][][][]
+  [][] [] [][][] [] [][][][][][][][][] [] [][][][][][][][][][] [] [][][][][][][][
+  ][][][] [] [][][][] [] [][][][][] [] [][][] [] [][][][][] [] [][][][]$[][] 
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:608: LaTeX Error: \mathcal allowe
+  d only in math mode.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.608 {\bf Rewards:} $R$: \mathcal
+                                    {S}\times\mathcal{A}\times\mathcal{S}\time...
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:608: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.608 {\bf Rewards:} $R$: \mathcal{S}\times
+                                             \mathcal{A}\times\mathcal{S}\time...
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:610: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.610 $R_
+           t(s,a,s')=\text{reward for} (s_{t+1}=s', s_t=s, a_t=a)$ \\
+  
+  Overfull \hbox (13.03226pt too wide) in paragraph at lines 634--640
+  \TU/lmr/m/n/10.53937 depends only on $\OML/cmm/m/it/10.53937 x[]$\TU/lmr/m/n/10
+  .53937 . Therefore, $\OML/cmm/m/it/10.53937 x[]$ \TU/lmr/m/n/10.53937 will depe
+  nd only on $\OML/cmm/m/it/10.53937 x[]$\TU/lmr/m/n/10.53937 . The second order 
+  of Markov says, $\OML/cmm/m/it/10.53937 P\OT1/cmr/m/n/10.53937 (\OML/cmm/m/it/1
+  0.53937 x[]\OMS/cmsy/m/n/10.53937 j\OML/cmm/m/it/10.53937 x[]; x[]; [] ; x[]\OT
+  1/cmr/m/n/10.53937 ) =
+  [32] [33]
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:800: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.800 state, that is, the U^
+                              {\pi^*}(s)$ state.
+  [34] [35]
+  
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:919: LaTeX Error: \begin{align*} 
+  on input line 915 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.919 \end{align}
+                   
+  [36]
+  Underfull \vbox (badness 1360) has occurred while \output is active [37]
+  d:/mygit/ml/reinforcementLearning/tex/mdp.tex:1137: Misplaced alignment tab cha
+  racter &.
+  l.1137 $U_t(s) &
+                  = R(s) + \gamma\max_a\sum_{s'} T(s,\pi_t(s),s') U_{t-1}(s')$
+  ) (d:/mygit/ml/reinforcementLearning/tex/policy.tex [38]
+  Chapter 4.
+  
+  Overfull \hbox (203.27344pt too wide) in paragraph at lines 23--24
+  [][][]$[][][][][] [] [] [] [][][][][] [] [][][][][][][][][][][][][] [] [][][] [
+  ] [][][][][][][][][] [] [][][][][][] [] [][][][][][][][][][][][][][][][][][][][
+  ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]$[][] 
+  
+  Overfull \hbox (156.50806pt too wide) in paragraph at lines 26--27
+  [][][]$[][][][][] [] [] [] [][][][][] [] [][][][][][][][][][][][][] [] [][][] [
+  ] [][][][][][][][][] [] [][][][][][] [] [][][][][][][][][][][][][][][][][][][][
+  ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+  [][][][][][][][][][][][][][][][][][][][][][]$[][] 
+  
+  Overfull \hbox (78.54364pt too wide) in paragraph at lines 29--30
+  [][][]$[][][][][] [] [] [] [][][][][][][][][][][][][] [] [][][] [] [][][][][][]
+  [][][] [] [][][][][][][][] [] [][][][][][][][][][][][][][][][][][][][][][][][][
+  ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+  [][][][][][]$[][] 
+  
+  Overfull \hbox (117.77585pt too wide) in paragraph at lines 32--33
+  [][][]$[][][][][] [] [] [] [][][][][] [] [][][][][][][][][][][][][] [] [][][] [
+  ] [][][][][][][][][] [] [][][][][][] [] [][][][][][][][][][][][][][][][][][][][
+  ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+  [][][][][][][][][][][][][][][]$[][] 
+  [39] [40]
+  
+  d:/mygit/ml/reinforcementLearning/tex/policy.tex:232: LaTeX Error: \begin{align
+  *} on input line 227 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.232 \end{align}
+                   
+  [41]
+  
+  d:/mygit/ml/reinforcementLearning/tex/policy.tex:246: LaTeX Error: \begin{align
+  *} on input line 242 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.246 \end{align}
+                   
+  
+  d:/mygit/ml/reinforcementLearning/tex/policy.tex:287: LaTeX Error: \begin{align
+  *} on input line 284 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.287 \end{align}
+                   
+  [42] [43] [44] [45]
+  Underfull \vbox (badness 1688) has occurred while \output is active [46]
+  Missing character: There is no �?(U+27E8) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  Missing character: There is no �?(U+27E9) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  [47]
+  d:/mygit/ml/reinforcementLearning/tex/policy.tex:698: Misplaced alignment tab c
+  haracter &.
+  l.698 ...{\bf important} note is that both Suton &
+                                                     Barto as well as Wikipedia
+  [48] [49] [50] [51]
+  
+  d:/mygit/ml/reinforcementLearning/tex/policy.tex:943: LaTeX Error: \begin{align
+  *} on input line 936 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.943 \end{align}
+                   
+  ) (d:/mygit/ml/reinforcementLearning/tex/variational_inference.tex [52]
+  Chapter 5.
+  [53]
+  Underfull \vbox (badness 2393) has occurred while \output is active [54]
+  [55]) (d:/mygit/ml/reinforcementLearning/tex/entropy.tex [56]
+  Chapter 6.
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy.tex:45: LaTeX Error: \begin{align
+  *} on input line 39 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.45 \end{align}
+                  
+  [57]
+  d:/mygit/ml/reinforcementLearning/tex/entropy.tex:166: Text line contains an in
+  valid character.
+  l.166 maximum entropy reinforce^^B
+                                    ment learning frameworks.
+  [58]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package amsfonts warning : Obsolete command \bold; \mathbf should be used instea
+  d on input line 176.
+  
+  [59]
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy.tex:266: LaTeX Error: \begin{alig
+  n*} on input line 263 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.266 \end{align}
+                   
+  
+  Overfull \hbox (4.84517pt too wide) in paragraph at lines 302--305
+  []\TU/lmr/m/n/10.53937 The standard objective used in reinforcement learning is
+   to maximize the expected sum of rewards $[][] \U/msb/m/n/10.53937 E[]\OT1/cmr/
+  m/n/10.53937 [\OML/cmm/m/it/10.53937 r[]\OT1/cmr/m/n/10.53937 ]$\TU/lmr/m/n/10.
+  53937 . 
+  [60] [61]) (d:/mygit/ml/reinforcementLearning/tex/td3.tex [62]
+  Chapter 7.
+  [63]
+  d:/mygit/ml/reinforcementLearning/tex/td3.tex:75: Text line contains an invalid
+   character.
+  l.75 $Q^w(s, a)$ is used, with param^^B
+                                         eter vector $w$. {\bf A \emph{critic}
+  d:/mygit/ml/reinforcementLearning/tex/td3.tex:85: Undefined control sequence.
+  l.85 $\arg\max\Q
+                  _{\text table}$的方式去选择动作。这往往会过大估计价值函数，从而造成误差�?
+  [64]) (d:/mygit/ml/reinforcementLearning/tex/sac.tex [65] [66]
+  Chapter 8.
+  
+  Overfull \hbox (49.37778pt too wide) in paragraph at lines 18--19
+  [][][]$[][][][][] [] [] [] [][][] [] [][][] [] [][][] [] [][][] [] [][][][][][]
+  [][] [] [][][][][][][] [] [][][][][][][][] [] [][][][][][][][][][][][] [] [][][
+  ][][][] [] [][][][] [] [][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+  [][][] []
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Difference (2) between bookmark levels is greater
+  (hyperref)                than one, level fixed on input line 61.
+  
+  [67] [68]
+  
+  d:/mygit/ml/reinforcementLearning/tex/sac.tex:258: LaTeX Error: \begin{align*} 
+  on input line 242 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.258 \end{align}
+                   
+  [69] [70] [71]) (d:/mygit/ml/reinforcementLearning/tex/inverse_rl.tex [72]
+  Chapter 9.
+  ) (d:/mygit/ml/reinforcementLearning/tex/homotopy.tex [73] [74]
+  Chapter 10.
+  
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:67: Package amsmath Error: \
+  tag not allowed here.
+  
+  See the amsmath package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.67 defined by the formula$$ \tag
+                                    {1}
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:77: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.77 
+       
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:77: Missing \right. inserted
+  .
+  <inserted text> 
+                  \right .
+  l.77 
+       
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:77: Display math should end 
+  with $$.
+  <to be read again> 
+                     \tex_par:D 
+  l.77 
+       
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:78: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.78  \right
+               .$$
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:78: Extra \right.
+  l.78  \right .
+                $$
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:79: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.79 The resulting group $  \pi
+                                  _{n} ( X ,\  A ,\  x _{0} ) $
+  [75] [76] [77]
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:412: You can't use `macro pa
+  rameter character #' in horizontal mode.
+  l.412 ...omology resolutions was extended (cf. [[#
+                                                    References|[4]]]) to an al...
+  
+  [78]
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:474: You can't use `macro pa
+  rameter character #' in horizontal mode.
+  l.474 ...ad (cf. [[Triads|Triads]], see, e.g., [[#
+                                                    References|[3]]]), which w...
+  
+  d:/mygit/ml/reinforcementLearning/tex/homotopy.tex:475: You can't use `macro pa
+  rameter character #' in horizontal mode.
+  l.475 ...ncept of a standard construction (see [[#
+                                                    References|[6]]]) the cons...
+  
+  ) (d:/mygit/ml/reinforcementLearning/tex/framework.tex [79] [80]
+  Chapter 11.
+  [81] [82]
+  Overfull \hbox (67.19801pt too wide) in paragraph at lines 185--186
+  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+  ][][][][][][][][][][][][][][][][][][][][][][][] 
+  [83]
+  Overfull \hbox (41.90327pt too wide) in paragraph at lines 200--201
+  [][][][][][][][][][][][][][][][][][][][][][][][][] 
+  ) [84]
+  Chapter 12.
+  (d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:51: LaTeX Error: \begin{a
+  lign*} on input line 48 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.51 \end{align}
+                  
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:56: LaTeX Error: \begin{a
+  lign*} on input line 53 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.56 \end{align}
+                  
+  
+  Underfull \vbox (badness 1490) has occurred while \output is active [85]
+  Underfull \hbox (badness 10000) in paragraph at lines 90--93
+  
+  [86]
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:159: LaTeX Error: \begin{
+  align*} on input line 155 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.159 \end{align}
+                   
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: LaTeX Error: \begin{
+  align*} on input line 161 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: Undefined control se
+  quence.
+  <argument>  KL(A\paralle 
+                           B) &= 1/2 \log \frac {1/2}{1/4} + 1/2 \long \frac {...
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: You can't use a pref
+  ix with `begin-group character {'.
+  <to be read again> 
+                     {
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: Undefined control se
+  quence.
+  <argument> ...3/4} = 1/2\log (4/3)\\ KL(A\paralle 
+                                                    C) &= 1/2 \log \frac {1/2}...
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: You can't use a pref
+  ix with `begin-group character {'.
+  <to be read again> 
+                     {
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: Undefined control se
+  quence.
+  <argument>  KL(A\paralle 
+                           B) &= 1/2 \log \frac {1/2}{1/4} + 1/2 \long \frac {...
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: You can't use a pref
+  ix with `begin-group character {'.
+  <to be read again> 
+                     {
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: Undefined control se
+  quence.
+  <argument> ...3/4} = 1/2\log (4/3)\\ KL(A\paralle 
+                                                    C) &= 1/2 \log \frac {1/2}...
+  l.164 \end{align}
+                   
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:164: You can't use a pref
+  ix with `begin-group character {'.
+  <to be read again> 
+                     {
+  l.164 \end{align}
+                   
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:190: LaTeX Error: \begin{
+  align*} on input line 185 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.190 \end{align}
+                   
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:202: LaTeX Error: \begin{
+  align*} on input line 198 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.202 \end{align}
+                   
+  [87]
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:271: LaTeX Error: \begin{
+  align*} on input line 268 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.271 \end{align}
+                   
+  [88]
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:297: LaTeX Error: \begin{
+  align*} on input line 294 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.297 \end{align}
+                   
+  
+  Overfull \hbox (37.67468pt too wide) in paragraph at lines 339--340
+   [][] 
+  Missing character: There is no �?(U+FF1E) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  [89] [90] (d:/texlive/2022/texmf-dist/tex/latex/listings/lstlang1.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/listings/lstlang2.sty)
+  (d:/texlive/2022/texmf-dist/tex/latex/listings/lstlang3.sty) [91]
+  Missing character: There is no β (U+03B2) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  [92] [93]
+  
+  d:/mygit/ml/reinforcementLearning/tex/entropy_max.tex:551: LaTeX Error: \begin{
+  align*} on input line 545 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.551 \end{align}
+                   
+  [94] [95]
+  Missing character: There is no �?(U+202F) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  Missing character: There is no �?(U+202F) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  Missing character: There is no �?(U+202F) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  [96]) (d:/mygit/ml/reinforcementLearning/tex/dp.tex
+  Overfull \hbox (1.05394pt too wide) in paragraph at lines 54--55
+   [][][]\TU/lmss/bx/n/10.53937 33[] 
+  
+  Overfull \hbox (1.05394pt too wide) in paragraph at lines 70--70
+   [][][]\TU/lmss/bx/n/10.53937 10[] 
+  
+  Overfull \hbox (1.05394pt too wide) in paragraph at lines 70--70
+   [][][]\TU/lmss/bx/n/10.53937 20[] 
+  
+  Overfull \hbox (1.05394pt too wide) in paragraph at lines 70--70
+   [][][]\TU/lmss/bx/n/10.53937 38[] 
+  
+  Overfull \hbox (1.05394pt too wide) in paragraph at lines 70--70
+   [][][]\TU/lmss/bx/n/10.53937 51[] 
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:71: Undefined control sequence.
+  <argument> \tikzparentnode 
+                             \tikzparentanchor 
+  l.71 
+       
+  
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:71: Package pgf Error: No shape na
+  med `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.71 
+       
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:71: Undefined control sequence.
+  <argument> \tikzchildnode 
+                            \tikzchildanchor 
+  l.71 
+       
+  
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:71: Package pgf Error: No shape na
+  med `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.71 
+       
+  
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:71: Package pgf Error: No shape na
+  med `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.71 
+       
+  
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:71: Package pgf Error: No shape na
+  med `' is known.
+  
+  See the pgf package documentation for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.71 
+       
+  [97]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 131.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `\pi' on input line 131.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 131.
+  
+  
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:145: LaTeX Error: \begin{align*} o
+  n input line 141 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.145 \end{align}
+                   
+  
+  Underfull \vbox (badness 1253) has occurred while \output is active [98]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : LaTeX warning : Text page 99 contains only floats.
+  
+  [99]
+  
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:152: LaTeX Error: \begin{align*} o
+  n input line 149 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.152 \end{align}
+                   
+  [100]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 171.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `subscript' on input line 171.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package hyperref warning : Token not allowed in a PDF string (Unicode):
+  (hyperref)                removing `math shift' on input line 171.
+  
+  
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:176: LaTeX Error: \begin{align*} o
+  n input line 173 ended by \end{align}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.176 \end{align}
+                   
+  [101] (d:/texlive/2022/texmf-dist/tex/latex/amsfonts/ueuf.fd)
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:307: Extra }, or forgotten $.
+  l.307 ...max_{s\in\mathcal{S}}|V_{k+1}(s)-V_k(s)|}
+                                                    $ after each sweep
+  [102] [103] [104] [105]
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:453: Missing $ inserted.
+  <inserted text> 
+                  $
+  l.453 
+        
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:453: Missing } inserted.
+  <inserted text> 
+                  }
+  l.453 
+        
+  d:/mygit/ml/reinforcementLearning/tex/dp.tex:453: Extra }, or forgotten \endgro
+  up.
+  \par ...m \@noitemerr {\@@par }\fi \else {\@@par }
+                                                    \fi 
+  l.453 
+        
+  [106] [107]) (d:/mygit/ml/reinforcementLearning/tex/td.tex
+  Overfull \hbox (20.21191pt too wide) in paragraph at lines 11--12
+  [][][]$[][][][][] [] [] [] [][][][][][][][] [] [][][][][][] [] [][] [] [][][][]
+  [][][][][][][][][][][][][][][][][][][] [] [][][][][][][][][][][][][][][][][][][
+  ][][][][] [] [][][][] [] [][] [] [][] [] [][][][][][][][][][][][] []
+  Missing character: There is no �?(U+202F) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  Missing character: There is no �?(U+202F) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  Missing character: There is no �?(U+202F) in font [lmroman10-regular]:mapping=t
+  ex-text;!
+  [108] [109]
+  d:/mygit/ml/reinforcementLearning/tex/td.tex:191: Missing } inserted.
+  <inserted text> 
+                  }
+  l.191 $
+         $
+  [110] [111]) [112]
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'in' untranslated
+  (biblatex)                at entry 'MCREYNOLDS1967565' on input line 217.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'pages' untranslated
+  (biblatex)                at entry 'MCREYNOLDS1967565' on input line 217.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'and' untranslated
+  (biblatex)                at entry 'Sutton1998' on input line 217.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibordinal.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibordinal.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'november' untranslated
+  (biblatex)                at entry 'ODSC2020' on input line 217.
+  
+  
+  Overfull \hbox (9.90976pt too wide) in paragraph at lines 218--218
+  [] [] [][][][][][][][][][][][][][][] [] [][][] [] [][][][][][][][][][][][][] []
+  [] [][][] [][] [][][][][][][][] [][] [][][][][][][][][][] [][] [][][][][][][][]
+   [][] [][][] [][] [][][] [][] [][][][][][][][][][][][]$[][]\TU/lmr/m/n/10.53937
+   .
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibordinal.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibordinal.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'august' untranslated
+  (biblatex)                at entry 'Gabriele2020' on input line 217.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibordinal.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibordinal.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'april' untranslated
+  (biblatex)                at entry 'Sagar2020' on input line 217.
+  
+  
+  Overfull \hbox (49.43098pt too wide) in paragraph at lines 218--218
+  []\TU/lmr/m/n/10.53937 Ram Sagar. \TU/lmr/m/it/10.53937 On-Policy VS Off-Policy
+   Reinforcement Learning\TU/lmr/m/n/10.53937 . Accessed April 28, 2022. [][]$[][
+  ][][][] [] [] [] [][][][][][][][][][][][][][][][][] []
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibordinal.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibordinal.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'january' untranslated
+  (biblatex)                at entry 'YZhang2020' on input line 217.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibdatelong.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibdatelong.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Using fallback definition for \mkbibordinal.
+  (biblatex)                The command should be defined in the .lbx file.
+  (biblatex)                If you see this message, the .lbx file could not be
+  (biblatex)                loaded, is faulty or does not contain a definition
+  (biblatex)                for \mkbibordinal.
+  
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : Package biblatex warning : Bibliography string 'december' untranslated
+  (biblatex)                at entry 'Loevenich2021' on input line 217.
+  
+  
+  Overfull \hbox (0.81464pt too wide) in paragraph at lines 218--218
+  [][][][][][][][][] [] [][][] [] [][][] [] [][] [] [][] [] [][][][][][] [] [][][
+  ][][][][][][][][] [] [][][][][][][] [] [][][][][][][][][] [][] [][][][] [] [][]
+  [][][] [] [][][][]$[][]\TU/lmr/m/n/10.53937 . 16 []
+  [113]
+  
+  d:/mygit/ml/reinforcementLearning/tex/rl.tex:219: LaTeX Error: \begin{spacing} 
+  on input line 128 ended by \end{document}.
+  
+  See the LaTeX manual or LaTeX Companion for explanation.
+  Type  H <return>  for immediate help.
+   ...                                              
+                                                    
+  l.219 \end{document}
+                      
+  (D:\mygit\ml\textemp/rl.aux)
+  
+D:\mygit\ml\reinforcementLearning\tex\EXEC : LaTeX Font warning : Size substitutions with differences
+  (Font)              up to 0.65625pt have occurred.
+  
+   )
+  (\end occurred inside a group at level 2)
+  
+  ### semi simple group (level 2) entered at line 128 (\begingroup)
+  ### semi simple group (level 1) entered at line 128 (\begingroup)
+  ### bottom level
+  (see the transcript file for additional information)
+  Output written on D:\mygit\ml\textemp/rl.pdf (119 pages).
+  SyncTeX written on D:\mygit\ml\textemp\/rl.synctex.gz.
+  
+  Transcript written on D:\mygit\ml\textemp\/rl.log.

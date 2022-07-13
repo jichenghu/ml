@@ -1,9 +1,12 @@
 % A size substituation of 0.5pt is harmless, but if you want to avoid it load the fix-cm package:
 \RequirePackage{fix-cm}
+\RequirePackage[hyphens]{url}
 \documentclass{book}
 %\let\Tiny=\tiny
 \usepackage[UTF8]{ctex}
 \usepackage{import}
+
+%\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
 
 % https://texample.net/tikz/examples/feature/trees/
 \usepackage{tikz}
@@ -24,9 +27,9 @@
 
 %\usepackage{amsmath}
 %\usepackage{lmodern}
-\usepackage{amsfonts, amsmath, amssymb, amsthm, array, bm, cite, color, 
+\usepackage{amsfonts, amsmath, amssymb, amsthm, array, bm, breakurl, cite, color, 
 fancyhdr, float, framed, geometry, graphicx, hyperref, listings, 
-mathrsfs, setspace, tcolorbox, xcolor}
+mathrsfs, setspace, tcolorbox, url, xcolor}
 %\usepackage[keeplastbox]{flushend}
 %\fontsize{11pt}{12pt}\selectfont
 
@@ -112,6 +115,18 @@ sorting=ynt
 
 % usepackage{pythonhighlight}
 
+%\makeatletter
+%\g@addto@macro{\UrlBreaks}{\UrlOrds}
+%\makeatother
+
+\def\UrlBreaks{\do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J
+\do\K\do\L\do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V
+\do\W\do\X\do\Y\do\Z\do\[\do\\\do\]\do\^\do\_\do\`\do\a\do\b
+\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n
+\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z
+\do\.\do\@\do\\\do\/\do\!\do\_\do\|\do\;\do\>\do\]\do\)\do\,
+\do\?\do\'\do+\do\=\do\#}
+
 
 \begin{document}
 
@@ -170,6 +185,12 @@ sorting=ynt
 \import{D:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
 \fi
 
+% td3
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{td3.tex}
+\fi
+
 % SAC
 \ifx\allfiles\undefined
 \else
@@ -180,6 +201,12 @@ sorting=ynt
 \ifx\allfiles\undefined
 \else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{inverse_rl.tex}
+\fi
+
+% homotopy group
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{homotopy.tex}
 \fi
 
 % 框架代码

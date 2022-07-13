@@ -1,0 +1,483 @@
+\chapter{Homotopy Group}
+
+% https://encyclopediaofmath.org/wiki/CW-complex
+% https://encyclopediaofmath.org/wiki/Homotopy_group
+% What are the applications of homotopy type theory to everyday programming?
+%  https://cs.stackexchange.com/questions/129237/what-are-the-applications-of-homotopy-type-theory-to-everyday-programming
+
+A generalization of the fundamental group, proposed by W. Hurewicz 
+\cite{Steenrod1951} in the context of problems on the classification of 
+continuous mappings. Homotopy groups are defined for any $  n \geq 1 $ . 
+For $  n = 1 $ 
+the homotopy group is identical with the fundamental group. The definition 
+of homotopy groups is not constructive and for this reason their computation 
+is a difficult task, general methods for which were developed only in the 
+1950s. Their importance is due to the fact that all problems in homotopy 
+theory can be reduced (cf. Homotopy type), to a greater or lesser extent, 
+to the computation of certain homotopy groups.
+
+In mathematics, homotopy groups are used in algebraic topology to classify 
+topological spaces. The first and simplest homotopy group is the fundamental 
+group, which records information about loops in a space. Intuitively, 
+homotopy groups record information about the basic shape, or holes, of a 
+topological space.
+
+Let
+$$ 
+I ^{n}  =  \{ {( t_{1} \dots t_{n} )} : 
+{0 \leq t_{1} \leq 1, \dots 0, \leq t_{n} \leq 1} \}
+$$ 
+be the dimensional unit cube, let $ I_{n-1} $ be its face $ t_{n} = 0 $, 
+and let $ J^{n-1} $ be the union of its remaining faces. For any pointed 
+pair $ ( X ,\  A ,\  x_{0} ) $ (cf. Pointed object) the symbol 
+$\pi_{n} ( X ,\  A ,\  x_{0} )$ (or simply $\pi_{n} ( X ,\  A )$ ) denotes 
+the pointed set of all homotopy classes of mappings
+$$ 
+u : \  ( I^{n} ,\  I^{n-1} ,\  J^{n-1} ) \rightarrow ( X ,\  A ,\  x_{0} ) .
+$$ 
+The distinguished (zero) element of this set is the constant mapping that 
+maps the whole cube $I^{n}$ into $x_{0}$. Any continuous mapping
+$$ 
+f: \  (X,\  A,\  x_{0}) \rightarrow (Y,\  B,\  y_{0})
+$$ 
+induces a morphism
+$$ 
+f_\star:\  \pi_{n} (X,\  A,\  x_{0}) \rightarrow \pi_{n} (Y,\  B,\  y_{0})
+$$ 
+of pointed sets. For any $n \geq 1$ the sets $\pi_{n} (X,\  A,\  x_{0}) $ 
+and the morphisms $f_\star$ constitute a functor $\pi_{n}$ 
+from the category of pointed pairs into the category of pointed sets. 
+This functor is homotopy invariant, i.e. $f_\star = g_\star$ if $f$ 
+and $g$ are homotopic (as mappings of pointed pairs). Furthermore, it is 
+normalized in the sense that if $X = A = x_{0}$, then 
+$\pi_{n} (X ,\  A ,\  x_{0}) = 0$.
+
+
+For $  n \geq 2 $ 
+it is possible to introduce into the set $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+an operation of addition, with respect to which it becomes a group (if $  n \geq 2 $ 
+even an Abelian group). By definition, if $  x = [ u ] $ 
+and $  y = [ v ] $ , 
+then $  x + y = [ w ] $ , 
+where $  w $ 
+is the mapping$$ 
+( I ^{n} ,\  I ^{n-1} ,\  J ^{n-1} )  
+\rightarrow   ( X ,\  A ,\  x _{0} )
+ $$ 
+defined by the formula$$ \tag{1}
+w ( t _{1} \dots t _{n} )  =
+ $$ 
+$$ 
+=  
+\left \{ 
+\begin{array}{ll}
+u ( 2 t _{1} ,\  t _{2} \dots t _{n} )  &  \textrm{ if }  0 \leq t _{1} \leq 1 / 2 ,  \\
+v ( 2 t _{1} -1 ,\  t _{2} \dots t _{n} )  &  \textrm{ if }  1 / 2 \leq t _{1} \leq 1 .  \\
+\end{array}
+
+ \right .$$
+The resulting group $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+is said to be the $  n $ -
+th homotopy group (or the $  n $ -
+dimensional homotopy group) of the pointed pair $  ( X ,\  A ,\  x _{0} ) $ ; 
+one also speaks of the homotopy group of the pair $  ( X ,\  A ) $ 
+at $  x _{0} $ 
+or of the homotopy group of the space $  X $ 
+with respect to the subspace $  A $ 
+at $  x _{0} $ . 
+The mappings $  f _ \star  $ 
+are homomorphisms of these groups. Thus, if $  n \geq 2 $ 
+it may be assumed that the function $  \pi _{n} $ 
+takes values in the category of groups (if $  n > 2 $ 
+even in the category of Abelian groups).
+
+For $  A = x _{0} $ 
+the group $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+is denoted by $  \pi _{n} ( X ,\  x _{0} ) $ , 
+or simply by $  \pi _{n} (X) $ , 
+and is called the absolute homotopy group of the pointed space $  ( X ,\  x _{0} ) $ (
+or of the space $  X $ 
+at $  x _{0} $ ). 
+Its elements are the homotopy classes of mappings $  ( I ^{n} ,\  \dot{I}  ^{n} ) \rightarrow ( X ,\  x _{0} ) $ , 
+where $  \dot{I}  ^{n} = I ^{n-1} \cup J ^{n-1} $ 
+is the boundary of the cube $  I ^{n} $ . 
+For such mappings formula (1) is meaningful for $  n = 1 $ 
+as well, and so $  \pi _{n} ( X ,\  x _{0} ) $ 
+is a group. This group coincides with the classical fundamental group. The group operation in $  \pi _{n} ( X ,\  x _{0} ) $ 
+is usually called multiplication. This group is, generally speaking, non-Abelian, while the group $  \pi _{2} ( X ,\  x _{0} ) $ 
+is Abelian. For any $  n \geq 1 $ 
+the groups $  \pi _{n} ( X ,\  x _{0} ) $ 
+and the corresponding homomorphisms form a functor from the category of pointed spaces into the category of groups (if $  n > 1 $ 
+into the category of Abelian groups). This functor is the composition $  \pi _{n} \circ \iota $ 
+of the imbedding functor $  \iota : \  ( X ,\  x _{0} ) \rightarrow ( X ,\  x _{0} ,\  x _{0} ) $ 
+and the functor $  \pi _{n} $ 
+described above.
+
+The functor $  \pi _{n} \circ \iota $ 
+is extended to include the case $  n = 0 $ , 
+where $  \pi _{0} ( X ,\  x _{0} ) $ 
+is the pointed set of path-components (cf. [[Path-connected space|Path-connected space]]) of $  X $ ; 
+the zero of this set is the component containing $  x _{0} $ . 
+The set $  \pi _{0} ( X ,\  A ,\  x _{0} ) $ 
+is not defined for $  A \neq x _{0} $ . 
+In order to simplify the formulations, the sets $  \pi _{0} ( X ,\  x _{0} ) $ 
+and $  \pi _{1} ( X ,\  A ,\  x _{0} ) $ 
+are usually also called homotopy groups, even though they are not groups in general.
+
+For each element $  x = [ u ] \in \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+the mapping $  u \mid _ {I ^{n-1}} $ 
+represents a mapping $  ( I ^{n-1} ,\  \dot{I}  ^{n-1} ) \rightarrow ( A ,\  x _{0} ) $ , 
+and thus defines a certain element of the homotopy group $  \pi _{n-1} ( A ,\  x _{0} ) $ . 
+This element depends only on $  x $ 
+and is denoted by the symbol $  \partial x $ . 
+The resulting mapping $  \partial : \  \pi _{n} ( X ,\  A ,\  x _{0} ) \rightarrow \pi _{n-1} ( A ,\  x _{0} ) $ 
+is a morphism of pointed sets (if $  n > 1 $ 
+a homomorphism of groups) and is called a boundary homomorphism or a boundary operator. The boundary homomorphism, together with the homomorphisms $  i _ \star  $ 
+and $  j _ \star  $ 
+induced by the imbeddings $  i : \  ( A ,\  x _{0} ) \rightarrow ( X ,\  x _{0} ) $ 
+and $  j : \  ( X ,\  x _{0} ) \rightarrow ( X ,\  A ,\  x _{0} ) $ , 
+makes it possible to write down a sequence of groups and homomorphisms, infinite from the left:$$ 
+{} \dots  \stackrel{ {j _{\#}}} \rightarrow     \pi _{n+1}
+( X ,\  A ,\  x _{0} )    \stackrel \partial  \rightarrow     \pi _{n}
+( A ,\  x _{0} )    \stackrel{ {i _{\#}}} \rightarrow    
+\pi _{n} ( X ,\  x _{0} )    \stackrel{ {j _{\#}}} \rightarrow  
+ $$ 
+$$ 
+ \stackrel{ {j _{\#}}} \rightarrow     \pi _{n} ( A ,\  x _{0} )    \stackrel \partial  \rightarrow   \dots
+ $$ 
+$$ 
+{} \dots  \stackrel{ {j _{\#}}} \rightarrow     \pi _{2} ( X ,\  A ,\  x _{0} )    \stackrel \partial  \rightarrow     \pi _{1} ( A ,\  x _{0} )    \stackrel{ {i _{\#}}} \rightarrow  
+  \pi _{1} ( X ,\  x _{0} )    \stackrel{ {j _{\#}}} \rightarrow    
+ $$ 
+$$ 
+   \stackrel{ {j _{\#}}} \rightarrow     \pi _{1} ( X ,\  A ,\  x _{0} )    \stackrel \partial  \rightarrow     \pi _{0} ( A ,\  x _{0} )    \stackrel{ {i _{\#}}} \rightarrow     \pi _{0} ( X ,\  x _{0} ) .
+ $$ 
+This is an [[Exact sequence|exact sequence]]; it is called the exact homotopy sequence of the pair $  ( X ,\  A ,\  x _{0} ) $ 
+and is usually denoted by $  \pi ( X ,\  A ,\  x _{0} ) $ . 
+If $  \pi _{n} ( X ,\  x _{0} ) = 0 $ 
+for all $  n \geq 0 $ , 
+then the homomorphism $  \partial : \  \pi _{n} ( X ,\  A ,\  x _{0} ) \rightarrow \pi _{n-1} ( A ,\  x _{0} ) $ 
+is an isomorphism (also for all $  n $ ).
+
+
+The boundary homomorphism $  \partial $ 
+is natural, that is, it is a morphism of the functor $  \pi _{n} $ 
+into the functor $  \pi _{n-1} \circ \iota $ (
+more exactly, into the functor $  \pi _{n-1} \circ \iota ^ \prime  $ 
+where $  \iota ^ \prime  : \  ( X ,\  A ,\  x _{0} ) \mapsto ( A ,\  x _{0} ,\  x _{0} ) $ ). 
+This makes it possible to define $  \pi ( X ,\  A ,\  x _{0} ) $ 
+as a functor that takes values in the category of exact sequences of pointed sets which, except for the last six sets, are Abelian groups and, except for the last three sets, are groups.
+
+Let $  p : \  E \rightarrow B $ 
+be an arbitrary [[Fibration|fibration]] in the sense of Serre and let $  A \subset B $ , 
+$  E ^ \prime  = p ^{-1} $ , 
+$  e _{0} \in E ^ \prime  $ , 
+and $  b _{0} = p ( e _{0} ) $ . 
+The mapping $  p $ 
+defines a mapping $  p ^ \prime  : \  ( E ,\  E ^ \prime  ,\  e _{0} ) \rightarrow ( B ,\  A ,\  b _{0} ) $ 
+of pointed pairs. For any $  n \geq 1 $ 
+the induced homomorphism $  p _ \star  ^ \prime  : \  \pi _{n} ( E ,\  E ^ \prime  ,\  e _{0} ) \rightarrow \pi _{n} ( B ,\  A ,\  b _{0} ) $ 
+is an isomorphism. In particular, this is true for $  A = b _{0} $ . 
+In the latter case the formula $  \tau = \partial \circ ( p _ \star  ^ \prime  ) ^{-1} $ 
+unambiguously defines a homomorphism $  \tau : \  \pi _{n} ( B ,\  b _{0} ) \rightarrow \pi _{n-1} ( F ,\  e _{0} ) $ 
+where $  F = p ^{-1} ( b _{0} ) $ 
+is the fibre of $  p $ 
+over $  b _{0} $ . 
+This homomorphisms is called the homotopy transgression. It occurs in the exact sequence$$ 
+{} \dots \rightarrow   \pi _{n} ( F ,\  e _{0} )  
+ \stackrel{ {i _{\#}}} \rightarrow     \pi _{n}
+( E ,\  e _{0} )    \stackrel{ {p _{\#}}} \rightarrow    
+\pi _{n} ( B ,\  b _{0} )    \stackrel \tau  \rightarrow  
+ $$ 
+$$ 
+ \stackrel \tau  \rightarrow     \pi _{n-1} ( F ,\  e _{0} )   \rightarrow \dots .
+ $$ 
+This sequence is called the homotopy sequence of the fibration $  p : \  E \rightarrow B $ . 
+Putting a fibration into correspondence with its homotopy sequence yields a functor on the category of all (pointed) fibrations.
+
+In the particular case when $  p $ 
+is the standard [[Serre fibration|Serre fibration]] of paths over a space $  X $ , 
+for any $  n \geq 0 $ 
+one has the isomorphism $  \pi _{n} ( \Omega X ) \approx \pi _{n+1} (X) $ , 
+where $  \Omega X $ 
+is the [[Loop space|loop space]] of $  X $ . 
+This isomorphism is called the Hurewicz isomorphism.
+
+The above properties actually unambiguously define the homotopy groups $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ , 
+i.e. may be taken as axioms which describe these groups. In fact, let $  \pi _{1} \dots \pi _{n} \dots $ 
+be an arbitrary sequence of homotopy-invariant normalized functors, defined on the category of pointed spaces, taking values in the category of pointed sets, and having the following property: For any fibration in the sense of Serre $  p : \  E \rightarrow B $ , 
+any subset $  A \subset B $ 
+and any point $  e _{0} \in p ^{-1} (A) $ , 
+the induced homomorphism $  \pi _{n} ( E ,\  p ^{-1} (A) ,\  e _{0} ) \rightarrow \pi _{n} ( B ,\  A ,\  p ( e _{0} ) ) $ 
+is an isomorphism. Such a sequence is called a homotopy system if for any $  n \geq 1 $ 
+there is defined a morphism $  \partial $ 
+of the functor $  \pi _{n} $ 
+into the functor $  \pi _{n-1} \circ \iota ^ \prime  $ (
+if $  n = 1 $ , 
+into $  \pi _{0} ( X ,\  x _{0} ) $ ) 
+that is an isomorphism for any pointed pair $  ( X ,\  A ,\  x _{0} ) $ 
+for which $  \pi _{n} (X ,\  x _{0} ) = 0 $ 
+for all $  n \geq 0 $ . 
+Any homotopy system is isomorphic to the homotopy system constructed above, which consists of homotopy groups. Furthermore, if $  n \geq 3 $ , 
+a group structure can be uniquely introduced into the pointed sets $  \pi _{n} (X,\  A,\  x _{0} ) $ (
+and also into the sets $  \pi _{2} ( X ,\  x _{0} ) $ ) 
+so that all morphisms $  f _ \star  $ 
+are homomorphism (this structure accordingly corresponds to that described by formula (1)). On the other hand, the sets $  \pi _{2} ( X ,\  A ,\  x _{0} ) $ 
+if $  A \neq x _{0} $ 
+and $  \pi _{1} ( X ,\  x _{0} ) $ 
+carry only the inverse group operation. All this means that the above properties unambiguously define the homotopy groups (up to the order of multiplication in non-commutative groups).
+
+For any mapping $  u : \  ( I ^{n} ,\  \dot{I}  ^{n} ) \rightarrow ( X ,\  x _{2} ) $ 
+and any path $  \nu : \  I \rightarrow X $ 
+connecting two points $  x _{1} $ 
+and $  x _{2} $ , 
+the formula $  g _{t} (x) = \nu ( 1 - t ) ,\  x \in \dot{I}  ^{n} $ , 
+defines a homotopy of $  u \mid _ {\dot{I}  ^{n}} $ . 
+By the homotopy extension axiom (cf. [[Cofibration|Cofibration]]) this homotopy can be extended to a homotopy $  u _{t} : \  I ^{n} \rightarrow X $ 
+for which $  u _{0} = u $ . 
+The final mapping $  u _{1} $ 
+of this homotopy maps $  \dot{I}  ^{n} $ 
+into $  x _{1} $ , 
+i.e. represents a mapping $  ( I ^{n} ,\  \dot{I}  ^{n} ) \rightarrow ( X ,\  x _{1} ) $ . 
+The corresponding element of the homotopy group depends only on the class $  [ u ] \in \pi _{n} ( X ,\  x _{2} ) $ 
+of $  u $ 
+and the homotopy class $  \alpha = [ \nu ] $ 
+of $  \nu $ , 
+and is denoted by the symbol $  \alpha x $ (
+if $  n = 1 $ , 
+by the symbol $  x ^ \alpha  $ ). 
+The family $  G _{x} = \pi _{n} ( X ,\  x ) $ 
+is thus defined as a local family on the space $  X $ , 
+i.e. on the fundamental groupoid of this space. In particular, for any point $  x _{0} \in X $ 
+the group $  \pi _{1} ( X ,\  x _{0} ) $ 
+operates on $  \pi _{n} ( X ,\  x _{n} ) $ . 
+If $  n = 1 $ 
+these operators act as inner automorphisms: $  x ^ \alpha  = \alpha x \alpha ^{-1} $ , 
+and if $  n > 1 $ 
+they make the group $  \pi _{n} ( X ,\  x _{0} ) $ 
+into a $  \pi _{1} ( X ,\  x _{0} ) $ -
+module. For any continuous mapping $  f : \  ( X ,\  x _{0} ) \rightarrow ( Y ,\  y _{0} ) $ 
+the induced homomorphisms $  f _ \star  : \  \pi _{n} ( X ,\  x _{0} ) \rightarrow \pi _{n} ( Y ,\  y _{0} ) $ 
+are operator homomorphisms (homomorphisms of modules): $  f _ \star  ( \alpha x ) = f _ \star  ( \alpha ) f _ \star  (x) $ .
+
+
+In a similar way, the groups $  G _{x} = \pi _{n} ( X ,\  A ,\  x ) $ , 
+$  x \in A $ , 
+constitute a local family of homotopy groups on the subspace $  A $ . 
+In particular, the group $  \pi _{1} ( A ,\  x _{0} ) $ 
+operates on the homotopy group $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+so that if $  n > 2 $ 
+the group $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+is a $  \pi _{1} ( X ,\  A ,\  x _{0} ) $ -
+module. The group $  \pi _{2} ( X ,\  A ,\  x _{0} ) $ 
+is said to be a crossed $  ( \pi _{1} ( A ,\  x _{0} ) ,\  \partial ) $ -
+module (cf. [[Crossed modules|Crossed modules]]), where $  \partial : \  \pi _{2} ( X ,\  A ,\  x _{0} ) \rightarrow \pi _{1} ( A ,\  x _{0} ) $ 
+is the boundary homomorphism.
+
+The group $  \pi _{1} ( A ,\  x _{0} ) $ 
+acts as a group of operators not only on the groups $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+but also on the groups $  \pi _{n} ( A ,\  x _{0} ) $ , 
+and also, by virtue of the natural homomorphism $  \pi _{1} ( A ,\  x _{0} ) \rightarrow \pi _{1} ( X ,\  x _{0} ) $ , 
+on the groups $  \pi _{n} ( X ,\  x _{0} ) $ . 
+With respect to these actions of $  \pi _{1} ( A ,\  x _{0} ) $ 
+all homomorphisms of the exact sequence $  \pi ( X ,\  A ,\  x _{0} ) $ 
+are operator homomorphisms, so that $  \pi _{1} ( A ,\  x _{0} ) $ 
+can be regarded as a group of operators on the sequence $  \pi ( X ,\  A ,\  x _{0} ) $ . 
+This is equivalent to saying that the sequences $  \pi ( X ,\  A ,\  x ) $ , 
+$  x \in A $ , 
+constitute a local family of exact sequences of the subspace $  A $ .
+
+
+If the complement $  X \setminus A $ 
+is represented as a union of disjoint open $  n $ -
+dimensional cells, then the $  \pi _{1} ( A ,\  x _{0} ) $ -
+module $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+is a free module (if $  n = 2 $ , 
+a free crossed module) and has a system of free generators — a basis in bijective (not necessarily natural) correspondence with the cells of $  X \setminus A $ (
+Whitehead's theorem).
+
+The mappings $  ( I ^{n} ,\  \dot{I}  ^{n} ) \rightarrow ( X ,\  x _{0} ) $ 
+are in bijective correspondence with the mappings $  ( S ^{n} ,\  s _{0} ) \rightarrow ( X ,\  x _{0} ) $ , 
+where $  S ^{n} $ 
+is an $  n $ -
+dimensional sphere and $  s _{0} $ 
+is some point on it. For this reason the elements of $  \pi _{n} ( X ,\  x _{0} ) $ 
+can be regarded as the homotopy classes of mappings $  ( S ^{n} ,\  s _{0} ) \rightarrow ( X ,\  x _{0} ) $ . 
+This is also true if $  n = 0 $ . 
+The above identification depends on the selection of some relative homeomorphism $  \phi : \  ( I ^{n} ,\  \dot{I}  ^{n} ) \rightarrow ( S ^{n} ,\  s _{0} ) $ . 
+It is common to select and fix the sphere $  S ^{n} $ 
+and the homeomorphism $  \phi $ 
+once and for all. In the original definition of Hurewicz, which is not frequently used nowadays, $  S ^{n} $ 
+was not fixed, while $  \phi $ 
+was given up to a homotopy. Such a specification of $  \phi $ 
+is equivalent to specifying an orientation on $  S ^{n} $ . 
+Thus, according to Hurewicz, the elements of $  \pi _{n} ( X ,\  x _{0} ) $ 
+are pointed homotopy classes of mappings of an oriented $  n $ -
+dimensional sphere into $  X $ . 
+The set $  [ S ^{n} ,\  X ] $ 
+of non-pointed homotopy classes of mappings $  S ^{n} \rightarrow X $ 
+is in bijective correspondence with the orbits of the action of $  \pi _{1} ( X ,\  x _{0} ) $ 
+on $  \pi _{n} ( X ,\  x _{0} ) $ (
+cf. [[Orbit|Orbit]]). If $  \pi _{1} ( X ,\  x _{0} ) = 0 $ (
+or, more generally, if $  \pi _{1} ( X ,\  x _{0} ) $ 
+acts trivially on $  \pi _{n} ( X ,\  x _{0} ) $ ), 
+then $  X $ 
+is said to be homotopically $  n $ -
+simple. In this case $  \pi _{n} ( X ,\  x _{0} ) $ 
+is independent of $  x _{0} $ (
+so that the notation $  \pi _{n} ( X ) $ 
+is fully justified). This group is naturally identified with the set $  [ S ^{n} ,\  X ] $ , 
+which, as a consequence, has a group structure. A space that is homotopically $  n $ -
+simple for all $  n $ 
+is said to be Abelian.
+
+Let $  s _{n} $ 
+be the orientation class of the sphere $  S ^{n} $ 
+and let $  h ( [ f ] ) = f _ \star  ( s _{n} ) $ , 
+$  [ f ] \in \pi _{n} ( x ,\  x _{0} ) $ . 
+This defines a homomorphism $  h : \  \pi _{n} ( X ,\  x _{0} ) \rightarrow H _{n} ( X ) $ , 
+the so-called Hurewicz homomorphism. Its kernel contains all elements of the form $  \alpha x - x $ , 
+$  x \in \pi _{n} ( X ,\  x _{0} ) $ , 
+$  \alpha \in \pi _{1} ( X ,\  x _{0} ) $ (
+if $  n = 1 $ , 
+all elements of the form $  x ^ \alpha  x ^{-1} = \alpha x \alpha ^{-1} x ^{-1} $ , 
+i.e. it contains the commutator $  [ \pi _{1} ,\  \pi _{1} ] $ 
+of $  \pi _{1} ( X ,\  x _{0} ) $ ). 
+Poincaré's classical theorem states that for $  n = 1 $ 
+the kernel of $  h $ 
+coincides with the commutator $  [ \pi _{1} ,\  \pi _{1} ] $ , 
+so that the group $  H _{1} (X) $ 
+is isomorphic to the Abelianization of the fundamental group $  \pi _{1} ( X ,\  x _{0} ) $ . 
+Hurewicz's theorem, which is a generalization of Poincaré's theorem to the case $  n > 1 $ , 
+states that if $  \pi _{i} (X) = 0 $ 
+for $  i < n $ , 
+then the homomorphism $  h : \  \pi _{n} (X) \rightarrow H _{n} (X) $ 
+is an isomorphism (and the homomorphism $  h : \  \pi _{n+1} (X) \rightarrow H _{n+1} (X) $ 
+is an epimorphism).
+
+In a similar way, the elements of $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+can be regarded as (pointed) homotopy classes of mappings $  ( E ,\  S ) \rightarrow ( X ,\  A ) $ , 
+where $  E $ 
+is an (oriented) $  n $ -
+dimensional ball and $  S $ 
+is its boundary. If the pair $  ( X ,\  A ) $ 
+is homotopically $  n $ -
+simple (i.e. if $  \pi _{1} ( A ,\  x _{0} ) $ 
+acts trivially on $  \pi _{n} ( X ,\  A ,\  x _{0} ) $ ), 
+then the requirement of pointedness may be dropped in this definition. The formula$$ 
+h ( [ f ] )   =   f _ \star  ( e _{n} ) ,
+ $$ 
+where $  e _{n} $ 
+is the orientation class of the pair $  ( E ,\  S ) $ 
+and $  [ f ] \in \pi _{n} ( X ,\  A ,\  x _{0} ) $ 
+defines the Hurewicz homomorphism$$ 
+h : \  \pi _{n} ( X ,\  A ,\  x _{0} )   \rightarrow  
+H _{n} ( X ,\  A ) .
+ $$ 
+If $  \pi _{1} ( A ,\  x _{0} ) = 0 $ 
+and $  \pi _{n} ( X ,\  A ,\  x _{0} ) = 0 $ 
+for $  i < n $ , 
+this homomorphism is an isomorphism (Hurewicz's theorem for relative groups).
+
+Two principal methods are known for the computation of the homotopy groups of specific spaces: the method of killing spaces (cf. [[Killing space|Killing space]]) and the method of homotopy resolutions (cf. [[Homotopy type|Homotopy type]]; [[Postnikov system|Postnikov system]]). The first method is based on the isomorphism $  \pi _{n+1} (X) \approx H _{n+1} ( X ,\  n ) $ , 
+which follows from Hurewicz's theorem and the definition of the killing space $  ( X ,\  n ) $ . 
+This isomorphism reduces the computation of $  \pi _{n+1} (X) $ 
+to the problem of computing the homology groups $  H _{n+1} ( X ,\  n ) $ . 
+The space $  ( X ,\  n ) $ 
+fibres over the space $  ( X ,\  n - 1 ) $ 
+with fibre $  K ( \pi _{n} (X) ,\  n - 1 ) $ , 
+and the homology groups of the space $  K ( \pi ,\  n ) $ 
+are known. Therefore one may try to find the lower homology groups of killing spaces by induction. The problem of computing the homology groups of a fibre space from the homology groups of its base and fibre is still not completely solved in its general formulation (and, obviously, a general satisfactory solution does not exist). However, extensive information on the homology groups of the spaces $  ( X ,\  n ) $ 
+can be extracted from the corresponding Serre spectral sequence. In many cases this information is sufficient for the computation of $  H _{n+1} ( X ,\  n ) \approx \pi _{n+1} (X) $ , 
+at least for some $  n $ . 
+An essential technical simplification of the problem is obtained on the basis of the Serre's theory of classes of Abelian groups and the $  G _{p} $ -
+approximation derived from it. With this theory it is possible to compute entirely in the cohomology and only for the coefficient groups $  \mathbf Z / p $ . 
+The geometric principles on which this technique is based were first clarified by J.F. Adams and D. Sullivan on the basis of the concept of localization of topological spaces at a given prime number $  p $ .
+
+
+The second (also inductive) method of computing homotopy groups consists of a stepwise construction of the homotopy resolution of the space $  X $ . 
+Suppose the $  n $ -
+th term of this resolution is known (e.g. if $  X = S ^{n} $ , 
+then $  X _{n} = K ( \mathbf Z ,\  n ) $ ). 
+The next term must be the fibre space over $  X _{n} $ 
+with fibre $  K ( \pi _{n+1} (X) ,\  n + 1 ) $ ; 
+moreover, the group $  H _{n+1} $ 
+must be isomorphic to the known group $  H _{n+1} (X) $ . 
+This gives (on the basis of the corresponding spectral sequence) definite information on the group $  \pi _{n+1} (X) $ , 
+which, in many cases, makes it possible to compute it completely. For example, for $  X = S ^{n} $ 
+by this method all groups $  \pi _{n+k} ( S ^{n} ) $ , 
+$  k \leq 13 $ , 
+can be found. In its modern form, this method is also based on the concept of localization.
+
+The method of homology resolutions was extended (cf. [[#References|[4]]]) to an algorithm that is applicable to any simply-connected finite $   \mathop{\rm CW}\nolimits $ -
+complex and that gives all its homotopy groups. However, for practical use this algorithm is too complicated.
+
+Since the homotopy theory is completely equivalent to the homotopy theory of simplicial sets, the definition of a homotopy group may be transferred to any (complete) simplicial set. The  "combinatorial"  definition obtained (due to D. Kan) can easily be extended to an algorithm. However, this algorithm is also too complicated for practical use.
+
+From any of the above methods it is easy to establish that the homotopy groups of a simply-connected space having finitely-generated homology groups, are also finitely generated. The analogous statement for non-simply connected spaces (i.e. its homology groups should be finitely generated as $  \pi _{1} (X) $ -
+modules) is, in general, not true.
+
+Let $  S $ 
+be the (reduced) [[Suspension|suspension]] functor, and let $  \Omega $ 
+be the loop functor. Since these functors are adjoint, the identity mapping $  S X \rightarrow S X $ 
+defines an imbedding $  X \subset \Omega S X $ , 
+for any $  X $ . 
+Since $  \pi _{n} ( \Omega S X ) \approx \pi _{n+1} ( S X ) $ , 
+this imbedding defines a homomorphism$$ 
+E : \  \pi _{n} ( X )   \rightarrow   \pi _{n+1} ( S X ) ,
+ $$ 
+which is known as the suspension homomorphism. It coincides with the homomorphism obtained by assigning to an arbitrary (pointed) mapping $  f : \  S ^{n} \rightarrow X $ 
+its suspension $  S f : \  S ^{n+1} \rightarrow S X $ . 
+This homomorphism occurs in an exact sequence:$$ 
+{} \dots \rightarrow   \pi _{n} (X)   \rightarrow ^ E  
+\pi _{n+1} ( S X )   \rightarrow ^ H   \pi _{n}
+( \Omega S X ,\  X )    \stackrel \partial  \rightarrow  
+ $$ 
+$$ 
+ \stackrel \partial  \rightarrow     \pi _{n-1} (X)   \rightarrow \dots .
+ $$ 
+This sequence is called the suspension sequence of the space $  X $ . 
+The homomorphism $  H $ 
+in it is a generalization of the classical [[Hopf invariant|Hopf invariant]].
+
+If $  X $ 
+is a countable CW-complex with one vertex, the space $  \Omega SX $ 
+may be replaced by the infinite reduced product $  X _ \infty  $ 
+of the complex $  X $ . 
+This shows that if $  \pi _{i} (X) = 0 $ 
+for $  i \leq m $ , 
+then $  E $ 
+is an isomorphism for all $  n \leq 2m - 1 $ 
+and an epimorphism if $  n = 2m - 1 $ . 
+This theorem is known as Freudenthal's suspension theorem (H. Freudenthal first published the proof for the case $  X = S ^{n} $ , 
+although the theorem was known much earlier.)
+
+Freudenthal's theorem shows that for $  k \leq 2n - 1 $ 
+the group $  \pi _{n+k} (S ^{n} ) $ 
+is independent of $  n $ . 
+It is called the $  k $ -
+th stable homotopy group of the sphere (cf. also [[Stable homotopy group|Stable homotopy group]]). Similar stabilization phenomena occur for the homotopy groups of the orthogonal groups, of the Thom spaces $   \mathop{\rm MSO}\nolimits (n) $ (
+cf. [[Thom space|Thom space]]) and in many other cases. The general study of these phenomena is most conveniently done within the framework of the so-called theory of spectra. In this theory stable homotopy groups arise as the homotopy groups of spectra. These groups have an essentially simpler structure than the homotopy groups of a space and their study (and computation) is an easier task. For example, for the computation of these groups one has a special device: the Adams [[Spectral sequence|spectral sequence]].
+
+Homotopy groups have been generalized in various directions. For example, an attempt was made to replace the spheres by other spaces. Here one may note toroidal homotopy groups, obtained by interpreting the [[Whitehead product|Whitehead product]] as a commutator. It was also shown that the set of homotopy classes of mappings $  X \rightarrow Y $ 
+admits a group operation which is natural with respect to $  Y $ 
+if and only if $  X $ 
+is a [[Co-H-space|co-$  H $ -
+space]]. Homotopy groups with coefficients were obtained by replacing the spheres $  S ^{n} $ 
+by the Moore spaces $  M (G,\  n) $ (
+cf. [[Moore space|Moore space]]). This definition of homotopy groups with coefficients was not very successful. A more satisfactory definition (compatible with the general Eckmann–Hilton duality principle) was obtained by replacing the Moore $  M $ -
+spaces by co-$  M $ -
+spaces. However, these homotopy groups were not defined for all $  G $ (
+e.g. for $  G $ 
+the additive group of real numbers, these groups are not defined).
+
+The question of the construction of homotopy groups in categories other than the category of pointed pairs has been studied in detail. First of all one has to mention the homotopy groups of a triad (cf. [[Triads|Triads]], see, e.g., [[#References|[3]]]), which were very useful in the study of the homomorphism $  E $ . 
+A very general construction of homotopy groups was proposed in connection with studies on duality. On the basis of the concept of a standard construction (see [[#References|[6]]]) the construction of homotopy groups was transferred to arbitrary categories. A fundamental role in this construction is played by the homotopy groups of simplicial sets mentioned earlier.
+
+
+
+
+
+
+
+

@@ -5,19 +5,19 @@
 关键类：
 \begin{itemize}
 \item[-]
-环境 `env`
+环境 {\bf env}
 
 \item[-]
-模型 `model`
+模型 {\bf model}
 
 \item[-]
-算法 `algorithm`
+算法 {\bf algorithm}
 
 \item[-]
-agent `agent`
+agent {\bf agent}
 
 \item[-]
-回放内存 `rpm`
+回放内存 {\bf rpm}
 \end{itemize}
 
 
@@ -58,4 +58,154 @@ print(z(100))
 \end{lstlisting}
 
 \end{itemize}
+
+
+\section{TD3 vs ycl codes review}
+
+训练的入口：main.py ln136
+\begin{lstlisting}[language=Python]
+		# Train agent after collecting sufficient data
+		if t >= args.start_timesteps:
+			policy.train(replay_buffer, args.batch_size)
+\end{lstlisting}
+
+ycl 对应的训练入口：TD3/train.py ln23
+\begin{lstlisting}[language=Python]
+# Run episode for training
+def run_train_episode(agent, env, rpm):
+    action_dim = env.action_space.shape[0]
+    obs = env.reset()
+    done = False
+    episode_reward = 0
+    episode_steps = 0
+    while not done:
+        episode_steps += 1
+        # Select action randomly or according to policy
+        if rpm.size() < WARMUP_STEPS:
+            action = np.random.uniform(-1, 1, size=action_dim)
+        else:
+            action = agent.sample(obs)
+
+        # Perform action
+        next_obs, reward, done, _ = env.step(action)
+        terminal = float(done) if episode_steps < env._max_episode_steps 
+                               else 0
+
+        # Store data in replay memory
+        if reward <= -100:
+            reward = -1#100
+            rpm.append(obs, action, reward, next_obs, 1)
+            # replay_buffer.add(s, a, r, s_prime, True)
+        else:
+            rpm.append(obs, action, reward, next_obs, 0)
+        # rpm.append(obs, action, reward, next_obs, terminal)
+
+        obs = next_obs
+        episode_reward += reward
+
+        # Train agent after collecting sufficient data
+        if rpm.size() >= WARMUP_STEPS:
+            batch_obs, batch_action, batch_reward, batch_next_obs, 
+                batch_terminal = rpm.sample_batch(BATCH_SIZE)
+            agent.learn(batch_obs, batch_action, batch_reward, 
+                batch_next_obs, batch_terminal)
+
+    return episode_reward, episode_steps
+\end{lstlisting}
+
+上面第37行的 \textcolor{magenta}{agent.learn} 是训练的入口。也就是说 TD3 将训练过程封装在 
+policy 中，而 ycl 将训练过程封装在 agent 中。孰优孰劣后面再继续加以分析。
+
+\subsection{TD3 代码中初始化时(main.py 中)产生的关键对象}
+
+\begin{itemize}
+\item[-]
+环境 {\bf env}: ln66
+\begin{lstlisting}[language=Python]
+	env = gym.make(args.env)
+\end{lstlisting}
+
+\item[-]
+策略(算法) {\bf policy(algorithm)}: ln86
+\begin{lstlisting}[language=Python]
+	# Initialize policy
+	if args.policy == "TD3":
+		# Target policy smoothing is scaled wrt the action scale
+		kwargs["policy_noise"] = args.policy_noise * max_action
+		kwargs["noise_clip"] = args.noise_clip * max_action
+		kwargs["policy_freq"] = args.policy_freq
+		policy = TD3.TD3(**kwargs)
+	elif args.policy == "OurDDPG":
+		policy = OurDDPG.DDPG(**kwargs)
+	elif args.policy == "DDPG":
+		policy = DDPG.DDPG(**kwargs)
+\end{lstlisting}
+
+\item[-]
+模型 {\bf model}: ln98
+\begin{lstlisting}[language=Python]
+	if args.load_model != "":
+		policy_file = file_name if args.load_model == "default" 
+            else args.load_model
+		policy.load(f"./models/{policy_file}")
+\end{lstlisting}
+
+\item[-]
+回放内存 {\bf rpm}: ln102
+\begin{lstlisting}[language=Python]
+	replay_buffer = utils.ReplayBuffer(state_dim, action_dim)
+\end{lstlisting}
+\end{itemize}
+
+
+\subsection{ycl 代码中初始化时(tain.py 中)产生的关键对象}
+
+\begin{itemize}
+\item[-]
+环境 {\bf env}：ln85
+\begin{lstlisting}[language=Python]
+    env = gym.make(args.env)
+\end{lstlisting}
+
+\item[-]
+模型 {\bf model}：ln96
+\begin{lstlisting}[language=Python]
+    model = Model(obs_dim, action_dim)
+\end{lstlisting}
+
+\item[-]
+算法 {\bf algorithm}：ln97
+\begin{lstlisting}[language=Python]
+    algorithm = TD3(
+        model,
+        gamma=GAMMA,
+        tau=TAU,
+        actor_lr=ACTOR_LR,
+        critic_lr=CRITIC_LR,
+        policy_noise=EXPL_NOISE,  # Noise added to target policy during critic update
+        noise_clip=CLIP_NOISE,
+        policy_freq=args.policy_freq)
+\end{lstlisting}
+
+\item[-]
+agent {\bf agent}：ln106
+\begin{lstlisting}[language=Python]
+    agent = Agent(algorithm, act_dim=action_dim, expl_noise=EXPL_NOISE)
+\end{lstlisting}
+
+\item[-]
+回放内存 {\bf rpm}：ln107
+\begin{lstlisting}[language=Python]
+    rpm = ReplayMemory(
+        max_size=MEMORY_SIZE, obs_dim=obs_dim, act_dim=action_dim,seed=args.seed)
+\end{lstlisting}
+
+\end{itemize}
+
+
+\subsection{The encapsulation of class TD3}
+
+Agent设计为能在同一场景下选择多种策略算法。
+
+
 

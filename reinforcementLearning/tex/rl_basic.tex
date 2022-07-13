@@ -6,6 +6,13 @@
 %\setlength{\parsep}{0pt}
 \setlength{\parskip}{0pt}
 \item[-]
+\url{https://web.stanford.edu/class/cme241/lecture_slides/david_silver_slides/intro_RL.pdf} \\
+\url{../refs/intro_RL.pdf}
+
+\item[-]
+\url{https://greentec.github.io/reinforcement-learning-third-en/}
+
+\item[-]
 \url{https://yangyangfu.github.io/learning/reinforcement%20learning/2020/05/09/Bellman-Equation/}
 
 \item[-]
@@ -13,6 +20,7 @@
 
 \item[-]
 \url{https://inst.eecs.berkeley.edu/~cs188/sp10/slides/SP10%20cs188%20lecture%2011%20--%20reinforcement%20learning%20(6PP).pdf}
+
 \end{itemize}
 
 
@@ -20,6 +28,16 @@ Reinforcement learning is useful when you have no training data or specific enou
 expertise about the problem. On a high level, you know WHAT you want, but not really 
 HOW to get there. After all, not even Lee Sedol knows how to beat himself in Go.
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/agent_n_env.png}
+\caption{Agent and Environment}
+%\label{fig:label}
+\end{figure}
+
+如果学习时不尝试去理解环境, 这种方法叫做 model-free。所谓 model 就是用模型来表示环境。
+反过来，用一个模型来代表环境的方法就是 model-based 方法。 Qlearning, Sarsa, 
+Policy Gradients 都是从环境中得到反馈然后从中学习的 model-free 方法。
 
 
 \section{Value Functions}
@@ -129,7 +147,7 @@ over all the possibilities, weighting each by its probability of occurring. It s
 that the value of the start state must equal the (discounted) value of the expected next 
 state, plus the reward expected along the way.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/backup_diagrams_rl.png}
 \caption{Backup diagrams for (a) $V^\pi$ and (b) $Q^\pi$.}
@@ -166,7 +184,7 @@ in a reward of $0$, except those that move the agent out of the special states $
 \colorbox{yellow}{From state $A$, all four actions yield a reward of $+10$ and take the 
 agent to $A'$.} From state $B$, all actions yield a reward of $+5$ and take the agent to $B'$.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/gridworld.png}
 \caption{(a) exceptional reward dynamics; (b) state-value function for the equiprobable random policy.}
@@ -222,7 +240,7 @@ contour lines shown in the figure. Putting doesn't get us out of sand traps, so 
 have a value of $-\infty$. Overall, it takes us six strokes to get from the tee to the 
 hole by putting.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.4]{pix/golf.png}
 \caption{A golf example: the state-value function for putting (above) and the optimal action-value function for using the driver (below).}

@@ -36,7 +36,7 @@ a top-down approach whereas dynamic programming follows a bottom-up approach.
 
 How these two methods function can be illustrated and compared in two arborescent graphs.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.8]{pix/dnc_dp.jpg}
 \caption{The methods: dynamic programming (left) and divide and conquer (right)}
@@ -94,7 +94,7 @@ q_\pi(s,a) = r(s,a) + \gamma \sum_{s'\in \mathcal{S}}\mathcal{P}_{ss'}^a
 
 % file:///D:/mygit/ml/reinforcementLearning/refs/bellman/6%20Bellman%20Eqs%20and%20DP.pdf
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{pix/tee-transition-dynamics.png}
 \caption{The tree of transition dynamics}
@@ -102,7 +102,7 @@ q_\pi(s,a) = r(s,a) + \gamma \sum_{s'\in \mathcal{S}}\mathcal{P}_{ss'}^a
 \end{figure}
 
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{pix/web-transition-dynamics.png}
 \caption{The web of transition dynamics}
@@ -110,7 +110,7 @@ q_\pi(s,a) = r(s,a) + \gamma \sum_{s'\in \mathcal{S}}\mathcal{P}_{ss'}^a
 \end{figure}
 
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{pix/web2-transition-dynamics.png}
 \caption{The web of transition dynamics}
@@ -120,7 +120,7 @@ q_\pi(s,a) = r(s,a) + \gamma \sum_{s'\in \mathcal{S}}\mathcal{P}_{ss'}^a
 
 \subsection{4 Bellman-equation backup diagrams}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{pix/4-backup-diagrams.png}
 \caption{4 Bellman-equation backup diagrams}
@@ -160,7 +160,7 @@ This is a set of equations (in fact, linear), one for each state. The value func
 for $\pi$ is its unique solution.
 
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{pix/backup_diagrams.png}
 \caption{Backup diagrams}
@@ -175,7 +175,7 @@ q_*(s,a) &= \mathbb{E}\left[ R_{t+1} + \gamma\max_{a'}q_*\left( S_{t+1},a' \righ
 &= \sum_{s',r} p(s', r | s, a) \left[ r + \gamma\max_{a'}q_*(s',a') \right].
 \end{align}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/appendix/dp_relevant_backup_diagram.png}
 \caption{The relevant backup diagram}
@@ -308,7 +308,7 @@ is to test the quantity $\max_{s\in\mathcal{S}}|V_{k+1}(s)-V_k(s)|}$ after each 
 and stop when it is sufficiently small. Figure \ref{fig:dp_iterative_policy_evaluation} 
 gives a complete algorithm for iterative policy evaluation with this stopping criterion.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/appendix/dp_iterative_policy_evaluation.png}
 \caption{Iterative policy evalution}
@@ -319,7 +319,7 @@ gives a complete algorithm for iterative policy evaluation with this stopping cr
 
 Consider the $4\times 4$ gridworld shown in figure \ref{fig:dp_gridworld}.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/appendix/dp_gridworld.png}
 \caption{Gridworld}
@@ -341,7 +341,7 @@ shows the sequence of value functions ${V_k}$ computed by iterative policy evalu
 The final estimate is in fact $V^\pi$, which in this case gives for each state the 
 negation of the expected number of steps from that state until termination.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{pix/appendix/dp_gridworld_convergence.png}
 \caption{Convergence of iterative policy evaluation on a small gridworld. The left column is the sequence of approximations of the state-value function for the random policy (all actions equal). The right column is the sequence of greedy policies corresponding to the value function estimates (arrows are shown for all actions achieving the maximum). The last policy is guaranteed only to be an improvement over the random policy, but in this case it, and all policies after the third iteration, are optimal.}
@@ -363,7 +363,7 @@ much. If he builds his stake to $100$ he wins (thus he never wagers more than
 The solution (Or rather one of the possible solutions. It all boils down to the 
 finer details, like how ties are broken the compiler etc...)
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{pix/appendix/dp_gambler_s_problem_solution.png}
 \caption{solution to the Gambler's Problem.}
@@ -396,7 +396,7 @@ States, Actions, Rewards?
 
 \end{itemize}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{pix/appendix/dp_gambler_s_problem_solution_1.png}
 \caption{solution to the Gambler's Problem.}
@@ -462,7 +462,7 @@ the model worksheet is shown below. Cell F14 holds the value of the current stat
 $10$. For the example we choose to limit the wealth to $\$20$. The lower bound on 
 the state is in F18, and the upper bound is in F19.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{pix/appendix/dp_gambler_state.jpg}
 \caption{Gambler's state.}
@@ -478,7 +478,7 @@ plays for the example shown above.
 After enumeration the state list appears as below. The Final Dollars column is 
 computed as ln(final wealth).
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.6]{pix/appendix/dp_gambler_statelist.jpg}
 \caption{Gambler's state list.}

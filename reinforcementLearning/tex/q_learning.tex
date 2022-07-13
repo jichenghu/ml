@@ -33,12 +33,16 @@ while the action-value function is denoted by $q$.
 The $q$ in $q$-learning is in fact refer to the action-value function. 
 $Q$-learning is at the heart of all reinforcement learning algorithms.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 \section{What is $Q$-Learning ?}
+%
+%-------------------------------------------------------
 
 $Q$-Learning is a Reinforcement learning policy that will find the next best action, 
 given a current state. It chooses this action at random and aims to maximize the reward.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/3-components-q.jpg}
 \caption{Components of Q-Learning}
@@ -57,7 +61,7 @@ recommendation system, the ads you get are based on your previous purchases or w
 you may have visited. If you've bought a TV, you will get recommended TVs of different 
 brands. 
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/4-adrecommend.jpg}
 \caption{Ad Recommendation System}
@@ -68,7 +72,7 @@ Using $Q$-learning, we can optimize the ad recommendation system to recommend pr
 that are frequently bought together. The reward will be if the user clicks on the 
 suggested product.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/5-ad-q.jpg}
 \caption{Ad Recommendation System with Q-Learning}
@@ -110,7 +114,7 @@ that state, along with the maximum expected reward and a discount rate, which de
 its importance to the current state, to find the next state of our agent. The learning 
 rate determines how fast or slow, the model will be learning. 
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/6-bellman.jpg}
 \caption{Bellman Equation}
@@ -146,7 +150,7 @@ If the robot reaches the end goal, the robot gets 100 points.
 Now, the obvious question is: {\bf How do we train a robot to reach the end goal 
 with the shortest path without stepping on a mine?}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_robot_maze.png}
 \caption{Maze}
@@ -175,7 +179,7 @@ $Q$-Table is just a fancy name for a simple lookup table where we calculate the
 maximum expected future rewards for action at each state. Basically, this table 
 will guide us to the best action at each state.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_robot_maze_actions.png}
 \caption{Maze: actions}
@@ -188,7 +192,7 @@ So, let's model this environment in our $Q$-Table.
 
 In the $Q$-Table, the columns are the actions and the rows are the states.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_robot_maze_table.png}
 \caption{Maze: $q$-table}
@@ -232,7 +236,7 @@ command. The steps taken to construct a $q$-table are :
 When we initially start, the values of all states and rewards will be $0$. Consider 
 the $Q$-Table shown below which shows a dog simulator learning to perform actions :
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/7-initial.jpg}
 \caption{Initial $q$-table}
@@ -244,7 +248,7 @@ the $Q$-Table shown below which shows a dog simulator learning to perform action
 This is the starting point. We have performed no other action as of yet. Let us say 
 that we want the agent to sit initially, which it does. The table will change to:
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/8-qtable.jpg}
 \caption{$Q$-table after performing an action}
@@ -257,7 +261,7 @@ Bellman Equation
 For the action performed, we need to calculate the value of the actual reward and 
 the $Q( S, A )$ value
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/9-updatingq.jpg}
 \caption{Updating $q$-table with Bellman Equation}
@@ -269,7 +273,7 @@ the $Q( S, A )$ value
 The agent continues taking actions and for each action, the reward and $Q$-value are 
 calculated and it updates the table.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/10-finalq.jpg}
 \caption{Final $q$-table at end of an episode}
@@ -277,13 +281,17 @@ calculated and it updates the table.
 \end{figure}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 \section{Mathematics behind the Q-Learning algorithm}
+%
+%-------------------------------------------------------
 
 \subsection{Q-function}
 
 The Q-function uses the Bellman equation and takes two inputs: state (s) and action (a).
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_function.png}
 \caption{Maze: q-function}
@@ -303,7 +311,7 @@ Now, let's understand how the updating takes place.
 
 \subsection{Introducing the $Q$-learning algorithm process}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.4]{pix/q_learning/q_learning_algorithm_process.png}
 \caption{Maze: algorithm process}
@@ -316,7 +324,7 @@ Each of the colored boxes is one step. Let's understand each of these steps in d
 We will first build a $Q$-table. There are $n$ columns, where $n=$ number of actions. 
 There are m rows, where m= number of states. We will initialise the values at 0.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/q_robot_maze_table_init.png}
 \caption{Maze: q-table initialization}
@@ -354,7 +362,7 @@ For the robot example, there are four actions to choose from: up, down, left, an
 right. We are starting the training now — our robot knows nothing about the 
 environment. So the robot chooses a random action, say right.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/q_robot_maze_perform_action.png}
 \caption{Maze: perform an action}
@@ -370,7 +378,7 @@ Bellman equation.
 Now we have taken an action and observed an outcome and reward. We need to update 
 the function $Q(s,a)$.
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/q_robot_maze_q_function.png}
 \caption{Maze: q-function}
@@ -391,7 +399,7 @@ mine $= -100$
 end $= +100$
 \end{itemize}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{pix/q_learning/q_robot_maze_iteration.png}
 %\caption{Maze: q-function}
@@ -401,9 +409,11 @@ We will repeat this again and again until the learning is stopped. In this way
 the $Q$-Table will be updated.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 \section{Implementation using python}
-\begin{lstlisting}[language=Python]
-\end{lstlisting}
+%
+%-------------------------------------------------------
 
 Let's use $Q$-Learning to find the shortest path between two points. We have a group 
 of nodes and we want the model to automatically find the shortest way to travel from 
@@ -451,7 +461,7 @@ An agent is in the bottom left cell of a grid. The grey cell is a wall. The two 
 cells give a reward. There is a reward of $1$ of being in the top-right (diamond) cell, 
 but a negative value of $-1$ for the cell immediately below (explosive).
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.7]{pix/q_learning/gridworld.png}
 %\caption{Example: Gridworld}
@@ -496,7 +506,11 @@ $Q$-learning 的主要优势就是使用了时间差分法TD（融合了蒙特�
 使用 Bellman 方程可以对马尔科夫过程求解最优策略。
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 \section{Deep $Q$-Learning - Combining Neural Networks And RL}
+%
+%-------------------------------------------------------
 
 % https://deeplizard.com/learn/video/wrBUkpiRvCA
 
@@ -504,6 +518,14 @@ In this section, we'll bring artificial neural networks into our discussion of R
 Specifically, we'll be building on the concept of $Q$-learning we've discussed over 
 the last few sections to introduce the concept of deep $Q$-learning and deep $Q$-networks 
 (or DQNs). This will move us into the world of deep reinforcement learning.
+
+DQN 为了解决动作空间过大造成维数灾难问题在Q-learning的基础上引入了神经网络。DQN 主要是把 $Q$ 
+函数通过价值函数近似方法转换为一个深度神经网络。神经网络输入的是状态，输出每个动作的 $Q$ 值。
+
+前面介绍的 $Q$-learning 是一种 value-based 方法，不是学习策略，而是说有一个 critic 通过 
+MC based 的方法或者 TD based 的方法得出状态值函数 $V_\pi(s)$ 进行 Policy Evaluation 
+(策略评估)。
+
 
 \subsection{Limitations Of $Q$-Learning With Value Iteration}
 
@@ -796,7 +818,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 \end{lstlisting}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 \section{Experience Replay And Replay Memory}
+%
+%-------------------------------------------------------
 
 In this section, we'll focus in on an important technique called experience replay 
 that is utilized during the training process of a DQN. With deep $Q$-networks, we 
@@ -975,7 +1001,11 @@ class ReplayMemory(object):
 \end{lstlisting}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 \section{Training A Deep $Q$-Network With Replay Memory}
+%
+%-------------------------------------------------------
 
 % https://deeplizard.com/learn/video/0bt0SjbS3xc
 
@@ -1139,6 +1169,25 @@ For each episode:
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{DQN improvement}
+%
+% https://greentec.github.io/reinforcement-learning-third-en/
+%
+%-------------------------------------------------------
+
+\subsection{Hyperparameter adjustment}
+
+\subsection{weight initialization}
+
+\subsection{soft update (target network)}
+
+\subsection{Double DQN}
+
+\subsection{Dueling DQN}
+
 
 
 

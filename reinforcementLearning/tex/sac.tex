@@ -1,5 +1,6 @@
 ﻿\chapter{Soft Actor-Critic}
 
+
 待重读的资源：
 \begin{itemize}
 %\setlength{\itemsep}{0pt}
@@ -21,6 +22,161 @@
 \url{https://zhuanlan.zhihu.com/p/70360272}
 \end{itemize}
 
+\section{Overview}
+
+
+\subsection{Actor-critic algorithm}
+% https://greentec.github.io/reinforcement-learning-fourth-en/
+
+Actor Critic 合并了以值为基础(比如$Q$-learning)和以动作概率为基础(比如 Policy 
+Gradients)的两类强化学习算法。Actor 的前身是 Policy Gradients, 
+该方法可以在连续动作中选取合适的动作；Critic 的前生是 $Q$-learning 
+或者其他以值为基础的学习法, 能进行单步更新, 但并不能处理连续动作。而传统的 Policy 
+Gradients 则是回合更新。我们就比较贪心了，又想处理连续动作，又想单步更新，
+那就你们两个结合一下呗。actor 网络输入 state，输出action；critic 网络输入为 state
+和 action，输出为 $Q$ 值，就组成了 Actor Critic。但传统 Actor-Critic 
+前后相关性高，学习片面，于是人们有学习了 DQN 中的方法，使用一个 Replay buffer 
+和两个结构相同, 但参数更新频率不同的神经网络来训练，于是就有了 DDPG。
+
+Here we give a brief introduction to actor-critic algorithms that 
+outperform many algorithms in applications.
+
+The Dueling DQN was the idea of ​​dividing the network results into $V$ and 
+$A$ before reassembling them before we got the $Q$ value. Similar, but 
+different Actor-Critic algorithm use two networks: an Actor network and 
+a Critic network.
+
+The Actor determines the action when the state is given, and Critic 
+evaluates the value of the state. Actor-critic is quite similar to 
+Dueling DQN, but the Dueling DQN is the sum of the two values to get the 
+$Q$ value and the Actor-Critic does not combine the values at the end. 
+Depending on the implementation, the decoders of the receiving network 
+may join together, but the structure of the Dueling DQN and the 
+Actor-Critic will differ depending on whether the $Q$ values are combined 
+or not. Of course, there is a difference between using DQN in Replay 
+Buffer and not using Actor-Critic.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/sac/rl4_0.png}
+\caption{The structure of the actor-critic algorithm can be divided into 
+two types depending on whether or not parameter sharing is applied to 
+the decoders that interpret the input.}
+\label{fig:two_types_actor_critic}
+\end{figure}
+
+The biggest difference between DQN and Actor-Critic is whether to use 
+Replay Buffer. Unlike DQN, Actor-Critic does not use Replay Buffer but 
+learns the model using state($s$), action($a$), reward($r$), and next 
+state($s'$) obtained at every step.
+
+DQN obtains the value of $Q(s,a)$ and actor-critic obtains the value of 
+$\pi(s,a)$ and $V(s)$. $V(s)$ is the value function we've covered so 
+far, and $\pi(s,a)$ is the probability of taking a specific action in 
+some state. Usually this probability can be obtained using softmax. 
+Softmax calculates certain values by exponentiation with $e$ as the base, 
+then sums and divides to convert the sum to a probability of $1.0$.
+$$
+P(z)=\frac{e^{z_j}}{\sum^K_{k=1}e^{z_k}} 
+\qquad (\text{for} \quad j=1, \ldots, K)
+$$
+For example, if we have a value of $[2,1,0]$ and convert it to softmax,
+\begin{eqnarray*}
+sum &=& \sum^K_{k=1} e^{z_k} \\
+&=& e^2 + e^1 + e^0 \\
+&=& 11.1073 \notag\\
+\\
+softmax &=& \frac{e^{z_j}}{\sum^K_{k=1} e^{z_k}} \\
+&=& \left[\frac{e^2}{sum}, \frac{e^1}{sum}, \frac{e^0}{sum}\right] \\
+&=& [0.67, 0.24, 0.09] \notag
+\end{eqnarray}
+
+It is a probability value of $[0.67, 0.24, 0.09]$. Softmax function is 
+used in many areas of deep learning, such as image classification or 
+text generation. Reinforcement learning can also be used to obtain the 
+action probability of an agent.
+
+The method of directly learning the behavior probability of an agent 
+is called REINFORCE or policy gradient. A policy is a policy about what 
+action the agent will take, and a gradient means that the policy value 
+is updated through differentiation and the optimal policy is searched. 
+However, since the method of directly learning the action probability 
+of the agent is unstable, it is the core of the Actor-Critic to increase 
+the stability by using the value function together.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{pix/sac/rl4_6.png}
+\caption{The policy value directly represents the probability that each 
+action($a$) will occur in any state($s$).}
+%\label{fig:label}
+\end{figure}
+
+Using the Advantage as the expected output of Actor-Critic's Actor will 
+be {\bf A}dvantage {\bf A}ctor-{\bf C}ritic, {\bf A}2{\bf C}. Advantage 
+is a value that determines how much better than expected ($V(s)$). 
+Advantage generally uses the value obtained by subtracting $V(s)$ from 
+$Q(s,a)$.
+$$
+A(s,a) = Q(s,a) - V(s)
+$$
+
+However, $Q(s,a)$ is not shown in the structure of the Actor-Critic 
+algorithm in Figure \ref{fig:two_types_actor_critic}. But as we know,
+$$
+\text{Actual\_Value} \simeq \text{Present\_Value} + \text{Future\_Value}
+$$
+The present value is reward, and the future value is replaced with the 
+value function $V(s′)$ of the next state, the following expression can 
+be obtained.
+$$
+Q(s,a) \simeq R + \gamma V(s')
+$$
+In summary, the formula for obtaining Advantage changes as follows.
+$$
+A(s,a) \simeq R + \gamma V(s') - V(s)
+$$
+The $V(s)$ value calculated by the Critic Network will also affect the 
+calculation of the Actor Network.
+
+The most famous example affected by the Actor-Critic algorithm is the 
+Deep Mind's AlphaGo. They learned the policy network corresponding to 
+the actor and the value network corresponding to the critic so that they 
+could find the optimal action in the given environment.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/sac/rl4_1.png}
+\caption{Deep Mind's AlphaGo learned agents through two networks: 
+Policy Network and Value Network.}
+%\label{fig:label}
+\end{figure}
+
+We can not create an AlphaGo at once, but we can train an agent with 
+greatly improved action with the Actor-Critic algorithm in Grid World.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/sac/download.png}
+\caption{Learn(Actor-Critic)Run(Actor-Critic)}
+%\label{fig:label}
+\end{figure}
+
+From about 100 episodes, the agent starts to look for the ball. Even 
+if there is no ball in sight, the agent gets closer to the ball through 
+navigation, and if there are multiple balls in sight, it almost reaches 
+all the balls without missing.
+
+How do these agents move? In Unity, we will look at ideas from Arthur 
+Juliani’s blog article on ML-Agent, a reinforcement learning agent, to 
+see how A2C agents judge the environment.
+
+% https://greentec.github.io/reinforcement-learning-fourth-en/
+% https://greentec.github.io/reinforcement-learning-fourth-en/#:~:text=The%20biggest%20difference%20between%20DQN%20and%20Actor-Critic%20that,and%20next%20state%20%28s%E2%80%99%29%20obtained%20at%20every%20step.
+% to be continue
+
+
+\subsection{Soft actor-critic}
 
 % https://blog.csdn.net/weixin_44436360/article/details/108077422
 % https://zhuanlan.zhihu.com/p/70360272
@@ -205,7 +361,7 @@ Soft，Smoothing，Stable。
 
 A3C目标函数里的熵正则项和形式一样，只是作为正则项，系数很小。
 
-\begin{equation}\label{entropy_of_policy}
+\begin{equation}\label{SAC_entropy_of_policy}
 J(\pi) = \sum_{t=0}^{T-1} \mathbb{E}_{(s_t,a_t)\sim\rho_\pi}
 [r(s_t, a_t) + \alpha \mathcal{H}(\pi(\cdot | s_t))]
 \end{equation}
@@ -292,7 +448,7 @@ TD3的soft state value function V形式与Soft Policy Iteration中类似，
 通过$Q$和$\pi$网络近似$V$，注意$s$来自Experience Replay Buffer，
 但是$a$来自当前的$\pi$。
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.13]{pix/soft_state_value.png}
 \caption{Soft state value}
@@ -306,7 +462,7 @@ TD3的soft state value function V形式与Soft Policy Iteration中类似，
 $r(s,a)$是环境的即时奖赏；$s_{t+1}$来自环境，由于环境是model-free，
 可以理解成$s_{t+1}$是确定的。
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.2]{pix/soft_q_value.png}
 \caption{Soft Q value}
@@ -332,7 +488,7 @@ KL散度基于$Q$的分布近似忽略分母析分函数。
 采样之后，$a$是确定的，KL散度即熵的差容易求解，注意$Q$值来自神经网络，值可以scale，无需关注系数。
 \end{itemize}
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.15]{pix/policy_objective.png}
 \caption{Policy objective function}
@@ -344,7 +500,7 @@ KL散度基于$Q$的分布近似忽略分母析分函数。
 
 整体采用Replay Buffer，三个目标函数分别进行梯度学习。
 
-\begin{figure}[!htb]
+\begin{figure}[h]
 \centering
 \includegraphics[scale=0.15]{pix/learning_process.png}
 \caption{Learning process}
