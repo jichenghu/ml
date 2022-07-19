@@ -164,6 +164,7 @@ RL 算法的最终目标是学习每种状态下最优的动作，而在训练�
 为了找到动作空间里潜在的最优动作，算法必须尝试当前策略 $\pi$ 认为的非最优的动作，
 因此 RL 算法中的策略需要有随机探索(Exploration)的能力。
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{策略如何做到随机探索}
 
 RL算法中的策略分为确定性(Deterministic)策略与随机性(Stochastic)策略:
@@ -182,9 +183,9 @@ $\pi : S \rightarrow A$。它本身没有随机性质，因此通常会结合 $\
 
 为了不让思路凌乱，这里仅讨论 $Q$ 函数构造的确定性策略及其增加随机性的方式。
 用 $Q$ 函数构造确定性策略是一种常见的策略形式，其具体方式是：
-$$
-\pi(s)= \arg \underset{a}{\max}\; Q(s, a)
-$$
+\begin{equation}\label{eq_argmax_policy_construction}
+\pi(s)= \arg \underset{a}{\max}\; Q(s, a) 
+\end{equation}
 
 即选取 $Q$ 值最大的动作为最优动作。(注意：一般只有在动作空间离散的情况下采用这种策略，
 若动作空间连续上式中的最大化操作需要经过复杂的优化求解过程。)
@@ -955,4 +956,318 @@ On-policy-与Off-policy的区别在于：更新价值所使用的方法是沿着
 
 \cite{Sutton1998}
 %\parencite{Sutton1998}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{An Introduction to Policy Gradient Methods}
+%-------------------------------------------
+% https://jmichaux.github.io/week2/
+
+Basic reinforcement learning problems are often formulated as a {\bf Markov Decision Process} 
+$ M = \lbrace S, A, R, P, \gamma \rbrace $, where $ S $ is the distribution of states, 
+$ A $ is the set of actions the agent can take,  $ R = R(s, a) $ is the reward function, 
+$ P $ are the state transition dynamics, and and $ \gamma $ is the discount factor. The goal is 
+{\bf to find a policy $ \pi $ that maps states $ s \in S $ to optimal or near-optimal actions 
+$ a \in A $}.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Policy Gradients}
+
+
+\subsubsection{Function Approximation}
+
+
+我们知道可以通过方程 {\ref{eq_argmax_policy_construction}} 来构造确定性策略。
+How do we do argmax when action space is large or continuous?
+
+{\bf Idea}: Do Policy Improvement step with a Gradient Ascent instead
+
+回顾在基于价值的方法（例如 DQN ）中，使用价值函数近似将 $Q$-table 更新问题变成一个函数拟合问题，
+相近的状态得到相近的输出动作，如下式，通过更新参数 $w$ 使得函数 $f$ 逼近最优 $Q$ 值。
+$$
+Q(s,a) \approx f(s,a; {\bf w})
+$$
+在 PG 算法中，因为策略是一个概率，不能直接用来迭代，所以我们采取类似的思路，将其转化为函数形式，
+如下式所示，这时我们的目的则是使用带有 $\theta$ 参数的函数对策略进行近似，通过更新参数 $\theta$，
+逼近最优策略。
+$$
+\pi(a|s) \approx \pi_\theta(s,a) = P(a|s, \theta)
+$$
+The reason that we write $\pi_\theta$ is that the $\theta$ refers to the parameters of 
+function approximator, which for a deep neural net corresponds to the weights of the 
+network.
+现在有了策略函数，我们的目标当然是优化它，那么该如何知道优化后的策略函数的优劣呢。
+大家肯定会想到需要一个可以优化的目标函数，我们让这个目标函数朝着最大值的方向去优化，
+它的主要作用就是用来衡量策略的好坏程度。
+
+与基于值函数来构造确定性策略不同，策略梯度算法是一种更为直接的方法，它让神经网络直接输出策略函数 
+$\pi(s)$，即在状态 $s$ 下应该执行何种动作。对于非确定性策略，输出的是这种状态下执行各种动作的概率值，
+即如下的条件概率:
+$$
+\pi(a|s) = p(a|s)
+$$
+所谓确定性策略，是只在某种状态下要执行的动作是确定即唯一的，而非确定性动作在每种状态下要执行的动作是随机的，
+可以按照一定的概率值进行选择。这种做法的原理如下图\ref{fig:output_of_stochastic_policy}所示。
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/policy/output_of_stochastic_policy.png}
+\caption{stochastic output.}
+\label{fig:output_of_stochastic_policy}
+\end{figure}
+\noindent
+此时的神经网络输出层的作用类似于多分类问题的 softmax 回归，输出的是一个概率分布，
+只不过这里的概率分布不是用来进行分类，而是执行动作。至于对于连续型的动作空间该怎么处理，我们在后面会解释。
+
+因此，如果构造出了一个目标函数 $L$，其输入是神经网络输出的策略函数 $\pi(a|s)$，通过优化此目标函数，
+即可确定神经网络的参数 $\theta$，从而确定策略函数 $\pi(a|s;\theta)$。这可以通过梯度上升法实现
+（与梯度下降法相反，向着梯度方向迭代，用于求函数的极大值）。训练时的迭代公式为:
+$$
+\theta_{t+1}=\theta_t + \alpha\nabla_\theta L(\theta_t)
+$$
+这里假设策略函数对参数的梯度 $\nabla_\theta\pi(a|s;\theta)$ 存在，从而保证 
+$\nabla_\theta L(\theta_t)$。现在问题的核心就是如何构造这种目标函数 $L$，以及如何生成训练样本。
+对于后者，采用了与 DQN 类似的思路，即按照当前策略随机地执行动作，并观察其回报值，以生成样本。
+
+对于第一个问题，一个自然的想法是使得按照这种策略执行时的累计回报最大化，即构造出类似 $V$ 函数和 $Q$ 
+函数这样的函数来。
+
+Policy Gradient methods are a family of reinforcement learning algorithms that rely on optimizing 
+a parameterized policy directly. As alluded to above, the goal of the policy is to maximize the 
+total expected reward:
+$$
+\mathbb{E}_{\tau \sim p\theta (\tau)} [R(\tau)]. \tag{1}
+$$
+Policy gradient methods have a number of benefits over other reinforcement learning methods. First, 
+by optimizing the policy directly, it is not required that we also learn a value function (although 
+we'll later see that learning a value function can help). Second, policy gradient methods can handle 
+both discrete and continuous states and actions, making them well suited for high dimensional 
+problems. This is in contrast to methods such as Deep $Q$-learning, which struggles in high 
+dimensions because it assigns scores for each possible action.
+
+In addition to their benefits, policy gradient methods also have a few drawbacks. By definition, 
+policy gradient methods are on-policy. This means that they are only able to learn from data that 
+was collected with the current policy. As a result, policy gradient methods are not very sample 
+efficient. Another issue is that policy gradient methods are not guaranteed to converge to a global 
+optimum, and solutions may get stuck in local optima. Lastly, policy gradient methods tend to suffer 
+from high variance. However, even with these drawbacks, policy gradient methods such as TRPO and PPO 
+are still considered to be the state-of-the art reinforcement learning algorithms.
+
+
+\subsubsection{Policy Improvement with a Gradient Ascent}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+We want to find the Policy that fetches the “Best Expected Returns”
+\item[-]
+Gradient Ascent on “Expected Returns” w.r.t params of Policy func
+\item[-]
+So we need a func approx for (stochastic) Policy Func: $\pi(s, a; {\bf \theta})$
+\item[-]
+In addition to the usual func approx for Action Value Func: $Q(s, a; {\bf w})$
+\item[-]
+$\pi(s, a; \theta)$ called {\bf Actor} and $Q(s, a; {\bf w})$ called {\bf Critic}
+\item[-]
+Critic parameters ${\bf w}$ are optimized w.r.t $Q(s, a; {\bf w})$ loss function $\min$
+\item[-]
+Actor parameters $\theta$ are optimized w.r.t Expected Returns $\max$
+\item[-]
+We need to formally define “Expected Returns”
+\item[-]
+But we already see that this idea is appealing for continuous actions
+\item[-]
+GPI(Generalized Policy Iteration) with Policy Improvement done as 
+{\bf Policy Gradient (Ascent)}
+\end{itemize}
+
+
+\subsubsection{Advantages and Disadvantages of Policy Gradient approach}
+
+\noindent{\bf Advantages:}
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-] 
+Finds the best Stochastic Policy (Optimal Deterministic Policy,
+produced by other RL algorithms, can be unsuitable for POMDPs)
+
+\item[-] 
+Naturally explores due to Stochastic Policy representation
+
+\item[-] 
+Effective in high-dimensional or continuous action spaces
+
+\item[-] 
+Small changes in $\theta$ $\Rightarrow$ small changes in $\pi$, and in state distribution
+
+\item[-] 
+This avoids the convergence issues seen in argmax-based algorithms
+
+\end{itemize}
+
+
+\noindent{\bf Disadvantages:}
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-] 
+Typically converge to a local optimum rather than a global optimum
+
+\item[-] 
+Policy Evaluation is typically inefficient and has high variance
+
+\item[-] 
+Policy Improvement happens in small steps $\Rightarrow$ slow convergence
+
+\end{itemize}
+
+
+\subsubsection{“Expected Returns” Objective}
+
+Now we formalize the “Expected Returns” Objective:
+\begin{equation}\label{eq_er_objective}
+J(\theta) = \mathbb{E}_\pi\left[ \sum_{t=0}^\infty \gamma^t \cdot R_{t+1} \right]
+\end{equation}
+
+Value Function $V^\pi(s)$ and Action Value function $Q^\pi(s, a)$ defined as:
+\begin{align*}
+V^\pi(s) &= \mathbb{E}_\pi\left[ 
+\sum_{k=t}^\infty\gamma^{k-t}\cdot \mathcal{R}_{k+1} | \mathcal{S}_t = s
+\right] \quad \text{for all } t=0,1,2,\ldots \\
+Q^\pi(s,a) &= \mathbb{E}_\pi\left[  
+\sum_{k=t}^\infty\gamma^{k-t}\cdot \mathcal{R}_{k+1} | \mathcal{S}_t = s, \mathcal{A}_t=a
+\right] \quad \text{for all } t=0,1,2,\ldots 
+\end{align}
+Advantage Function:
+$$
+\mathcal{A}^\pi(s,a) = Q^\pi(s,a) - V^\pi(s)
+$$
+Also, $p(s\rightarrow s', t, \pi)$ will be a key function for us - it denotes the 
+probability of going from state $s$ to $s'$ in $t$ steps by following policy $\pi$
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Policy Gradient Theorem}
+
+\subsubsection{Discounted-Aggregate State-Visitation Measure}
+
+折算——汇总状态——探寻测度
+
+下面我们对公式 \ref{eq_er_objective} 进行变换：
+\begin{align}
+J(\theta) 
+&= \mathbb{E}_\pi\left[ \sum_{t=0}^\infty \gamma^t \cdot \mathcal{R}_{t+1} \right] \notag \\
+&= \sum_{t=0}^\infty \gamma^t \cdot \mathbb{E}_\pi[\mathcal{R}_{t+1}] \notag \\
+&= \sum_{t=0}^\infty \gamma^t \cdot \sum_{s\in\mathcal{N}}\left(
+\sum_{\mathcal{S}_0\in\mathcal{N}}p_0(\mathcal{S}_0)\cdot p(\mathcal{S}_0\rightarrow s,t,\pi)
+\right) \cdot \sum_{a\in\mathcal{A}}\pi(s,a;\theta)\cdot\mathcal{R}_s^a \notag \\
+&= \sum_{s\in\mathcal{N}}\left(\sum_{\mathcal{S}_0\in\mathcal{N}}\sum_{t=0}^\infty \gamma^t \cdot 
+p_0(\mathcal{S}_0)\cdot p(\mathcal{S}_0\rightarrow s,t,\pi)
+\right) \cdot \sum_{a\in\mathcal{A}}\pi(s,a;\theta)\cdot\mathcal{R}_s^a \notag \\
+&= \sum_{s\in\mathcal{N}}\rho^\pi(s)
+\cdot \sum_{a\in\mathcal{A}}\pi(s,a;\theta)\cdot\mathcal{R}_s^a
+\end{align}
+where $\rho^\pi(s) = \sum_{\mathcal{S}_0\in\mathcal{N}}\sum_{t=0}^\infty \gamma^t \cdot 
+p_0(\mathcal{S}_0)\cdot p(\mathcal{S}_0\rightarrow s,t,\pi)$  is the key function
+(for PG) we'll refer to as Discounted-Aggregate State-Visitation Measure.
+
+
+\subsubsection{Policy Gradient Theorem (PGT)}
+
+\begin{theorem}
+\begin{equation}
+\nabla_\theta J(\theta) = \sum_{s\in\mathcal{N}}\rho^\pi(s)
+\cdot \sum_{a\in\mathcal{A}}\nabla_\theta\pi(s,a;\theta)\cdot Q^\pi(s,a)
+\end{equation}
+\end{theorem}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Note: $\rho^\pi(s)$ depends on $\theta$, but there's no $\nabla_\theta\rho^\pi(s)$ term 
+in $\nabla_\theta J(\theta)$
+
+\item[-]
+Note: $\nabla_\theta\pi(s,a;\theta) = \pi(s,a;\theta)\cdot\nabla_\theta\log\pi(s,a;\theta)$
+
+\item[-]
+So we can simply generate sampling traces, and at each time step, calculate $(\nabla_\theta
+\log\pi(s,a;\theta))\cdot Q^\pi(s,a)$ (probabilities implicit in paths)
+
+\item[-]
+Note: $\nabla_\theta\log\pi(s,a;\theta)$ is Score function (Gradient of log-likelihood)
+
+\item[-]
+We will estimate $Q^\pi(s,a)$ with a function approximation $Q(s,a;{\bf w})$
+
+\item[-]
+We will later show how to avoid the estimate bias of $Q(s,a;{\bf w})$
+
+\item[-]
+This numerical estimate of $\nabla_\theta J(\theta)$ enables {\bf Policy Gradient Ascent}
+
+\item[-]
+Let us look at the score function of some canonical $\pi(s,a;\theta)$
+
+\end{itemize}
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{REINFORCE Derivation}
+
+In deriving the most basic policy gradiant algorithm, REINFORCE, we seek the optimal policy 
+$ \color{Red}{\pi^*} $
+that will maximize the total expected reward:
+$$
+\pi^{\ast} = \underset{\pi}{\operatorname{argmax}} \mathbb{E}_{\tau \sim p{\theta}(\tau)}[R(\tau)] 
+$$
+where
+\begin{align*}
+\tau &= (s_1, a_1, \dots, s_T, a_T ) \\
+R(\tau) &= \sum_{t=1}^{T}r(s_t, a_t) \\
+p_{\theta}(\tau) &= p_{\theta}(s_1, a_1, ..., s_T, a_T). 
+\end{align}
+
+The {\bf trajectory} $ \tau $ is a sequence of states and actions experienced by the agent, 
+$ R(\tau) $ is the {\bf return}, and $ p_\theta (\tau) $ is the probability of observing that 
+particular sequence of states and actions. It is important to note that $ p_\theta (\tau) $ 
+is a function of both the environment transition dynamics and the policy $ \pi $.
+
+Since the policy $ \pi $ is parameterized by $ \theta $, finding the optimal policy 
+$ \pi^* $ is equivalent to finding the optimal parameter vector $ \theta^{\ast} $:
+\begin{align*}
+\theta^{\ast} = \underset{\theta}{\operatorname{argmax}} \mathbb{E}_{\tau \sim p{\theta}(\tau)}[R(\tau)] 
+\end{align}
+Thus, we can define our objective $ J(\theta) $ to be the total expected reward:
+\begin{align*}
+J(\theta) = \mathbb{E}_{\tau \sim p\theta(\tau)}[R(\tau)] 
+\end{align}
+
+One way to optimize this objective is to take the derivative and then use gradient ascent. 
+The calculation of the gradient goes as follows:
+\begin{eqnarray}
+\nabla J(\theta) &=&  \nabla \mathbb{E}_{\tau \sim p \theta (\tau)}[R(\tau)]  \tag{8} \\
+&=& \nabla \int  p \theta(\tau) R(\tau) \mathrm{d\tau}  \tag{9} \\
+&=& \int \nabla  p \theta (\tau) R(\tau) \mathrm{d\tau}  \tag{10} \\
+&=& \int p \theta (\tau) \nabla log p \theta (\tau) R(\tau) \mathrm{d\tau}  \tag{11} \\
+&=& \mathbb{E}_{\tau \sim p\theta (\tau)}[\nabla log p \theta (\tau) R(\tau)]  \tag{12}
+\end{eqnarray}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Is the Policy Gradient a Gradient?}
+%-------------------------------------------
+% https://all.cs.umass.edu/pubs/2020/Nota%20and%20Thomas%20-%20Is%20the%20Policy%20Gradient%20a%20Gradient.pdf
+
+
+$\mathfrak{a}$
 

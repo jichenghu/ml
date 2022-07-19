@@ -1,5 +1,8 @@
 ﻿\chapter{Soft Actor-Critic}
 
+SAC：Soft Actor-Critic，Off-Policy Maximum Entropy Deep Reinforcement 
+Learning with a Stochastic Actor。
+
 
 待重读的资源：
 \begin{itemize}
@@ -22,9 +25,76 @@
 \url{https://zhuanlan.zhihu.com/p/70360272}
 \end{itemize}
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \section{Overview}
+%-------------------------------------------
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Objective}
+
+Deep Reinforcement Learning Algorithms suffer from two main problems : one being high 
+sample complexity (large amounts of data needed) and the other being thier brittleness 
+with respect to learning rates, exploration constants and other hyperparameters. 
+Algorithms such as DDPG and Twin Delayed DDPG are used to tackle the challenge of high 
+sample complexity in actor-critic frameworks with continuous action-spaces. However, 
+they still suffer from brittle stability with respect to their hyperparameters. Soft 
+Actor-Critic introduces an actor-critic framework for arrangements with continuous 
+action spaces wherein the standard objective of reinforcement learning, i.e., maximizing 
+expected cumulative reward is augmented with an additional objective of entropy 
+maximization which provides a substantial improvement in exploration and robustness. 
+The objective can be mathematically represented as
+$$
+J(\pi) = \Sigma_{t=0}^{T}\gamma^t\mathbb{E}_{(s_t, a_t) \sim \rho_{\pi}}[r(s_t, a_t) + \alpha \mathcal{H}(\pi(\cdot \vert s_t))]
+$$
+where $\alpha$ also known as the temperature parameter determines the relative importance 
+of the entropy term against the reward, and thus controls the stochasticity of the optimal 
+policy and $\mathcal{H}$ represents the entropy function. The entropy of a random variable 
+$x$ following a probability distribution $P$ is defined as
+$$
+\mathcal{H}(P) = \mathbb{E}_{\mathcal{x} \sim P}[-logP(\mathcal{x})]
+$$
+
+Soft actor-critic is based on the maximum entropy reinforcement learning 
+framework, which considers the entropy augmented objective
+
+\begin{equation}\label{sac_entropy_augmented_objective}
+J(\pi) = \mathbb{E}_\pi\left[
+\sum_tr(s_t, a_t) - \alpha \log\left(\pi(a_t | s_t)\right)
+\right],
+\end{equation}
+\noindent{}where $s_t$ and $a_t$ are the state and the action, and the 
+expectation is taken over the policy and the true dynamics of the system. 
+In other words, the optimal policy not only maximizes the expected return 
+(first summand) but also the expected entropy of itself (second summand). 
+The trade-off between the two is controlled by the non-negative temperature 
+parameter $\alpha$, and we can always recover the conventional, maximum 
+expected return objective by setting $\alpha=0$. We can view this objective 
+as an entropy constrained maximization of the expected return, and learn 
+the temperature parameter automatically instead of treating it as a 
+hyperparameter. 
+\url{https://arxiv.org/abs/1812.05905}
+
+This objective can be interpreted in several ways. We can view the entropy 
+term as an uninformative (uniform) prior over the policy, but we can also 
+view it as a regularizer or as an attempt to trade off between exploration 
+(maximize entropy) and exploitation (maximize return). In 
+\href{https://bair.berkeley.edu/blog/2017/10/06/soft-q-learning/}{another post}, 
+the Berkeley group gave a broader overview and proposed applications that are 
+unique to maximum entropy RL, and a probabilistic view of the objective is 
+discussed in a \href{https://arxiv.org/abs/1805.00909}{tutorial}. 
+Soft actor-critic maximizes this objective by parameterizing a Gaussian policy 
+and a $Q$-function with a neural network, and optimizing them using approximate 
+dynamic programming. They defer further details of soft actor-critic to the 
+\href{https://arxiv.org/abs/1812.05905}{technical report}. In this section, 
+we will view the objective as a grounded way to derive better reinforcement 
+learning algorithms that perform consistently and are sample efficient enough 
+to be applicable to real-world robotic applications, and—perhaps surprisingly—can 
+yield state-of-the-art performance under the conventional, maximum expected 
+return objective (without entropy regularization) in simulated benchmarks.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Actor-critic algorithm}
 % https://greentec.github.io/reinforcement-learning-fourth-en/
 
@@ -32,11 +102,44 @@ Actor Critic 合并了以值为基础(比如$Q$-learning)和以动作概率为�
 Gradients)的两类强化学习算法。Actor 的前身是 Policy Gradients, 
 该方法可以在连续动作中选取合适的动作；Critic 的前生是 $Q$-learning 
 或者其他以值为基础的学习法, 能进行单步更新, 但并不能处理连续动作。而传统的 Policy 
-Gradients 则是回合更新。我们就比较贪心了，又想处理连续动作，又想单步更新，
-那就你们两个结合一下呗。actor 网络输入 state，输出action；critic 网络输入为 state
+Gradients 则是回合更新。如果既想处理连续动作，又要进行单步更新，
+那就需要将二者结合一下。actor 网络输入 state，输出 action；critic 网络输入为 state
 和 action，输出为 $Q$ 值，就组成了 Actor Critic。但传统 Actor-Critic 
-前后相关性高，学习片面，于是人们有学习了 DQN 中的方法，使用一个 Replay buffer 
-和两个结构相同, 但参数更新频率不同的神经网络来训练，于是就有了 DDPG。
+前后相关性高，学习片面，于是人们采用了 DQN 中的方法，使用一个 Replay buffer 
+和两个结构相同, 但参数更新频率不同的神经网络来训练（更新慢的叫 target network，
+参见 \ref{subsubsection_double_deep_q_network}），于是就有了 DDPG。
+
+\subsubsection{Value Function-based and Policy-based RL}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-] Value Function-based
+    \begin{itemize}
+    \item
+    Learn Value Function (with a function approximation)
+    \item
+    Policy is implicit - readily derived from Value Function (eg: $\epsilon$-greedy)
+    \end{itemize}
+
+\item[-] Policy-based
+    \begin{itemize}
+    \item
+    Learn Policy (with a function approximation)
+    \item
+    No need to learn a Value Function
+    \end{itemize}
+
+\item[-] Actor-Critic
+    \begin{itemize}
+    \item
+    Learn Policy (Actor)
+    \item
+    Learn Value Function (Critic)
+    \end{itemize}
+
+\end{itemize}
 
 Here we give a brief introduction to actor-critic algorithms that 
 outperform many algorithms in applications.
@@ -176,6 +279,7 @@ see how A2C agents judge the environment.
 % to be continue
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Soft actor-critic}
 
 % https://blog.csdn.net/weixin_44436360/article/details/108077422
@@ -214,6 +318,7 @@ SAC算法是面向最大熵强化学习开发的一种off-policy算法。
 Soft Actor-Critic在公开的benchmark中取得了非常好的效果，并且能直接应用到真实机器人上。
 最关键的是，Soft Actor-Critic是完全开源的，因此，深入理解Soft Actor-Critic 算法具有非常重要的意义。
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{相关链接}
 
 Papers:
@@ -246,55 +351,113 @@ Codes:
 \end{itemize}
 
 
-\section{SAC}
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Algorithm Details}
+%-------------------------------------------
+
 
 % \noindent 最大熵强化学习算法SAC \\
 % https://www.toutiao.com/article/6845540775015481870/
 % https://bair.berkeley.edu/blog/2018/12/14/sac/
+% https://genrl.readthedocs.io/en/latest/usage/tutorials/Deep/SAC.html
+
+Soft Actor-Critic is mostly used in two variants depending on whether the temperature 
+constant $\alpha$ is kept constant throughout the learning process or if it is learned 
+as a parameter over the course of learning. 
+\href{https://genrl.readthedocs.io/en/latest/usage/tutorials/Deep/SAC.html}{GenRL} 
+uses the latter one.
 
 
-SAC：Soft Actor-Critic，Off-Policy Maximum Entropy Deep Reinforcement 
-Learning with a Stochastic Actor。
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Action-Value Networks}
 
-Soft actor-critic is based on the maximum entropy reinforcement learning 
-framework, which considers the entropy augmented objective
-
-\begin{equation}\label{sac_entropy_augmented_objective}
-J(\pi) = \mathbb{E}_\pi\left[
-\sum_tr(s_t, a_t) - \alpha \log\left(\pi(a_t | s_t)\right)
-\right],
-\end{equation}
-\noindent{}where $s_t$ and $a_t$ are the state and the action, and the 
-expectation is taken over the policy and the true dynamics of the system. 
-In other words, the optimal policy not only maximizes the expected return 
-(first summand) but also the expected entropy of itself (second summand). 
-The trade-off between the two is controlled by the non-negative temperature 
-parameter $\alpha$, and we can always recover the conventional, maximum 
-expected return objective by setting $\alpha=0$. We can view this objective 
-as an entropy constrained maximization of the expected return, and learn 
-the temperature parameter automatically instead of treating it as a 
-hyperparameter. 
-\url{https://arxiv.org/abs/1812.05905}
-
-This objective can be interpreted in several ways. We can view the entropy 
-term as an uninformative (uniform) prior over the policy, but we can also 
-view it as a regularizer or as an attempt to trade off between exploration 
-(maximize entropy) and exploitation (maximize return). In 
-\href{https://bair.berkeley.edu/blog/2017/10/06/soft-q-learning/}{another post}, 
-the Berkeley group gave a broader overview and proposed applications that are 
-unique to maximum entropy RL, and a probabilistic view of the objective is 
-discussed in a \href{https://arxiv.org/abs/1805.00909}{tutorial}. 
-Soft actor-critic maximizes this objective by parameterizing a Gaussian policy 
-and a $Q$-function with a neural network, and optimizing them using approximate 
-dynamic programming. They defer further details of soft actor-critic to the 
-\href{https://arxiv.org/abs/1812.05905}{technical report}. In this section, 
-we will view the objective as a grounded way to derive better reinforcement 
-learning algorithms that perform consistently and are sample efficient enough 
-to be applicable to real-world robotic applications, and—perhaps surprisingly—can 
-yield state-of-the-art performance under the conventional, maximum expected 
-return objective (without entropy regularization) in simulated benchmarks.
+SAC learns a ploicy $\pi_\theta$ and two $Q$ functions $Q_{\phi_1}$, $Q_{\phi_2}$ and their 
+target networks concurrently. The two $Q$-functions are learned in a fashion similar to TD3 
+where a common target is considered for both the $Q$ functions and Clipped Double $Q$-learning 
+is used to train the network. However, unlike TD3, the next-state actions used in the target 
+are calculated using the current policy. Since, the optimization objective also involves 
+maximising the entropy, the new $Q$-value can be expressed as
+\begin{align*}
+Q^{\pi}(s, a) &= \mathbb{E}_{(s' \sim P, a' \sim \pi)}[R(s, a, s') + 
+\gamma(Q^{\pi}(s', a') + \alpha\mathcal{H}(\pi(\cdot \vert s')))] \\
+Q^{\pi}(s, a) &= \mathbb{E}_{(s' \sim P, a' \sim \pi)}[R(s, a, s') + 
+\gamma(Q^{\pi}(s', a') + \alpha log\pi(a' \vert s'))]
+\end{align}
+Thus, the action-value for one state-action pair can be approximated as
+$$
+Q^{\pi}(s, a) \approx r + \gamma(Q^{\pi}(s', \tilde{a}') - \alpha \log \pi(\tilde{a}' \vert s'))
+$$
+where $\tilde{a}'$ (action taken in next state) is sampled from the policy.
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Experience Replay}
+
+SAC also uses {\bf Replay Buffer} like other off-policy algorithms. Whenever a transition 
+$(s_t,a_t,r_t,s_{t+1})$ is encountered, it is stored into the replay buffer. Batches of these 
+transitions are sampled while updating the network parameters. This helps in breaking the 
+strong correlation between the updates that would have been present had the transitions been 
+trained and discarded immediately after they are encountered and also helps to avoid the rapid 
+forgetting of the possibly rare transitions that would be useful later on.
+
+\begin{lstlisting}[language=Python]
+def log(self, timestep: int) -> None:
+    """Helper function to log
+
+    Sends useful parameters to the logger.
+
+    Args:
+        timestep (int): Current timestep of training
+    """
+    self.logger.write(
+        {
+            "timestep": timestep,
+            "Episode": self.episodes,
+            **self.agent.get_logging_params(),
+            "Episode Reward": safe_mean(self.training_rewards),
+\end{lstlisting}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{$Q$-Network Optimization}
+
+Just like TD3, SAC uses Clipped Double $Q$-Learning to calculate the target values for 
+the $Q$-value network
+$$
+y^{t}(r, s', d) = r + \gamma (min_{j=1,2}Q_{\phi_{targ,j}}(s', \tilde{a}') - 
+\alpha \log \pi_{\theta}(\tilde{a}' \vert s'))
+$$
+where $\tilde{a}'$ is sampled from the policy. The loss function can then be defined as
+$$
+L(\phi_{i}, \mathcal{D}) = \mathbb{E}_{(s, a, r, s', d) \sim 
+\mathcal{D}}[(Q_{\phi_{i}}(s, a) - y^t(r, s', d))^2]
+$$
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Action Selection and Policy Optimization}
+
+The main aim of policy optimization will be maximize the value function which in this case 
+can be defined as
+$$
+V^{\pi}(s) = \mathbb{E}_{a \sim \pi}[Q^{\pi}(s, a) - \log \pi(a \vert s)]
+$$
+In SAC, a reparameterization trick is used to sample actions from the policy to ensure that 
+sampling from the policy is a differentiable process. The policy is now parameterised as
+\begin{align*}
+\tilde{a}'_t &= \mathcal{f}_\theta(\xi_t; s_t) \\
+\tilde{a}'_{\theta}(s, \xi) &= tanh(\mu_\theta(s) + \sigma_\theta(s) \odot \xi) \\
+\xi &\sim \mathcal{N}(0, 1)
+\end{align}
+The maximization objective is now defined as
+$$
+\max_{\theta} \mathbb{E}_{(s \sim \mathcal{D}, \xi \sim 
+\mathcal{N})}[\min_{j=1,2}Q_{\phi_j}(s, \tilde{a}_\theta(s, \xi)) - 
+\alpha \log \pi_{\theta}(\tilde{a}_{\theta}(s, \xi) \vert s)]
+$$
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{模型结构}
 
 模型同时学习action value Q、state value V和policy $\pi$。
