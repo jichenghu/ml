@@ -970,6 +970,14 @@ $ P $ are the state transition dynamics, and and $ \gamma $ is the discount fact
 {\bf to find a policy $ \pi $ that maps states $ s \in S $ to optimal or near-optimal actions 
 $ a \in A $}.
 
+在强化学习中，有三个组成部分：演员（actor）、环境和奖励函数。其中环境和奖励函数不是我们可以控制的，
+在开始学习之前就已经事先给定。演员里会有一个策略，它用来决定演员的动作。策略就是给定一个外界输入，
+它会输出演员现在应该要执行的动作。我们唯一可以做的就是调整演员里面的策略，使得演员可以得到最大的奖励。
+
+当我们将深度学习与强化学习相结合时，策略 $\pi$ 就是一个网络，用 $\theta$ 表示 $\pi$ 的参数。
+演员根据概率的分布来决定它要采取的动作，概率分布不同，演员采取的动作也不同。简单来说，
+策略的网络输出是一个概率分布，演员根据这个分布去做{\bf 采样}，决定实际上要采取的动作是哪一个。
+
 
 %+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Policy Gradients}
@@ -1037,7 +1045,7 @@ Policy Gradient methods are a family of reinforcement learning algorithms that r
 a parameterized policy directly. As alluded to above, the goal of the policy is to maximize the 
 total expected reward:
 $$
-\mathbb{E}_{\tau \sim p\theta (\tau)} [R(\tau)]. \tag{1}
+\mathbb{E}_{\tau \sim p_\theta (\tau)} [R(\tau)]. \tag{1}
 $$
 Policy gradient methods have a number of benefits over other reinforcement learning methods. First, 
 by optimizing the policy directly, it is not required that we also learn a value function (although 
@@ -1222,13 +1230,13 @@ Let us look at the score function of some canonical $\pi(s,a;\theta)$
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
-\subsection{REINFORCE Derivation}
+\subsection{The objective}
 
-In deriving the most basic policy gradiant algorithm, REINFORCE, we seek the optimal policy 
+In deriving the most basic policy gradiant algorithm, we seek the optimal policy 
 $ \color{Red}{\pi^*} $
 that will maximize the total expected reward:
 $$
-\pi^{\ast} = \underset{\pi}{\operatorname{argmax}} \mathbb{E}_{\tau \sim p{\theta}(\tau)}[R(\tau)] 
+\pi^{\ast} = \underset{\pi}{\operatorname{argmax}} \mathbb{E}_{\tau \sim p_{\theta}(\tau)}[R(\tau)] 
 $$
 where
 \begin{align*}
@@ -1237,30 +1245,1013 @@ R(\tau) &= \sum_{t=1}^{T}r(s_t, a_t) \\
 p_{\theta}(\tau) &= p_{\theta}(s_1, a_1, ..., s_T, a_T). 
 \end{align}
 
+\begin{equation*}
+\underbrace{p_{\theta}(s_1, a_1, ..., s_T, a_T)}_{p_{\theta}(\tau)} = p(s_1)
+\prod_{t=1}^T p_\theta(a_t|s_t) p(s_{t+1}|s_t, a_t)
+\end{equation}
+
+\begin{align*}
+\theta^{\ast} = \underset{\theta}{\operatorname{argmax}} \mathbb{E}_{\tau \sim p_{\theta}(\tau)}
+\left[\sum_t r(s_t, a_t)\right] 
+\end{align}
+
 The {\bf trajectory} $ \tau $ is a sequence of states and actions experienced by the agent, 
-$ R(\tau) $ is the {\bf return}, and $ p_\theta (\tau) $ is the probability of observing that 
-particular sequence of states and actions. It is important to note that $ p_\theta (\tau) $ 
-is a function of both the environment transition dynamics and the policy $ \pi $.
+so $\tau$ is just a shorthand for $s_1, a_1, s_2, a_2$, etc up until $s_T, a_T$.
+$ R(\tau) $ is the {\bf return}, and {\bf $p_\theta(\tau)$ is referring to this distribution 
+over trajectory $\tau$}. Or we can say $ p_\theta (\tau) $ is the probability of observing 
+that particular sequence of states and actions, and the reason that it has a {\bf subscript 
+$\theta$} is of course because it is influenced by the policy. It is important to note that 
+$p_\theta (\tau)$ is a function of both the environment transition dynamics and the policy 
+$ \pi $.
 
 Since the policy $ \pi $ is parameterized by $ \theta $, finding the optimal policy 
 $ \pi^* $ is equivalent to finding the optimal parameter vector $ \theta^{\ast} $:
 \begin{align*}
-\theta^{\ast} = \underset{\theta}{\operatorname{argmax}} \mathbb{E}_{\tau \sim p{\theta}(\tau)}[R(\tau)] 
+\theta^{\ast} = \underset{\theta}{\operatorname{argmax}} \mathbb{E}_{\tau \sim p_{\theta}(\tau)}[R(\tau)] 
 \end{align}
-Thus, we can define our objective $ J(\theta) $ to be the total expected reward:
+For the infinite horizon case the above formula can be writte as:
 \begin{align*}
-J(\theta) = \mathbb{E}_{\tau \sim p\theta(\tau)}[R(\tau)] 
+\underset{\text{infinite horizon case}}
+{\theta^{\ast} = \underset{\theta}{\operatorname{argmax}} \mathbb{E}_{(s,a) \sim p_{\theta}(s,a)}[r(s,a)] 
+}
+\end{align}
+For the finite horizon case we can write:
+\begin{align*}
+\underset{\text{finite horizon case}}
+{\theta^{\ast} = \underset{\theta}{\operatorname{argmax}} \sum_{t=1}^T \mathbb{E}_{(s_t,a_t) 
+\sim p_{\theta}(s_t,a_t)}[r(s_t,a_t)] 
+}
+\end{align}
+
+
+\subsubsection{The infinite horizon case}
+
+In this case, we can define our objective $ J(\theta) $ to be the total expected reward:
+\begin{align*}
+J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}[R(\tau)] 
 \end{align}
 
 One way to optimize this objective is to take the derivative and then use gradient ascent. 
 The calculation of the gradient goes as follows:
 \begin{eqnarray}
-\nabla J(\theta) &=&  \nabla \mathbb{E}_{\tau \sim p \theta (\tau)}[R(\tau)]  \tag{8} \\
-&=& \nabla \int  p \theta(\tau) R(\tau) \mathrm{d\tau}  \tag{9} \\
-&=& \int \nabla  p \theta (\tau) R(\tau) \mathrm{d\tau}  \tag{10} \\
-&=& \int p \theta (\tau) \nabla log p \theta (\tau) R(\tau) \mathrm{d\tau}  \tag{11} \\
-&=& \mathbb{E}_{\tau \sim p\theta (\tau)}[\nabla log p \theta (\tau) R(\tau)]  \tag{12}
+\nabla J(\theta) &=&  \nabla \mathbb{E}_{\tau \sim p_\theta (\tau)}[R(\tau)]  \tag{8} \\
+&=& \nabla \int  p_\theta(\tau) R(\tau) \mathrm{d\tau}  \tag{9} \\
+&=& \int \nabla  p_\theta (\tau) R(\tau) \mathrm{d\tau}  \tag{10} \\
+&=& \int p_\theta (\tau) \nabla log p_\theta (\tau) R(\tau) \mathrm{d\tau}  \tag{11} \\
+&=& \mathbb{E}_{\tau \sim p_\theta (\tau)}[\nabla log p_\theta (\tau) R(\tau)]  \tag{12}
 \end{eqnarray}
+
+
+\subsubsection{The finite horizon case}
+
+In this subsubsection let's just stick to the more convenient and simple finite horizon 
+case. Let's talk about how we can actually optimize the subjective, how we can maximize 
+the expected value of the total reward under the trajectory distribution induced by the 
+policy $\pi_\theta$.
+
+\begin{align*}
+\theta^{\ast} = \underset{\theta}{\operatorname{argmax}} 
+\underbrace{\mathbb{E}_{\tau \sim p_{\theta}(\tau)} \left[\sum_t r(s_t, a_t)\right]}_{J(\theta)}
+\end{align}
+
+\begin{align}
+J(\theta) = \mathbb{E}_{\tau \sim p_{\theta}(\tau)} \left[\sum_t r(s_t, a_t)\right]
+\approx& \frac{1}{N}\underset{\uparrow}{\sum_i}\sum_t r(s_{i,t}, a_{i,t}) \label{finite_horizon_J_theta}\\
+&\text{sum over samples from }\pi_\theta \notag
+\end{align}
+
+Before we actually get into the whole maximization thing, let's try to think about something 
+even more basic. How do we even evaluate this objective. how do we obtain an estimate of 
+this expected value, if we do not know the transition distribution, we do not know the 
+initial state distribution, we just have the world to interact with our policy.
+
+How we can obtain an estimate for this expected value?
+One of the ways that you can estimate an expectation, is that you can {\bf generate samples 
+from the distribution under which the expectation is taken, and then averaged together the 
+values of the quantity inside the expectation over those samples}. So the distribution is 
+$P_\theta(\tau)$, the quantity of interest is the sum of the rewards over the trajectories. 
+So one of the ways you can estimate that expectation is to obtain samples from $P_\theta(\tau)$, 
+and the way that you can obtain those samples is by actually using your policy to act in 
+the world. So if your policy controls a car driving on that cliff, just drive the car 50 
+times, average the total reward over those 50 trials, and that's your estimate of the 
+expected value of the total reward. It's a very simple way to obtain an estimate of an 
+expected value, and we'll actually use this sampling based estimator multiple times in 
+this subsection, not just to obtain the value for the objective, but also to actually 
+figure out how to improve it.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/policy/steps_in_trajectories.jpg}
+%\caption{Soft state value}
+%\label{fig:label}
+\end{figure}
+
+So for notational convenience, $J(\theta)$ refers to this whole expectation. so $J(\theta)$ 
+is basically the objective of reinforcement learning as a function of the policy parameters 
+$\theta$. So $J(\theta)$ is equal to this expectation, and We can approximate it using 
+samples. So when you see me write an equation like this, that just means I drew capital and 
+samples, and I'm summing over all those samples of the quantity inside the expectation, 
+which is the sum over time of the reward. So you generate some samples {\bf evaluate the 
+total reward of each of those sample trajectories by summing together the rewards along all 
+the time steps in those trajectories}. So maybe the green one is the best one, the red one 
+is the worst one, and the orange one is somewhere in the middle, average those together, 
+and that gives you an unbiased estimate of the expected reward of your policy. The 
+subscript $i$ indexes over the samples. So this sum over $i$ from $i$ equals $1$ to capital 
+$N$. So that lets us evaluate the objective.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Direct Policy Differentiation}
+
+Now let's talk about actually trying to maximize that objective discussed in the last 
+subsection. So hopefully all of you know that if you calculate a gradient, then you can take 
+a step in the direction of that gradient to increase the function value, take a step in the 
+direction of the negative gradient to decrease the function value. Since we are using 
+rewards, we'd like to maximize it, if we had costs, we would minimize it. So here since we 
+want to maximize the quantity what we want to do is calculate the gradient, and take a step 
+in the direction of the gradient. 
+
+\begin{align*}
+J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta(\tau)}[R(\tau)] 
+\end{align}
+
+So for notational convenience, again if you see me write some $p\theta$ or $\pi_\theta$ 
+that denotes the distribution over trajectories, unfortunately we are here a little 
+inconsistent $p_\theta(\tau)$ and $\pi_\theta(\tau)$ mean exactly the same thing. so don't 
+worry about that, We'll fix those later, and $R(\tau)$ is just shorthand for the total 
+reward over the trajectory $\tau$. 
+\begin{align*}
+J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta(\tau)}
+\underbrace{[R(\tau)]}_{\sum_{t=1}^Tr(s_t,a_t)}
+\end{align}
+So if you see something of $\tau$, that just denotes the sum in the case of rewards, or 
+the product in the case of distributors. So we can write out an expectation like the following, 
+\begin{align*}
+J(\theta) = \mathbb{E}_{\tau \sim p_\theta(\tau)}
+\underbrace{[R(\tau)]}_{\sum_{t=1}^Tr(s_t,a_t)} = \int p_\theta(\tau)R(\tau)d\tau
+\end{align}
+as an integral of the probability of that trajectory times the reward of that trajectory. 
+
+And now if we want to calculate the derivative, we're going to try to differentiate this 
+thing, so $J(\theta)$ is equal to this integral.
+\begin{align*}
+\nabla_\theta J(\theta) 
+= \int \nabla_\theta  p_\theta (\tau) R(\tau) \mathrm{d\tau} 
+\end{align}
+so for the derivative, since integrals are linear, and I can put the gradient operator 
+inside of it. what I really want is the gradient with respect to $\theta$ of $p_\theta(
+\tau)$ times $R(\tau)$. now this quantity might at first seem a little daunting to obtain, 
+because $p_\theta(\tau)$ contains inside of it the unknown initial state distribution, 
+and the unknown transition distribution. So we need to do a little bit of kind of calculus 
+magic to really get this quantity. and there's a very convenient identity that we can 
+exploit that makes us very straightforward to get.
+
+\begin{emp_box}
+a convenient identity
+\begin{align}
+\label{eq_convenient_identity}
+\textcolor{cyan}{p_\theta(\tau)\nabla_\theta\log p_\theta(\tau)}
+= p_\theta(\tau)\frac{\nabla_\theta p_\theta(\tau)}{p_\theta(\tau)}
+= \textcolor{blue}{\nabla_\theta p_\theta(\tau)}
+\end{align}
+\end{emp_box}
+\noindent
+So this is the identity, if you have a quantity like this, $p_\theta(\tau)$ times 
+$\nabla_\theta\log p_\theta(\tau)$, then you can look up the equation for the derivative of 
+a logarithm in a calculus textbook, and find out the derivative of a logarithm can be 
+written as the derivative of the quantity that you're taking the logarithm of, which is 
+$p_\theta(\tau)$, divided by that quantity which is $p_\theta(\tau)$. so 
+$p_\theta(\tau)\nabla_\theta\log p_\theta(\tau)$ can be written as 
+$p_\theta(\tau)\nabla_\theta\log p_\theta(\tau)$ divided by $p_\theta(\tau)$, and that's 
+quite nice, because now the denominator here cancels with this quantity, and you're just 
+left with $\nabla_\theta\log p_\theta(\tau)$. 
+
+so grad $p_\theta(\tau)$ is what we've got 
+over here, so we can substitute the left hand side of this equation, and turn that integral 
+into the integral over $\tau$ of $p_\theta(\tau)$, $\nabla_\theta\log p_\theta(\tau)$, 
+times $R(\tau)$. 
+
+\begin{align*}
+\nabla_\theta J(\theta) 
+&= \int \textcolor{blue}{\nabla_\theta  p_\theta (\tau)} R(\tau) \mathrm{d\tau}  \\
+&= \int \textcolor{cyan}{p_\theta (\tau) \nabla \log p_\theta (\tau)} R(\tau) \mathrm{d\tau}  \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}\left[ \nabla_\theta\log p_\theta(\tau)R(\tau) \right] 
+\end{align}
+and this is now very convenient for us, because this integral has a $p_\theta(\tau)$ in 
+the front of it, which means that it can also be written out as an expectation. So the 
+derivative of $J_\theta$ can be written again as an expectation with respect to 
+$p_\theta(\tau)$ of $\nabla_\theta\log p_\theta(\tau)R(\tau)$. now we're not quite out of 
+the woods yet, because we still need to figure out what this $\nabla_\theta\log p$ actually 
+is equal to.
+
+So here we're going to bring back our equation for the distribution over trajectories. So 
+this is the $p_\theta(\tau)$, and what it's equal to:
+\begin{equation*}
+\underbrace{p_{\theta}(s_1, a_1, ..., s_T, a_T)}_{p_{\theta}(\tau)} = p(s_1)
+\prod_{t=1}^T\pi_\theta(a_t|s_t) p(s_{t+1}|s_t, a_t)
+\end{equation}
+and because we're after $\nabla_\theta\log p_\theta(\tau)$, we take the logarithm of both 
+sides, now when you take the logarithm of a product, you get a sum of logarithms:
+\begin{equation*}
+\textcolor{cyan}{\log p_\theta(\tau)} = \textcolor{blue}{\log p(s_1) + \sum_{t=1}^T\log p_\theta(a_t|s_t)
++ \log p(s_{t+1}|s_t, a_t)}
+\end{equation}
+So if we take the $\log$ of both sides, we get $\log p_\theta(\tau)$ is equal to this huge 
+thing, but this huge thing basically consists of three types of log transition probabilities, 
+and $\log$ policy probabilities. So let's take that whole thing, and substitute that in 
+there for our $\log p_\theta$. We're trying to take the gradient of this whole thing. So we 
+don't really care about this quantity, we care about the gradient of this quantity. and of 
+course because we have a sum, we can push the gradient operator inside the sum. 
+\begin{align*}
+\nabla_\theta J(\theta) 
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}\left[ \nabla_\theta 
+\textcolor{cyan}{\log p_\theta(\tau)}R(\tau) \right] \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)} \nabla_\theta\left[ 
+\textcolor{blue}{\log p(s_1) + \sum_{t=1}^T\log p_\theta(a_t|s_t)
++ \log p(s_{t+1}|s_t, a_t)} \right] R(\tau)
+\end{align}
+So what $\nabla_\theta\log p(s_1)$ is equal to? zero. It's equal to zero because theta does 
+not affect the probability of starting an initial State, regardless of which policy We pick, 
+the universe will not change how its initial States for us. what is the derivative with 
+respect to theta of $\log p(s_{t+1}|s_t, a_t)$, again zero. yeah so regardless of how you 
+choose to buy or not buy lottery tickets, the probability of winning the lottery is not 
+altered by your policy, that's determined by the universe. So random transitions are 
+unaffected by $\theta$, initial state probabilities are not affected by $\theta$, so both of 
+these cancel out. and we're just left with the $\log p_\theta$ terms, which are actually 
+the only terms in the sum, that we know, because that's our policy. So we can rewrite the 
+gradients of the policy like this, 
+\begin{align*}
+\nabla_\theta J(\theta) 
+= \mathbb{E}_{\tau\sim p_\theta(\tau)} \left[\left( 
+\sum_{t=1}^T\nabla_\theta\log p_\theta(a_t|s_t) \right)
+\left( \sum_{t=1}^Tr(s_t,a_t) \right)\right]
+\end{align}
+removing all the terms whose derivative is $0$, and leaving just the 
+$\nabla_\theta\log p_\theta$ terms.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Evaluating the policy gradient}
+
+Now we have something very convenient, because we have a bunch of terms here, which we 
+can evaluate because the policy is actually known to us, we have a bunch of rewards here, 
+that we can evaluate. And all of this is taken in expectation under $p_\theta(\tau)$. So 
+now how can we estimate this policy gradient? It's going to be very similar to how we 
+evaluated the objective value before. Just like before we evaluated our reinforcement 
+learning objective value by generating samples, by actually running our policy in the 
+world, to get an estimate of an expectation in this form. now we'll do exactly the same 
+thing, only on those samples. So, recall equation \ref{finite_horizon_J_theta}, in the case 
+of finite horizon we have:
+\begin{align*}
+J(\theta) = \mathbb{E}_{\tau \sim p_{\theta}(\tau)} \left[\sum_t r(s_t, a_t)\right]
+\approx \frac{1}{N}\sum_i\sum_t r(s_{i,t}, a_{i,t}) 
+\end{align}
+we won't just sum together and average the rewards as above, we sum 
+together rewards and sum together these $\nabla_\theta\log p_\theta(\tau)$, multiply 
+them, and then average that:
+\begin{align*}
+\nabla_\theta J(\theta) 
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)} \left[\left( 
+\sum_{t=1}^T\nabla_\theta\log p_\theta(a_t|s_t) \right)
+\left( \sum_{t=1}^Tr(s_t,a_t) \right)\right] \\
+&\approx \frac{1}{N}\sum_{i=1}^N
+\left( \sum_{t=1}^T\nabla_\theta\log p_\theta(a_{i,t}|s_{i,t}) \right)
+\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right)
+\end{align}
+
+So in order to evaluate the policy gradient, we basically use the same ideas before, 
+using samples. So we generate some samples, evaluate their rewards, also evaluate 
+their $\nabla_\theta\log p$, and then average those together. So this is an equation 
+that we can actually implement in a computer to estimate the policy gradient using $N$ 
+samples. and then once we've evaluated the gradients, then all we do is we modify our 
+parameter values by taking the old parameters plus some learning rate times the 
+gradient, and that implements gradient ascent. in practice, you can use other more 
+powerful optimizers, but this is kind of the basic version.
+$$
+\theta \leftarrow \theta + \alpha\nabla_\theta J(\theta)
+$$
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/policy/policy_gradient_processing_flow.jpg}
+%\caption{Soft state value}
+%\label{fig:label}
+\end{figure}
+
+\noindent{\bf Q:} 
+How do we pick $N$, and is a somehow related to the horizon $T$. 
+
+\noindent{\bf A:} 
+The answer is that in practice we always choose $N$ heuristically. we discuss 
+some rules of thumb for how to choose $N$ as a hint needs to be a bit bigger than what 
+you're used to in deep learning in terms of the theory, there is some variance analysis 
+that can be done that relates $N$ to $T$. we won't cover in this section, but there is 
+some references on item we could discuss that afterwards.
+
+\noindent{\bf Q:} 
+How do you make sure that the trajectory you get actually match the probabilities that 
+you want, because you want this expectation to be under $p_\theta(\tau)$.
+
+\noindent{\bf A:} 
+The answer is that if you actually run your policy, the assumption in reinforcement 
+learning is that the process that generates a trajectory matches the distribution. So 
+when you basically request the environment please let me run my policy, it'll put you 
+in a state sample from $p(s_1)$, then you pick the first action from your policy, and 
+then you assume that the environment will then generate a sample from $P(s_2|s_1,a_1)$, 
+if this is not true, then basically but this isn't gonna work. we will discuss what 
+happens if you have samples from other distributions later on, though there are a few 
+tricks there.
+
+\noindent{\bf Q:} 
+Why is the reward of $\tau$ not dependent on $\theta$?
+
+\noindent{\bf A:} 
+Remember that the policy is actually a probability distribution. So the policy doesn't 
+just give you a one specific action for every state, $t$ actually gives you a probability 
+distribution over actions given States, once you've actually sampled those actions, 
+you have States and actions, you can plug those into the reward, the reward only depends 
+on the states and actions. so if you alter the probability of the actions, then the 
+expected reward will change, and that's actually already accounted for by these gradient 
+terms out front. another way to think about this, is if you think back to the lecture 
+from last week when I talked about how non-smooth functions, can still have smooth 
+expectations, this is basically the same thing. so the example I had last week with 
+falling off the cliff versus not falling, whether there was a probability the falling 
+action that was given by theta, if you go back to the slides from last week, you'll see 
+that there the equation for the reward was theta times reward for falling plus one minus 
+theta times reward for not falling. So even though the reward was non smooth, the whole 
+expectation is smooth in theta.
+
+So let's come back to the anatomy of a reinforcement learning algorithm. So last week I 
+talked about how every reinforcement learning algorithm consists of three parts, 
+generation of samples, fitting a model or estimating a return, and improving the policy. 
+and this algorithm does do all three of those things. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{pix/policy/policy_gradient_processing_flow.jpg}
+\caption{Three parts of policy gradient algorithm}
+%\label{fig:label}
+\end{figure}
+
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \textcolor{orange}{\frac{1}{N}\sum_{i=1}^N}
+\left( \sum_{t=1}^T\nabla_\theta\log p_\theta(a_{i,t}|s_{i,t}) \right)
+\textcolor{green}{\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right)}
+\end{align}
+
+$$
+\textcolor{blue}{\theta \leftarrow \theta + \alpha\nabla_\theta J(\theta)}
+$$
+
+So the orange box is when you sample from your policy to get those samples from 
+$p_\theta(\tau)$, the model here is very simple, the model just amounts to summing 
+together your rewards, later on we'll actually see that we can replace the sum with 
+more sophisticated estimators, so right now the green box is basically a summation 
+operator, later on we'll see that we can use more fancy neural network learning methods 
+to replace this piece. and then the blue box, the part where you actually improve your 
+policy is just this gradient assent line. So you just take your gradient and take a step 
+in the direction of their gradient, and that improves your policy as soon as you do that, 
+of course you need to generate more samples.
+
+\begin{emp_box}
+Loop of REINFORCE algorithm:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+sample ${\tau^i}$ from $\pi_\theta(a_t|s_t)$ (run it on the robot)
+
+\item[2.]
+$\nabla_\theta J(\theta) \approx \sum_i(\sum_t\nabla_\theta\log\pi_\theta(a_t^i|s_t^i))
+(\sum_tr(s_t^i, a_t^i))$
+
+\item[3.]
+$\theta \leftarrow \theta + \alpha\nabla_\theta J(\theta)$
+\end{itemize}
+\end{emp_box}
+
+So using this derivation, we can actually already describe one of the most basic 
+reinforcement learning algorithms which appropriately now what's called REINFORCE, the 
+way that the REINFORCE algorithm works is that you {\bf sample a set of trajectories from 
+your policy} by literally running that policy in the environment, then you {\bf estimate the 
+policy gradient} using those samples, basically using this equation up here. and then 
+you {\bf take a gradient step in the direction of that gradient which improves your policy}. 
+So this is the REINFORCE algorithm, if someone says I trained my policy with REINFORCE, 
+this is what they mean. only not really, because if you actually code this up, it won't 
+work. So what we're going to talk about from here on out is how to actually make it work. 
+But first we'll get a little bit more in-depth understanding of what it's doing. yes we'll 
+find out, so stick around for the second half to find out the the surprise ending to this 
+story. But before we find out why it doesn't work, let's try to understand it a little 
+bit better.
+
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+&\left( \sum_{t=1}^T 
+\underset{\textcolor{blue}{\uparrow}}{\textcolor{red}{\nabla_\theta\log p_\theta}}
+(a_{i,t}|s_{i,t}) \right)
+\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right) \\
+&\text{\qquad\textcolor{blue}{what is this?}}
+\end{align}
+What is $\nabla_\theta\log p$, and if we understand what $\nabla_\theta\log p_\theta(\tau)$ 
+is, maybe that can help us implement it. So let's think of a kind of a practical example, 
+maybe we have our driving policy, so images go in, steering commands come out and we have 
+a $\pi_\theta(a|s)$, if we have a discrete action space, maybe it's just like turn left, 
+turn right or drive straight, then we might implement $\pi_\theta(a|s)$ as a neural net 
+that outputs the logics for categorical distribution. then you have a softmax layer on top, 
+and that basically gives you probabilities over the three actions. So that's a very 
+standard design that you could use for example for a neural network classifier, and that 
+basically implements $\pi_\theta(a|s)$. So then the gradients of the $\log$ probabilities 
+would just be obtained directly from your automatic differentiation software.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Comparison to maximum likelihood}
+
+It's kind of illustrative to consider how this compares to standard supervised learning. 
+So when we do supervised learning, we're really doing maximum likelihood estimation. So 
+the objective for maximum likelihood estimation kind of the supervised learning setup 
+that we had before. Its gradient can be written out like this, so the gradient for 
+maximum likelihood is just the sum over all your samples, I'll assume that my arranged 
+in trajectories. So I also have some overtime steps, and in there I have the gradient 
+of the log probability of the action that was taken in the data given the state that was 
+in the data. So this is just supervised learning maximum likelihood. and if you look at 
+the policy gradient, you'll see that they're actually quite similar, except that the 
+policy gradient multiplies those $\nabla_\theta\log\pi_\theta$ by these total rewards. 
+and this is actually quite a useful fact to know, because when we actually go to 
+implement the policy gradient, we can implement it in a very similar way, as how we 
+implement maximum likelihood training.
+
+Policy gradient:
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\left( \sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t}) \right)
+\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right)
+\end{align}
+Maximum likelyhood:
+\begin{align*}
+\nabla_\theta J_{ML}(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\left( \sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t}) \right)
+\end{align}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.382]{pix/policy/pg_mle.png}
+\caption{comparison to supervised learning}
+%\label{fig:label}
+\end{figure}
+
+\subsubsection{Gaussian policies}
+
+Let's go through another example, this was for continuous actions. So you could imagine 
+using policy gradient to train a little simulated robot, in this case to run around. 
+Now this simulated robot is going to have continuous actions not discrete actions. So we 
+need $p_\theta(a|s)$ to define a distribution over some continuous value, a very popular 
+choice is to use a {\bf multivariate normal distribution}.
+$$
+p_\theta(a_t|s_t) = \mathcal{N}\left(f_{\text{neural network}}(s_t); \Sigma\right)
+$$
+So in a multivariate normal distribution, {\bf your policy is you know maybe its mean is 
+defined by some neural network, its covariance might also be defined by some neural 
+network}, but for now I'll just say the {\bf covariance is constant for simplicity}. and 
+{\bf theta represents the parameters of this neural network}.
+$$
+\log p_\theta(a_t|s_t) = -\frac{1}{2}\parallel f(s_t)-a_t \parallel_\Sigma^2 + \text{const}
+$$
+So if you write out the {\bf log probability}, this is just the equation for the log 
+probability of a normal distribution, where {\bf everything that doesn't depend on the mean}, 
+I've just kind of wrapped into this constant over here. So all the bits that depend on the 
+neural network $f$, are just this piece, very simple equation.
+$$
+\nabla_\theta \log p_\theta(a_t|s_t) = 
+-\frac{1}{2}\Sigma^{-1}\left(f(s_t)-a_t\right)\frac{df}{d\theta}
+$$
+and if you take the derivative of that with respect to theta, this is basically the 
+equation you get. So you can work this out on paper at home. hopefully I didn't make a 
+mistake, this is the the grad log PI theta for a multivariate normal distribution, 
+where the mean is parameterized by this function $f$. okay now of course you don't 
+actually have to do this by hand, typically if you use automatic differentiation 
+software like Tensorflow or Pytorch, it'll do this calculation for you, but this is just 
+to kind of make it more concrete, and to see that there's a relatively simple equation 
+you can drive for these things in terms of the derivatives of some deterministic 
+function. any questions about this, yeah exactly, so this is just the quadratic form in 
+Sigma inverse, yeah this is just literally like the Wikipedia equation for the 
+multivariate normal distribution.
+
+\subsubsection{What did we just do?}
+
+So that's kind of the mathematics of it. but let's talk also a little bit about the 
+intuition of what's going on here. It sort of seemed like we did a bunch of mathematic 
+trick, we ended up with some funny formulas, 
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\left( \sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t}) \right)
+\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right)
+\end{align}
+\begin{align*}
+\tau_i &= (s_{i,1}, a_{i,1}, \dots, s_{i,T}, a_{i,T} ) \\
+R(\tau_i) &= \sum_{t=1}^{T}r(s_{i,t}, a_{i,t}) \\
+\nabla_\theta\log p_\theta(\tau_i) &= 
+\sum_{t=1}^T \nabla_\theta\log_\theta p_\theta(a_{i,t} | s_{i,t})
+\end{align}
+（上面最后一个公式应该在 mle 中进行说明，因为二者后面都要用到）those funny formulas implement gradient 
+asent, but what did we really do, like what is this? how does this algorithm actually 
+change the policy in practice. So this is our policy gradient. 
+\begin{align}
+\label{eq_pg_compare_to_mle}
+%\label{eq_pg_baselines_1}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\underbrace{\nabla_\theta\log p_\theta(\tau_i)}_{\sum_{t=1}^T \nabla_\theta\log_\theta p_\theta(a_{i,t} | s_{i,t})}
+R(\tau_i)
+\end{align}
+（后面为了美观经常将 $R$ 写为 $r$，例如公式(\ref{eq_pg_baselines_1})，）
+and just looking at the 
+form of this equation, you can kind of maybe imagine that what it's going to do, is going 
+to take the gradient. So the gradient of $\log p_\theta(\tau)$ basically points in the 
+direction that will increase the probability of the trajectory $\tau$. so if I change my 
+parameters in the direction of grad log $p_\theta(\tau)$ for a specific trajectory 
+$\tau_i$. I will make $\tau_i$ more probable. So if I multiply those gradients by 
+$R(\tau_i)$, it kind of seems like what I'm doing, is I'm making the high-reward 
+trajectories more probable, and the lower-reward trajectory is less probable. So compared 
+to the maximum likelihood, 
+\begin{align*}
+\nabla_\theta J_{ML}(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\nabla_\theta\log p_\theta(\tau_i)
+\end{align}
+gradient we just makes everything more probable. Maximum 
+likelihood just takes all of your data, and just makes it more likely, this one multiplies 
+it by our $\tau$ which means that things with bad rewards will actually be made less likely. 
+So you can imagine that visually like this, you got trajectories, you evaluate their 
+rewards, some of them are good, some of them are bad, some of them are in the middle.
+
+Your policy induces a distribution over trajectories, so if you got those three 
+trajectories, maybe this height field represents your distribution, you'll take the ones 
+with the good rewards, and you'll increase their probabilities, take the ones with the bad 
+rewards, and decrease their probabilities. and this will make the expected reward larger, 
+because the good stuff got more likely, the bad stuff got less likely. So good stuff is more 
+likely, bad stuff less likely. there's this essentially just a very fancy mathematical 
+version to formalize trial and error learning, if you got it right do it more often, if you 
+got it wrong do it less often. So this is basically the intuition behind this method.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Partial observability}
+
+Now let's come back to this partial observibility point, and here I'm going to ask a 
+question, can I do policy gradients with partial observibility? 
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{pix/policy/pg_partial_observability.png}
+%\caption{Histogram of Count Variable}
+%\label{fig:label}
+\end{figure}
+\noindent
+Okay, so that's interesting hypothesis right actions affect other actions. A world 
+which does like having God abilities 
+it knows everything to actually tell us what the next transition will be, so we still 
+maintain our transition probabilities, even though we don't necessarily know the full 
+state, so then in expectation it should still end up being about average.  
+that's a reasonable way of looking at it. so the way that I look at it is that if you 
+actually write out the equation like this, 
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\left( \sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|o_{i,t}) \right)
+\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right)
+\end{align}
+the assumption that the policy PI is 
+conditioned on the Markovian state is not actually used anywhere by the policy. so the 
+policy is just some function approximator that looks at something, and outputs an action 
+distribution. and nowhere in this derivation, do we ever actually assume that the thing 
+that the policy is conditioned on extra obeys the Markov property, now underneath all this 
+there needs to be some system that obeys the Markov property, but we don't need to know 
+what that system is, we just need to observe samples from that, and get rewards. the policy 
+can be conditioned on whatever the heck we want. and of course any system can be turned 
+into a Markovian system, if you just define your state as the full history of all 
+observations you've seen so far. so you know, that might not be a very satisfying way to 
+turn into Markovian system, but we don't care because we never even need to know what the 
+state is, all wings do is to be able to generate samples, and get reward values for those 
+samples, and evaluate our log pi which can be conditioned on whatever we want. {\bf So that's 
+kind of a convenient fact with policy gradient that essentially we can just completely 
+ignore all this stuff, and just do it on partial observability, this is the only algorithm 
+that I'm going to cover over the next subsections}, which this is true, once we start 
+introducing value functions, this will no longer be true.
+\begin{emp_box}
+{\bf Markov property is not actually used!}
+\end{emp_box}
+
+The sampler will still assume to sample states under the hood, like basically it's sort of 
+this is not even an assumption about what's in your code as an assumption about how the 
+universe works that when your policy interacts with the environment, that environment has 
+a state, and it generates samples, samples of those states, but then what it shows you is 
+the observations that are that are given rise according to those states. So you never 
+actually see the states, you never know what they are, but they do exist there somewhere. 
+and the nice thing is that any process, no matter how non Markovian it is can be written 
+as a consequence of some underlying Markovian process defining a very trivial way just by 
+setting the states to be the concatenation of observation histories.
+
+So I was wondering a family would catch me on this, so this thing this $r$ still takes in 
+$s$, and this is a little bit of a delicate point. so the actual assumption when an 
+algorithm like this is implemented is that the environment will give your observations, 
+and will actually also give you reward values, not reward functions just actual reward 
+values, and those values do actually need to depend on states, but if they depend on 
+observations you can equivalently just assume that your rewards are stochastic, because 
+observations are stochastic consequence of your states. so you can say that a function of 
+the observations is just to cast a consequence of your States. and then you're just 
+assuming you don't observe deterministic reward values, but stochastic reward values, 
+and with stochastic reward values you get another little expectation in there, and all 
+the math still works out. 
+
+{\bf Q:} So the question was are there methods that actually explicitly estimated 
+emission probabilities
+
+{\bf A:} absolutely and we'll talk about those later when we talk about model-based RL.
+
+\begin{emp_box}
+{\bf Can use policy gradient in partially observed MDP's without modification}
+\end{emp_box}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{What is wrong with the policy gradient?}
+
+So now I alluded to this before that if you actually code up REINFOECE the way I described, 
+it won't work. So what's wrong with policy gradient, I'll tell you about a few things that 
+are wrong. I'll start with something that's maybe one of the the simpler issues to kind of 
+motivate what will come next. So let's say that I have a Gaussian policy and I'm gonna draw 
+this kind of cartoony picture with the x-axis is the trajectory, now trajectories are not 
+usually one-dimensional but pretend this like some one-dimensional projection,and the 
+vertical axis I'm gonna overload it to mean both probabilities and rewards. So that blue 
+curve represents my Gaussian policy, 
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{pix/policy/pg_gaussian_reward.png}
+%\caption{Histogram of Count Variable}
+%\label{fig:label}
+\end{figure}
+and let's say that I observed three samples, and two 
+of those samples had rewards that were small positive numbers, and one sample had a reward 
+that was a very negative number. now if I use those three samples just to make my policy 
+gradient, you might expect that my policy will kind of slide over to the right a little 
+bit, it'll somewhat increase the probability on these two samples and greatly decrease the 
+probability on this sample all right, because this sample is a big negative number, so it 
+really wants to drive that to a very low probability.
+
+Now let's say that I took that same exact reward function and I added a big constant to it. 
+so then my samples would be these yellow lines. the relative rewards are exactly the same. 
+All I did is I added a constant, adding a constant doesn't actually change which policy is 
+good or bad, because all the constant effects all policies equally, but the policy gradient 
+obtained from these rewards will be very different, because now the policy is trying to 
+make this more probable, and this even more probable. So it'll actually spread out a little 
+bit to cover all three of those things. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{pix/policy/pg_partial_observability_add_big_constant.png}
+%\caption{Histogram of Count Variable}
+%\label{fig:label}
+\end{figure}
+and this should be very weird to us, because we haven't actually changed the problem. we 
+just added a constant to the objective function, and suddenly our gradient estimate does 
+something totally different. As a thought exercise what if the two good samples, these two 
+over here actually have a reward of zero, so what if I were to choose the constants, I 
+said these two drive down to zero, and this one becomes a big negative number, what might 
+happen then, well the distributing thing then is that the direction of the policy goes 
+depends entirely with us it starts off on the left side or the right side of this bad 
+sample, if it starts off on the left will actually run away from the good stuff, if it 
+starts off on the right it'll go towards it. this is a kind of one illustrative example 
+of to explain how the policy gradient has high variance, meaning that when you get 
+different samples, you get very different gradient estimates from those different samples. 
+So for a small finite number of samples, you might get very different policy gradients, 
+if you test multiple sample batches. and this is a big problem, because it if in effect 
+it means that you're gradient is very noisy. So if you estimate your gradient with a 
+modest number of samples, you won't go straight to the optimum, you'll take a really 
+zigzag path, and for too large of a learning rate, you might never get there, and this 
+is a really big problem for using the policy gradient in practice.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Reducing variance}
+%-------------------------------------------
+
+So we'll talk about reducing variance in policy gradients. 
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\left( \sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t}) \right)
+\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right)
+\end{align}
+The first method that we'll 
+use to reduce variance is going to be by exploiting the fact that our universe has 
+causality, meaning that the past influences the future, where the future does not influence 
+the past. turns out that this particular truth can allow us to get a lower variance policy 
+gradient. Why is that well the variance of some quantity is intuitively that the variance 
+is bigger if the quantity is bigger, the variance is smaller if the quantity is smaller. 
+So if I were to take all these rewards, and make them ten times smaller, numerically the 
+variance would also be smaller. that's maybe not super satisfying, but let's see what 
+happens when we make use of causality. so more formally here we can say that it means that 
+the policy at time $t'$ cannot affect the reward at time $t$, when $t$ is less than $t'$. 
+\begin{emp_box}
+{\emph Causality}: policy at time $t'$ cannot affect reward at time $t$ when $t < t'$
+\end{emp_box}
+\noindent
+So what you do tomorrow is not going to change what grade you get on the homework tonight.
+right because tomorrow it'll be too late unless you take a light day. so here's how we can
+use that.
+So here we can take this sum over reward and we can distribute it inside the sum over the 
+log pi, 
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\underset{\textcolor{red}{\xhookleftarrow{\text{\qquad\qquad distribute inside}}}}{
+\left( \overset{\textcolor{blue}{\text{sum over }\log p_\theta}}{
+\textcolor{blue}{\sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t})}} \right)
+\overset{\textcolor{green}{\text{sum over reward}}}{
+\textcolor{green}{\left( \sum_{t=1}^T r(s_{i,t}, a_{i,t}) \right)} }
+}
+\end{align}
+So what I wrote here is just exactly the same as up here, I just use the 
+distributive property to distribute this sum over the reward inside of this sum over grad 
+log pi. 
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t})
+\left( \sum_{t'=1}^T r(s_{i,t'}, a_{i,t'}) \right)
+\end{align}
+So now I have an outer sum over all the time steps of the grad log pi, times an 
+inner sum over $t'$ from $1$ to $T$.
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t})
+\left( \sum_{t'=\textcolor{green}{\textcircled{\textcolor{red}{t}}}}^T r(s_{i,t'}, a_{i,t'}) \right)
+\end{align}
+And now here I can actually make use of causality, because here I have the grad log 
+probability of the action at time $t$, but it's being multiplied by a bunch of rewards 
+that include reward that happen after $t$, and rewards that happen before $t$. but I 
+know that the action that I take a time step $t$ cannot affect the reward at some other 
+step $t'$ that happened prior to that. So I can actually make use of this fact to 
+change the sum over reward, and what I'm going to do is I'm going to change this number, 
+this $1$ to $T$, I'm gonna say when we multiply grad log $p$ it's some time step $t$, 
+let's only multiply it by the rewards that we get at that time step and later rather 
+than all of the earlier rewards, because it can't affect the earlier rewards. it 
+turns out that this is still an unbiased estimator for the policy gradient. and I like 
+to show a paper reference at the end of this section, if you want to read more about 
+that, but the intuition behind it is that it's basically making use of the fact that 
+the action you choose now will not affect the rewards that you got in the past. and the 
+reason that this reduces your variance is that now you're multiplying these grad log $p$'s 
+by numbers, by sums that are smaller, because you're not adding in all those older 
+rewards. So simply by the fact that these sums are now smaller numbers, the overall 
+variance of the policy gradient actually goes down. and in practice this little trick is 
+very useful for reducing the variance of the policy gradient, and tends to make it work 
+quite a lot better.
+
+In fact, it work so much better, that you will often see standard derivations of policy 
+gradient, that say that they don't look like this, but instead they use the term reward 
+to go often denoted with $Q$\_hat.
+
+\begin{align*}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t})
+\hat{Q}_{i,t}
+\end{align}
+and they're written like this, they just say grad log $p$ times the {\bf reward to go}. 
+And that reward to go hiding inside of there is that sum from time step t until the end, 
+representing the total reward that you'll get from that time step until the end of time. 
+So this is the actual kind of little more realistic form of the policy gradient that 
+you'll often see written out, and you'll often see actually implemented, because there's 
+basically no benefit to adding all those rewards from previous time steps, your current 
+action cannot affect them, and they only serve to increase the variance.
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Baselines}
+
+So that's just a neat little trick that basically you should always do, because it never 
+hurts and only helps, there's another trick that never hurts and only helps, but it's a 
+little bit more involved, in this one we will actually go into in a bit more detail, and 
+that's the baseline. So if you remember we had this intuition about how the policy 
+gradient works that, it makes the good stuff more likely, and the bad stuff less likely. 
+and that was very natural and very appealing, but it's not really true right. 
+\begin{align}
+%\label{eq_pg_compare_to_mle}
+\label{eq_pg_baselines_1}
+\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\nabla_\theta\log p_\theta(\tau)
+r(\tau)
+\end{align}
+（上式即是前面的公式(\ref{eq_pg_compare_to_mle})，不过我们为了美观将$R$改为了$r$）imagine 
+that all of my rewards are like on the order of 1 million, and the good stuff is 1 million 
+add 1, and the bad stuff is 1 million minus 1, now the reward are all about 1 million, 
+so everything is getting more likely both the good stuff and the bad stuff. so intuitively 
+what I would like to do is I'd like to take the things that are better than average, and 
+make those more likely, and take the stuff that is worse than average, and make that less 
+likely.
+
+\begin{align}
+%\label{eq_pg_compare_to_mle}
+%\label{eq_pg_baselines_1}
+\label{eq_pg_baselines_2}
+\nabla_\theta J(\theta) 
+&\approx \frac{1}{N}\sum_{i=1}^N \nabla_\theta\log p_\theta(\tau) [r(\tau) - b] \\
+b &= \frac{1}{N}\sum_{i=1}^N r(\tau)
+\end{align}
+yeah like what if we just do that, just take $R(\tau)$（如前，我们为了美观将 $R$ 改为了 $r$） 
+and subtract the average reward 
+over the samples. So instead of multiplying grad log $p$ by the total reward of that 
+trajectory, multiplied by how much better that trajectory is than average, that kind of 
+seems very natural, it seems right, like it actually implements trial and error learning, 
+but are we actually allowed to do that like? Is that mathematically correct? Well it 
+turns out that actually, in expectation this quantity is the same as the one that we had 
+before, but has lower variance.
+
+We're going to analyze this new term that we've added right. So all we've done we can 
+use again, the distributive property ensure this (grad log $p$ times $R$) minus (grad 
+log $p$ times $b$), and let's analyze this grad log $p$ times $b$ term right.
+
+We have an expectation over tau on the outside, what is the expectation of grad log PI 
+times $b$. 
+$$
+\mathbb{E}[\nabla_\theta\log p_\theta(\tau)b]
+$$
+So we know we never have an expectation you want to know what it means write out the 
+actual integral or sum. so we have this integral pi(tau)* grad log p(tau)* b. 
+$$
+\mathbb{E}[\nabla_\theta\log p_\theta(\tau)b] 
+= \int p_\theta(\tau) \nabla_\theta\log p_\theta(\tau)b d\tau
+$$
+And now we'll go back to our convenient identity equation (\ref{eq_convenient_identity}), 
+and let's apply it in Reverse. So before we had to unpack the gradient take out that 
+log and take out that $p$. now we're going to pack it back up to take our $p$ times grad 
+log $p$ and pack it back into a grad $p$. So now we have grad pi times $b$. 
+$$
+\mathbb{E}[\nabla_\theta\log p_\theta(\tau)b] 
+= \int p_\theta(\tau) \nabla_\theta\log p_\theta(\tau)b d\tau
+= \int \nabla_\theta p_\theta(\tau)b d\tau
+$$
+Now remember the gradient operator commutes with the integration operator. So we can take 
+the $b$ on the outside. And we can take the grad on the outside, so we have $b$ times the 
+gradient of the integral over tau of $p$ tau. 
+$$
+\mathbb{E}[\nabla_\theta\log p_\theta(\tau)b] 
+= \int p_\theta(\tau) \nabla_\theta\log p_\theta(\tau)b d\tau
+= \int \nabla_\theta p_\theta(\tau)b d\tau
+= b \nabla_\theta \int p_\theta(\tau) d\tau
+$$
+What this integral is? Equal to one. Yeah if you integrate a probability distribution, you 
+get one, unless you made a coding mistake. So if you implemented it correctly, you should 
+get one. And the gradient of one very easy to calculate you don't need a calculus textbook 
+for that, that's just zero. So $b$ times grad 1 is 0, which means this whole thing on the 
+left is 0. 
+$$
+\mathbb{E}[\nabla_\theta\log p_\theta(\tau)b] 
+= \int p_\theta(\tau) \nabla_\theta\log p_\theta(\tau)b d\tau
+= \int \nabla_\theta p_\theta(\tau)b d\tau
+= b \nabla_\theta \int p_\theta(\tau) d\tau
+= b \nabla_\theta 1
+= 0
+$$
+Which means that you can subtract any constant you want, and you will not change the 
+expected policy gradient.
+
+{\bf Q:} Why do we need $b$? 
+
+{\bf A:} So the intuition is you need $b$, so that the good stuff becomes more likely, and 
+the bad stuff becomes less likely. The formal reason will be shown later this section. 
+
+So subtracting any $b$ you want, will not change the expectation of the Policy gradient. 
+It will however change the variance. So the expectations, the first moment is unaffected. 
+The second moment actually is affected. So subtracting baselines is unbiased and 
+expectation. It has this nice intuition, that it actually increases the probability of 
+things that are better than average, decreases the probability of things that are worse 
+than average. 
+
+I'll tell you right now the average reward is not the optimal baseline, but it's pretty 
+good. And if you want to implement a baseline in practice, use average reward. But if 
+you want to do a bunch of math, then stay with me for the next part. we're going to 
+actually derive the optimal baseline.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Analyzing variance}
+
+So subtracting a bias does not change the first moment, it does not change the expected 
+policy gradient, it does however change the variance. So let's try to figure out what 
+that is. Here's the variance equation:
+\begin{align}
+\operatorname{Var}[x] = \mathbb{E}[x^2] - E[x]^2
+\end{align}
+and you can just substitute that in, you can take the thing that we want, 
+which is our policy gradient, plug that in there. and we're going to try to write out 
+the variance of the policy gradient, and then we'll take the derivative of the variance 
+with respect to the baseline $b$, set that derivative to $0$, and figure out what the 
+optimal baseline is.
+\begin{align}
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau\sim p_\theta(\tau)}
+[\nabla_\theta\log p_\theta(\tau)(r(\tau) - b)]
+\end{align}
+So let's go on that journey. This is the thing that we're gonna plug in for $x$. 
+\begin{align}
+\operatorname{Var} = 
+\mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[\left(\nabla_\theta\log p_\theta(\tau)(r(\tau) - b)\right)^2\right] - 
+\mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \nabla_\theta\log p_\theta(\tau)(r(\tau) - b) \right]^2
+\end{align}
+So here all I've done is I've substituted this in here. So the variance of my policy 
+gradient is the expectation under $p_\theta(\tau)$(p theta of tau) of the stuff inside 
+the expectation squared, minus the whole expectation with a square on the outside.
+
+Now for that second term, I've already told you that the expectation with the $b$ 
+subtracted is exactly the same as the original expectation, that was what I proved 
+on the previous subsection. So the second term it's derivative with respect to $b$ is 
+going to go to zero:
+\begin{align}
+\operatorname{Var} = 
+\mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[\left(\nabla_\theta\log p_\theta(\tau)(r(\tau) - b)\right)^2\right] - 
+\mathbb{E}_{\tau\sim p_\theta(\tau)}&
+\underbrace{\left[ \nabla_\theta\log p_\theta(\tau)(r(\tau) - b) \right]^2}_{
+\text{this bit is just}\; \mathbb{E}_{\tau\sim p_\theta(\tau)}
+[\nabla_\theta\log p_\theta(\tau)r(\tau)]} \\
+&\text{(baselines are unbiased in expectation)} \notag
+\end{align}
+Because it doesn't depend on $b$, so this bit is just the expectation 
+squaring it doesn't do anything. So {\bf in terms of its dependence on $b$, so I can just 
+ignore that second term, if I want to analyze the effect of $b$ on the variances}.
+
+So it's really only the first term that matters. So I'm gonna change my notation a little 
+bit, so that this is a little bit less cluttered, 
+\begin{align*}
+\frac{d\operatorname{Var}}{db} = \frac{d}{db}
+\mathbb{E}\left[g(\tau)^2(r(\tau) - b)^2\right]
+\end{align}
+I use $g(\tau)$ to denote $\nabla_\theta\log p_\theta(\tau)$. And now I'm going to expand 
+it. I'm gonna take that square, I'm going to distribute it inside, and then I'll distribute 
+the square inside this difference, and I'm gonna taking the derivative of this whole thing 
+with respect to $b$. 
+\begin{align*}
+\frac{d\operatorname{Var}}{db} = \frac{d}{db}
+\mathbb{E}\left[g(\tau)^2(r(\tau) - b)^2\right]
+\end{align}
+So when I distribute the square, I get three terms, so I have 
+d /db( E[ g2 r2 ]- 2* E[ g2 r b] + b2 *E[g2]). So these are the terms that you get, 
+with respect to $b$. 
+\begin{align*}
+\frac{d\operatorname{Var}}{db} 
+&= \frac{d}{db}
+\mathbb{E}\left[g(\tau)^2(r(\tau) - b)^2\right] \\
+&= \frac{d}{db} \left( \mathbb{E}\left[ g(\tau)^2 r(\tau)^2 \right]
+- 2 \mathbb{E}\left[ g(\tau)^2 r(\tau) b \right]
++ b^2 \mathbb{E}\left[ g(\tau)^2 \right]
+\right)
+\end{align}
+So now let's look at the derivative of each of these three terms with respect to $b$. For 
+the first one, it's zero , because there's no $b$ in there. For the second one, it's just 
+it's linear in $b$, so it's just - 2* E[ g2 r ]. and for the third one, it's 2b *E[g2]).
+\begin{align*}
+\frac{d\operatorname{Var}}{db} 
+&= \frac{d}{db}
+\mathbb{E}\left[g(\tau)^2(r(\tau) - b)^2\right] \\
+&= \frac{d}{db} \left( \cancel{\mathbb{E}\left[ g(\tau)^2 r(\tau)^2 \right]}
+- 2 \mathbb{E}\left[ g(\tau)^2 r(\tau) b \right]
++ b^2 \mathbb{E}\left[ g(\tau)^2 \right] \right) \\
+&= - 2 \mathbb{E}\left[ g(\tau)^2 r(\tau) \right]
++ 2b \mathbb{E}\left[ g(\tau)^2 \right] \\
+&= 0
+\end{align}
+And I'm going to set this derivative to zero, because I want to find the optimal $b$. 
+So when I said to zero, I just have to throw this $-2$ on the right-hand side, divided by 
+the first term, and I get an equation for $b$ which says:
+\begin{align*}
+b = \frac{\mathbb{E}\left[ g(\tau)^2 r(\tau) \right]}{\mathbb{E}\left[ g(\tau)^2 \right]}
+\leftarrow \text{This is just expected reward, but weighted by gradient magnitudes!}
+\end{align}
+And now this thing actually looks an awful lot like expected reward except I don't average 
+the rewards together. I instead weight them by their squared gradient, so this is just 
+expected reward weighted by gradient magnitude. Now your gradient is a vector, it has more 
+than one number in it. And if you actually evaluate this formula, $b$ also becomes a 
+vector. you actually get a different baseline value for every entry in your gradient 
+depending on the degree to which each trajectory is affected by that parameter dimension. 
+So you actually get a per dimension baseline if you do this, which is just average reward 
+weighted by the magnitude of the gradient for that dimension, and this is the optimal 
+baseline, this is the baseline that actually minimizes variance, but if you want to do this 
+in practice, my suggestion would be when coding it up, don't bother just use average reward, 
+but if you want actually know what the real answer is this the real answer.
+
+any questions about this? Yes, because it minimizes variance, I think if you want to get a little bit of intuition for it, it basically goes something like this, that if that particular dimension is very sensitive, then you want to basically emphasize the trajectories, whose probabilities are going to be strongly affected by that dimension. So if you have some trajectories that have a very high reward, but their probability will not be changed by changing that dimension in your parameter vector, then you should not consider them in your baseline. It's kind of intuitively somewhat makes sense, but the mathematical reasons that it minimizes variance. So the question is it still optimal, if you also account for the fact that your estimate of b will have error do the samples. that's a good question I don't know the answer to that, but yeah maybe we can discuss that afterwards.
+
 
 
 %+++++++++++++++++++++++++++++++++++++++++++

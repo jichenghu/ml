@@ -29,9 +29,14 @@
 %\usepackage{lmodern}
 \usepackage{amsfonts, amsmath, amssymb, amsthm, array, bm, breakurl, cite, color, 
 fancyhdr, float, framed, geometry, graphicx, hyperref, listings, 
-mathrsfs, setspace, tcolorbox, url, xcolor}
+mathrsfs, mathtools, setspace, tcolorbox, url, xcolor}
 %\usepackage[keeplastbox]{flushend}
 %\fontsize{11pt}{12pt}\selectfont
+
+\usepackage[thicklines]{cancel}
+% 可以设置线条颜色，默认是黑色
+%\usepackage{xcolor}
+\renewcommand{\CancelColor}{\color{red}}
 
 \usepackage{caption}
 \usepackage{subcaption}

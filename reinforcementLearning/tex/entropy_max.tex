@@ -298,14 +298,28 @@ $g(x,y)$（在黄线上）。
 
 
 
-\section{Maximum Likelihood Estimate}
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Maximum A Posteriori}
+%-------------------------------------------
+% https://zhuanlan.zhihu.com/p/184028576
 
+最大后验估计则是贝叶斯推断的一个典型应用, 其强调将关于参数的先验知识带入到参数预估中, 
+以达到对参数不确定性的建模, 在机器学习理论中充当参数正则化的角色。
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Maximum Likelihood Estimate}
+%-------------------------------------------
 % https://www.zhihu.com/question/484044429
 % https://brilliant.org/wiki/maximum-likelihood-estimation-mle/
 
 假设您建立了一个预测公司股价的模型。您注意到夜深人静的时候，股票价格上涨得很快。
 背后可能有多种原因，找出可能性最大的原因便是最大似然估计的意义所在。
 这一概念常被用于经济学、MRIs、卫星成像等领域。
+
+最大似然估计以最大化观测数据集上的似然度为目标, 强调从观测数据集上拟合出产生观测数据集的分布, 
+常用的交叉熵损失(cross entropy loss)、均方误差损失(Mean Square Error)都可以以最大似然估计作为其理论基础。
+
 
 Maximum likelihood estimation (MLE) is a technique used for estimating the 
 parameters of a given distribution, using some observed data. For example, 
@@ -330,6 +344,32 @@ to satellite imaging. It is also related to Bayesian statistics.
 对于建模问题，首先要看看数据的分布情况，思考有没有比正态分布更有意义的分布。
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Basic concepts}
+
+假设我们有观测数据集 $\mathcal{D}=\{x_i\}_{i=1}^n$, 如果我们希望通过预估参数 $\theta$ 来获得产生数据集 
+$\mathcal{D}$ 的近似分布 $p_\text{model}(x;\theta)$, 一个非常自然的想法是既然数据集 $\mathcal{D}$ 
+已经产生了, 何不让分布 $p_\text{model}(\mathcal{D};\theta)$ 最大化, 即使得分布 $p_\text{model}$ 
+以最大概率产生观测数据集 $\mathcal{D}$ 中的数据, 这便是最大似然估计的指导思路。具体地, 我们有
+\begin{align}
+\mathcal{L}(\theta) &= \prod_{i=1}^n p_{\text{model}}(x_i; \theta) \\
+\hat{\theta} &= \underset{\theta}{\operatorname{argmax}} \mathcal{L}(\theta) \notag
+\end{align}
+由于多个概率值进行连乘操作容易引起数值溢出的问题, 我们通常会求解等价问题
+\begin{align}
+\mathcal{N}(\theta) &= -\sum_{i=1}^n \log\left( p_{\text{model}}(x_i; \theta) \right) 
+\label{eq_negative_log_likelihood} \\
+\hat{\theta} &= \underset{\theta}{\operatorname{argmax}} \mathcal{N}(\theta) \notag
+\end{align}
+我们通常称 (\ref{eq_negative_log_likelihood}) 为负对数似然函数(Negative Log Likelihood), 
+这在机器学习中是常用的损失函数。如果我们将产生观测数据集 $\mathcal{D}=\{x_i\}_{i=1}^n$ 的分布记为 
+$\mathbf{X}\sim P_{\text{data}}$, 由大数定理可知, 当 $n\rightarrow\infty$ 时, 
+独立同分布的随机变量所产生样本的算术平均值依概率收敛于期望, 故(2)可转化为
+
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{为什么要使用最大似然估计(MLE)？}
 
 假如想预测活动门票的销售情况，数据的直方图和密度如下：
