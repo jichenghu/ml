@@ -33,6 +33,9 @@ mathrsfs, mathtools, setspace, tcolorbox, url, xcolor}
 %\usepackage[keeplastbox]{flushend}
 %\fontsize{11pt}{12pt}\selectfont
 
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
 \usepackage[thicklines]{cancel}
 % 可以设置线条颜色，默认是黑色
 %\usepackage{xcolor}
@@ -182,6 +185,11 @@ sorting=ynt
 \ifx\allfiles\undefined
 \else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
+\fi
+
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{deep_generative_models.tex}
 \fi
 
 % entropy

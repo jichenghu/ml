@@ -1,5 +1,7 @@
 ﻿
+%+++++++++++++++++++++++++++++++++++++++++++
 \section{The Maximum Entropy Principle}
+%-------------------------------------------
 
 Suppose that $p_1$ and $p_2$ are probabilities for independent events, the 
 information $I$ received from seeing both events is the information of seeing 
@@ -20,13 +22,23 @@ which defines entropy for continuous random variables. For our purposes, the
 equation above applies to any random variable.
 
 
-\subsection{信息量、熵}
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Information, Shannon Entropy, Cross-Entropy, KL divergence}
 
-“{\bf 熵}”，用来描述系统中所含信息的不确定程度（系统的混乱程度）：
-\begin{equation}\label{entropy_of_info}
-H = - \sum p(x) \log p(x)
-\end{equation}
+“{\bf 信息}”，对概率分布 $p(x)$ 取对数加符号得正值：
+$$
+I(p) = -\log p(x)
+$$
+概率越高，包含的信息小，因为事件越来越确定。相反，概率越低，包含的信息越多，因为事件具有很大的不确定性。
 
+“{\bf 熵/Shannon entropy}”，用来描述系统中所含信息的不确定程度（系统的混乱程度）：
+\begin{align}\label{entropy_of_info}
+H(p) 
+&\equiv \mathbb{E}_{x\sim P}\left[I(p)\right] \notag \\
+&= - \sum p(x) I(p) \notag \\
+&= - \sum p(x) \log p(x)
+\end{align}
+熵是信息的平均，直观上，Shannon熵是信息在{\bf 同一分布}下的平均。
 在公式\eqref{entropy_of_info}中，如果$\log$以2为底数，熵的单位就是比特（bit）；
 以10为底数的话单位则是哈特（hat）；而如果是自然对数，单位则是奈特（nat）。
 
@@ -59,6 +71,7 @@ H_B(x) &= - \left[ p(x_B)\log p(x_B) + (1-p(x_B))\log(1-p(x_B)) \right] \\
 但是小王打靶结果的不确定度更低，1000次射击只有1次脱靶，结果相当的确定。
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{最大熵原理}
 最大熵原理中蕴含着最朴素最简洁的思想：包含已知信息，不做任何未知假设，把未知事件当成概率事件处理。
 
@@ -73,111 +86,20 @@ H_B(x) &= - \left[ p(x_B)\log p(x_B) + (1-p(x_B))\log(1-p(x_B)) \right] \\
 {\bf 熵表示不确定程度，熵最大即系统的不确定程度最大，亦即系统中没有任何主观假设。}
 
 
-\subsection{Relative Entropy (Kullback-Leibler Divergence)}
-
-\href{https://blog.csdn.net/wangshun_410/article/details/84956539}{KL距离（Kullback-Leibler Divergence）}
-
-KL距离，是Kullback-Leibler差异（Kullback-Leibler Divergence）的简称，
-也叫做相对熵（Relative Entropy）。它衡量的是相同事件空间里的两个概率分布的差异情况。
-并不是一种距离度量方式，其物理意义是：在相同事件空间里，概率分布$P(x)$对应的每个事件，
-若用概率分布$Q(x)$编码时，平均每个基本事件（符号）编码长度增加了多少比特。
-我们用$D(P||Q)$表示KL距离，计算公式如下：
-\begin{equation}\label{Kullback-Leibler_Divergence}
-D(P||Q) = \sum_{x\in X} P(x)\log\frac{P(x)}{Q(x)}
-\end{equation}
-【{\bf 注记}】
-
-若$P$表示样本的真实分布，$Q$表示模型所预测的分布，那么KL散度就可以计算两个分布的差异，
-也就是Loss损失值。$Q$的分布越接近$P$（$Q$分布越拟合$P$），那么散度值越小，即损失值越小。
-~\\	%一行空白
-
-有时会将KL散度称为KL距离，但它并不满足距离的性质(下面的4及5)。
-由公式(\ref{Kullback-Leibler_Divergence})可以知道如下性质：
-%
-\begin{itemize}
-%\setlength{\itemsep}{0pt}
-%\setlength{\parsep}{0pt}
-\setlength{\parskip}{0pt}
-\item[1.]
-当$P(x)=Q(x)$时，$D(P||Q)=0$,即其相对熵为零；
-
-\item[2.]
-当$P(x)$和$Q(x)$相似度越高时，KL距离越小；
-
-\item[3.]
-$D(P||Q)$非负；
-
-\item[4.]
-不满足对称性，即$D(P||Q)\neq D(Q||P)$；
-
-\item[5.]
-不满足三角不等式。
-
-\end{itemize}
-%~\\ 
-%~\\[0.2]	%可加入任意间距的空白行
-~~~
-
-{\bf 几个用途：}
-
-\begin{itemize}
-%\setlength{\itemsep}{0pt}
-%\setlength{\parsep}{0pt}
-\setlength{\parskip}{0pt}
-\item[1.]
-衡量两个概率分布的差异；
-
-\item[2.]
-衡量利用概率分布Q 拟合概率分布P 时的能量损耗，也就是说拟合以后丢失了多少的信息；
-
-\item[3.]
-衡量两个概率分布的相似度，在运动捕捉里面可以衡量未添加标签的运动与已添加标签运动的相似程度，
-进而进行运动的分类。
-
-\end{itemize}
-
-DNN中最常使用的离散数值优化目标，莫过于交差熵。两个分布$p$，$q$的交差熵，
-与KL距离实际上是同一回事。
-$$
-H(p,q) = -\sum p\log(q) = D_{KL}(p\parallel q) - \sum p\log(p)
-$$
-交差熵实际上就是KL距离减去熵，在深度学习框架中主要用来判定实际的输出与期望的输出的接近程度。
-
-{\bf 例子：}
-在做分类的训练的时候，如果一个样本属于第$K$类，那么这个类别所对应的的输出节点的输出值应该为$1$，
-而其它节点的输出都为$0$，即$[0,0,1,0,\ldots, 0,0]$，这个数组也就是样本的Label，
-是神经网络最期望的输出结果。也就是说用它来衡量网络的输出与标签的差异，
-利用这种差异经过反向传播去更新网络参数。
-
-\begin{example}
-假设有一个字符发射器随机发射0和1两种字符，真实的发出概率分布为$A$，
-但实际不知道$A$的具体分布。通过观察，得到概率分布$B$与$C$，各分布的具体情况如下：
-\begin{align*}
-A(0) &= 1/2, \quad A(1) = 1/2 \\
-B(0) &= 1/4, \quad B(1) = 3/4 \\
-C(0) &= 1/8, \quad C(1) = 7/8
-\end{align}
-通过计算得到：
-\begin{align*}
-KL(A\paralle B) &= 1/2 \log\frac{1/2}{1/4} + 1/2 \long\frac{1/2}{3/4} = 1/2\log(4/3)\\
-KL(A\paralle C) &= 1/2 \log\frac{1/2}{1/8} + 1/2 \long\frac{1/2}{7/8} = 1/2\log(16/7)
-\end{align}
-由此可知，按照概率分布$B$进行编码，要比按照$C$进行编码，平均每个符号增加的比特数少。
-从分布上也可以看出，实际上$B$要比$C$更接近真实分布（因为其与$A$分布的相对熵更小）。
-\end{example}
-
-
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Cross Entropy}
-
-
 
 {\bf 交叉熵}
 主要刻画的是实际输出（概率）与期望输出（概率）的距离，也就是交叉熵的值越小，
 两个概率分布就越接近。假设概率分布$p$为期望输出，概率分布$q$为实际输出， 
 $H(p,q)$为交叉熵，则
-\begin{equation}\label{Cross_Entropy}
-H(p,q) = -\sum_x\left[ p(x)\log q(x) + (1-p(x))\log (1-q(x)) \right]
-\end{equation}
+\begin{align}\label{Cross_Entropy}
+H(p,q) 
+&\equiv \mathbb{E}_{x\sim P}\left[I(q)\right] \notag \\
+&= - \sum p(x) I(q) \notag \\
+&= -\sum_x\left[ p(x)\log q(x) + (1-p(x))\log (1-q(x)) \right]
+\end{align}
+熵是信息{\bf 在同一分布下}的平均，而交叉熵是信息{\bf 在不同分布下}的平均。
 
 \begin{example}
 假设$N=3$，期望输出为$p={1,0,0}$，实际输出$q_1=(0.5,0.2,0.3)$, 
@@ -261,6 +183,7 @@ $$
 与sigmoid的导数无关，从而避免了梯度弥散。
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Lagrange乘数法的几何意义说明}
 
 \begin{emp_box}
@@ -295,6 +218,397 @@ $g(x,y)$（在黄线上）。
 \frac{\partial f}{\partial x} &= \lambda \frac{\partial g}{\partial x} \\
 \frac{\partial f}{\partial y} &= \lambda \frac{\partial g}{\partial y}
 \end{align}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+%\subsection{Relative Entropy (Kullback-Leibler Divergence / Information gain)}
+\section{KL Divergence for Machine Learning \\
+{\small Relative entropy / Information gain}}
+%-------------------------------------------
+% https://dibyaghosh.com/blog/probability/kldivergence.html
+% \href{https://blog.csdn.net/wangshun_410/article/details/84956539}{KL距离（Kullback-Leibler Divergence）}
+\begin{emp_box}
+The objective of life is just to minimize a KL objective.
+\end{emp_box}
+
+Here in this section we talk about the {\bf Kullback-Leibler Divergence} from a holistic 
+perspective of reinforcement learning and machine learning. Put simply, the KL divergence 
+between two probability distributions measures how different the two distributions are.
+KL 距离，是Kullback-Leibler差异（Kullback-Leibler Divergence）的简称，
+也叫做相对熵（Relative Entropy）。它衡量的是相同事件空间里的两个概率分布的差异情况。
+并不是一种距离度量方式，其物理意义是：在相同事件空间里，概率分布$p(x)$对应的每个事件，
+若用概率分布$q(x)$编码时，平均每个基本事件（符号）编码长度增加了多少比特。
+\begin{emp_box}\noindent
+Both the problems of supervised learning and reinforcement learning are simply minimizing 
+the KL divergence objective
+\end{emp_box}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{What's the KL Divergence?}
+
+The Kullback-Leibler divergence (hereafter written as KL divergence) is a measure of how 
+a probability distribution differs from another probability distribution. Classically, 
+in Bayesian theory, there is some true distribution $p(X)$; we'd like to estimate with 
+an approximate distribution $q(X)$. In this context, the KL divergence measures the 
+distance from the approximate distribution $q$ to the true distribution $p$.
+
+Mathematically, consider two probability distributions $p$, $q$ on some space $\mathcal{X}$. 
+The Kullback-Leibler divergence from $q$ to $p$ (written as $D_{KL}(p \| q)$ or simply 
+$D(p \| q)$):
+\begin{align}
+D(p\|q) 
+&\equiv \mathbb{E}_{x \sim p}\left[\log \frac{p(X)}{q(X)}\right] 
+\label{Kullback-Leibler_Divergence_expec}\\
+&= H(p,q) - H(p) \notag \\
+&= \sum p(x)\log q(x) + \sum p(x) \log p(x) \notag \\
+&= -\sum_{x\in X} p(x)\log\frac{q(x)}{p(x)} \notag \\
+&= \sum_{x\in X} p(x)\log\frac{p(x)}{q(x)}\label{Kullback-Leibler_Divergence}
+\end{align}
+【{\bf 注记}】
+
+There are some immediate notes that are worth pointing out about this definition.
+若 $p$ 表示样本的真实分布，$q$ 表示模型所预测的分布，那么 KL 散度就可以计算两个分布的差异，
+也就是 Loss 损失值。$q$ 的分布越接近 $p$（$q$ 分布越拟合 $p$），那么散度值越小，即损失值越小。
+~\\	%一行空白
+
+有时会将KL散度称为KL距离，但它并不满足距离的性质(下面的4及5)。
+由公式(\ref{Kullback-Leibler_Divergence})可以知道如下性质：
+%
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+当$p(x)=q(x)$时，$D(p||q)=0$,即其相对熵为零；
+
+\item[2.]
+当$p(x)$和$q(x)$相似度越高时，KL距离越小；
+
+\item[3.]
+$D(p \| q)$非负:
+\begin{align*}
+-D(p||q)
+&= \sum p(x)\log\frac{q(x)}{p(x)} \\
+&\leq \log \sum p(x) \frac{q(x)}{p(x)} \\
+&= \log 1 \\
+&= 0
+\end{align}
+上面使用了 Jensen's inequality.
+
+\item[4.]
+The KL Divergence is {\bf not symmetric}:
+$$
+D(p \| q) - D(q \| p) = \sum(p(x) + q(x))\log\frac{p(x)}{q(x)}
+$$
+and hence $D(p \| q) \neq D(q \| p)$.
+The KL Divergence can take on values in $[0,\infty]$.
+Particularly, if $p$ and $q$ are the exact same distribution 
+($p \stackrel{a.e.}{=} q$), then $D_{KL}(p \| q) = 0$ and $D_{KL}(q \| p) = 0$.
+In fact, with a little bit of math, a stronger statement can be proven: if 
+$D_{KL}(p \| q) = 0$, then $p \stackrel{a.e.}{=} q$.
+
+In order for the KL divergence to be finite, the support of $p$ needs to be contained in 
+the support of $q$. If a point $x$ exists with $q(x) = 0$ but $p(x) > 0$, then 
+$D_{KL}(p \| q) = \infty$.
+
+\item[5.]
+convexity - concave:
+\begin{align*}
+& D\left[ \lambda p_1(x) + (1-\lambda)p_2(x) || \lambda q_1(x) + (1-\lambda)q_2(x) \right] \\
+= & \sum\left[\lambda p_1(x) + (1-\lambda)p_2(x)\right]\log
+\frac{\lambda p_1(x) + (1-\lambda)p_2(x)}{\lambda q_1(x) + (1-\lambda)q_2(x)} \\
+\leq & \sum\left[ \lambda p_1(x)\log\frac{\lambda p_1(x)}{\lambda q_1(x)} 
++ (1-\lambda)p_2(x)\log\frac{(1-\lambda)p_2(x)}{(1-\lambda)q_2(x)} \right] \\
+= & \lambda D[p_1(x)||q_1(x)] + (1-\lambda)D[p_2(x)||q_2(x)]
+\end{align}
+上面的不等式用到了 \href{https://statproofbook.github.io/P/logsum-ineq}{log sum inequality}.
+
+\item[6.]
+不满足三角不等式。Since the KL Divergence is not symmetric, it is also {\bf not a distance metric}.
+
+\item[7.]
+{\bf Rewriting the Objective:} With some algebra, we can manipulate the definition of KL 
+divergence in terms of other quantities. The most useful such manipulation is:
+$$
+D_{KL}(p \| q) = \mathbb{E}_{x \sim p}[-\log q(x)] - \mathcal{H}(p(x))
+$$
+Here, $\mathbb{E}_{x \sim p}[-\log q(x)]$ is the cross entropy between $p$ and $q$ (and 
+denoted $H(p,q)$). The second term $\mathcal{H}(p(x))=\mathbb{E}_{x \sim p}[-\log p(x)]$ 
+is the entropy of $p$.
+
+\end{itemize}
+%~\\ 
+%~\\[0.2]	%可加入任意间距的空白行
+~~~
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Forward and Reverse KL}
+
+Let's place ourselves in the optimization setting. There is some true distribution 
+$p(X)$ that we're trying to estimate with our approximate distribution $q_\theta(X)$. 
+Here we are using $\theta$ as a parameter to explicitly emphasize that $q$ is the 
+distribution that we get to control.
+
+As we mentioned earlier, the KL divergence is not a symmetric measure (i.e. that 
+$D_{KL}(p \| q) \neq D_{KL}(q \| p)$). As a result, when trying to approximate $p$, 
+we have a choice between two potential objectives to optimize.
+%
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+Minimizing the {\bf forward KL}: $\arg\min_{\theta} D_{KL}(p\|q_\theta)$
+
+\item[2.]
+Minimizing the {\bf reverse KL}: $\arg\min_{\theta} D_{KL}(q_\theta\|p)$
+
+\end{itemize}
+As it turns out, the two different objectives actually cause different types of 
+approximations. We'll spend the next subsection discussing the qualitative behaviours of 
+each approach. We'll investigate in the following setting: $p(X)$ is the bimodal 
+distribution below. We'll try to approximate this with a normal distribution 
+$q(X) = \mathcal{N}(\mu, \sigma^2)$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/appendix/kl_distrib_p.png}
+%\caption{Agent and Environment}
+%\label{fig:label}
+\end{figure}
+
+\subsubsection{Forward KL: Mean-Seeking Behaviour}
+
+Let's consider optimizing the forward KL objective with respect to $q_\theta$
+\begin{align*}
+\arg\min_{\theta}D_{KL}(p \| q) &= \arg\min_{\theta} \mathbb{E}_{x \sim p}[-\log q_\theta(X)] - \mathcal{H}(p(X))\\
+&= \arg\min_{\theta} \mathbb{E}_{x \sim p}[-\log q_\theta(X)]\\
+&= \arg\max_{\theta} \mathbb{E}_{x \sim p}[\log q_\theta(X)]
+\end{align*}
+Notice that this is identical to the maximum likelihood estimation objective. Translated 
+into words, the objective above will sample points from $p(X)$ and try to maximize the 
+probability of these points under $q(X)$. A good approximation under the forward KL 
+objective thus satisfies
+\begin{emp_box}
+Wherever $p(\cdot)$ has high probability, $q(\cdot)$ must also have high probability.
+\end{emp_box}\noindent
+We consider this mean-seeking behaviour, because the approximate distribution $q$ must 
+cover all the modes and regions of high probability in $p$. The optimal "approximate" 
+distribution for our example is shown below. Notice that the approximate distribution 
+centers itself between the two modes, so that it can have high coverage of both. The 
+forward KL divergence does not penalize $q$ for having high probability mass where $p$ 
+does not.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/appendix/kl_forwardkl.png}
+%\caption{Agent and Environment}
+%\label{fig:label}
+\end{figure}
+
+\subsubsection{Reverse KL: Mode-Seeking Behaviour}
+
+Now consider optimizing the reverse KL objective with respect to $q_\theta$
+\begin{align*}
+\arg\min_{\theta}D_{KL}(q \| p) &= \arg\min_{\theta} \mathbb{E}_{x \sim q_\theta}[-\log p(X)] - \mathcal{H}(q_\theta(X))\\
+&= \arg\max_{\theta} \mathbb{E}_{x \sim q_\theta}[\log p(X)] + \mathcal{H}(q_{\theta}(X))
+\end{align*}
+Let's translate the objective above into words. The objective above will sample points 
+from $q(X)$ and try to maximize the probability of these points under $p(X)$. The entropy 
+term encourages the approximate distribution to be as wide as possible. A good approximation 
+under the reverse KL objective thus satisfies
+\begin{emp_box}
+Wherever $q(\cdot)$ has high probability, $p(\cdot)$ must also have high probability.
+\end{emp_box}\noindent
+We consider this mode-seeking behaviour, because any sample from the approximate distribution 
+$q$ must lie within a mode of $p$ (since it's required that samples from $q$ have high 
+probability under $p$). Notice that unlike the forward KL objective, there's nothing 
+requiring the approximate distribution to try to cover all the modes. The entropy term 
+prevents the approximate distribution from collapsing to a very narrow mode; typically, 
+behaviour when optimizing this objective is to find a mode of $p$ with high probability 
+and wide support, and mimic it exactly.
+
+The optimal "approximate" distribution for our example is shown below. Notice that the 
+approximate distribution essentially encompasses the right mode of $p$. The reverse KL 
+divergence does not penalize $q$ for not placing probability mass on the other mode of 
+$p$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.618]{pix/appendix/kl_reversekl.png}
+%\caption{Agent and Environment}
+%\label{fig:label}
+\end{figure}
+
+
+\subsubsection{Which one should I use?}
+
+In this toy example, because we knew the exact distribution of $p$, we were able to show 
+the behaviour of minimizing the forward and reverse KL divergences. In practice, it's 
+often not possible to do both, and you are limited by domain to only one.
+
+\noindent
+{\bf FORWARD KL}
+
+Recall that the simplified objective for the forward KL objective was
+$$
+\arg\max_{\theta} \mathbb{E}_{x \sim p}[\log q_\theta(X)]
+$$
+To be able to evaluate this objective, we need either a dataset of samples from the true 
+model $p(X)$, or a mechanism for sampling from the true model.
+
+\noindent
+{\bf REVERSE KL}
+
+The simplified objective for the forward KL objective was
+$$
+\arg\max_{\theta} \mathbb{E}_{x \sim q_\theta}[\log p(X)] + \mathcal{H}(q_{\theta}(X))
+$$
+To be able to evaluate this objective, we need to be able to evaluate probabilities of 
+data-points under the true model $p(X)$.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Supervised Learning = Forward KL}
+
+Recall in supervised learning (empirical risk minimization), we have a dataset of samples 
+$\mathcal{D} = \{(x_i,y_i)\}$ from some ground-truth data distribution $P(x,y) = P(x)P(y|x)$.
+
+Our goal in supervised learning is to learn a model $f: \mathcal{X} \to \mathcal{Y}$ 
+that minimizes the empirical risk of the model, which is parametrized by a loss function 
+$L(f(x),y)$. In particular, we optimize over some distribution of models $f_\theta$
+$$
+\arg\min_{\theta} \mathbb{E}_{(x,y) \sim \mathcal{D}}[L(f_\theta(x),y)]
+$$
+We'll show that optimizing this objective is equivalent to minimizing the divergence from 
+an approximate distribution $q_\theta(y|x)$ to the true data distribution $p(y|x)$. For 
+reference, the forward KL divergence objective is
+$$
+\arg\min_{\theta} \mathbb{E}_{x,y \sim \mathcal{D}}[-\log Q_\theta(y|x)]
+$$
+%
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+
+{\bf Classification with Cross-Entropy Loss: }
+Here, our approximate distribution $q_{\theta}(y|x)$ is a discrete distribution 
+parametrized by a probability vector $p$ which is outputted by a neural network $f_\theta(x)$. 
+By definition, the cross-entropy loss is exactly what the KL divergence minimizes.
+
+\item[-]
+{\bf Regression with Mean-Squared Error Loss: }
+Here, our approximate distribution $q_{\theta}(y|x)$ is distributed normally 
+$\mathcal{N}(f_{\theta}(x), I)$, where the mean of the distribution is parametrized by 
+a neural network. The negative log-likelihood of the normal distribution is written below. 
+Minimizing the NLL of this normal distribution is clearly equivalent to the mean-squared 
+error loss.
+$$
+-\log q(y|x) = -\frac{1}{2}\|y - f_{\theta}(x)\|_2^2 + C
+$$
+
+\end{itemize}
+
+This concept can in fact be extended to many other losses (for example, absolute error 
+corresponds to the Laplace distribution). In particular, the forward KL divergence loss 
+corresponds exactly to the problem of maximum-likelihood estimation which is the primary 
+basis for many supervised learning problems.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Reinforcement Learning = Reverse KL}
+\label{Reinforcement-Learning-eq-Reverse-KL}
+
+Viewing the problem of reinforcement learning as minimizing the reverse KL objective 
+requires us to think about reinforcement learning from a probabilistic perspective. 
+For a good intro on why we want to do that, and how exactly we formulate it, check out 
+\nameref{Control-as-Inference}.
+
+We can imagine that there's a distribution of optimal trajectories, given by 
+$P_{opt}(\tau)$. Our goal in reinforcement learning is to learn stochastic policies 
+$\pi(a|s)$ that induce a distribution over trajectories: $q_\pi(\tau)$. Now, we can't 
+sample directly from the distribution of optimal trajectories $P_{opt}(\tau)$, but we 
+know that the probability of a trajectory under optimality is exponential in the sum 
+of rewards received on the trajectory.
+$$
+\log P(\tau) = \sum_{t=1}^T r(s_t,a_t)
+$$
+Optimizing the reverse KL objective then is
+\begin{align*}
+&~\arg\max_{\pi} \mathbb{E}_{\tau \sim Q_\pi}\left[\log P(\tau)\right] + \mathcal{H}(Q_{\pi}(\tau))\\
+&=\arg\max_{\pi}\mathbb{E}_{\tau \sim Q_\pi}\left[\sum_{t=1}^T r(s_t,a_t)\right] 
++ \mathbb{E}_{\tau \sim Q_\pi}\left[\sum_{t=1}^T -\log \pi(a_t|s_t)\right]\\
+&=\arg\max_{\pi}\mathbb{E}_{\tau \sim Q_\pi}\left[\sum_{t=1}^T \left(r(s_t,a_t) 
+-\log\pi(a_t|s_t)\right)\right]\\
+\end{align*}
+This is exactly the maximum-entropy reinforcement learning objective!
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Summary}
+
+KL divergences show up everywhere in machine learning, and a solid foundation in what 
+the KL divergence measures is very useful. If you're interested in learning more about 
+applications of KL divergence in statistics, I'd recommend reading articles on bayesian 
+inference. KL divergence also has a very rich history in information theory: the 
+following are great reads. If you love deep learning, two very important concepts in 
+the field using KL divergences right now are VAEs and information bottlenecks.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{用途及实例}
+
+{\bf 几个用途：}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+衡量两个概率分布的差异；
+
+\item[2.]
+衡量利用概率分布Q 拟合概率分布P 时的能量损耗，也就是说拟合以后丢失了多少的信息；
+
+\item[3.]
+衡量两个概率分布的相似度，在运动捕捉里面可以衡量未添加标签的运动与已添加标签运动的相似程度，
+进而进行运动的分类。
+
+\end{itemize}
+
+DNN中最常使用的离散数值优化目标，莫过于交差熵。两个分布$p$，$q$的交差熵，
+与KL距离实际上是同一回事。
+$$
+H(p,q) = -\sum p\log(q) = D_{KL}(p\parallel q) - \sum p\log(p)
+$$
+交差熵实际上就是KL距离减去熵，在深度学习框架中主要用来判定实际的输出与期望的输出的接近程度。
+
+{\bf 例子：}
+在做分类的训练的时候，如果一个样本属于第$K$类，那么这个类别所对应的的输出节点的输出值应该为$1$，
+而其它节点的输出都为$0$，即$[0,0,1,0,\ldots, 0,0]$，这个数组也就是样本的Label，
+是神经网络最期望的输出结果。也就是说用它来衡量网络的输出与标签的差异，
+利用这种差异经过反向传播去更新网络参数。
+
+\begin{example}
+假设有一个字符发射器随机发射0和1两种字符，真实的发出概率分布为$A$，
+但实际不知道$A$的具体分布。通过观察，得到概率分布$B$与$C$，各分布的具体情况如下：
+\begin{align*}
+A(0) &= 1/2, \quad A(1) = 1/2 \\
+B(0) &= 1/4, \quad B(1) = 3/4 \\
+C(0) &= 1/8, \quad C(1) = 7/8
+\end{align}
+通过计算得到：
+\begin{align*}
+KL(A\paralle B) &= 1/2 \log\frac{1/2}{1/4} + 1/2 \long\frac{1/2}{3/4} = 1/2\log(4/3)\\
+KL(A\paralle C) &= 1/2 \log\frac{1/2}{1/8} + 1/2 \long\frac{1/2}{7/8} = 1/2\log(16/7)
+\end{align}
+由此可知，按照概率分布$B$进行编码，要比按照$C$进行编码，平均每个符号增加的比特数少。
+从分布上也可以看出，实际上$B$要比$C$更接近真实分布（因为其与$A$分布的相对熵更小）。
+\end{example}
 
 
 

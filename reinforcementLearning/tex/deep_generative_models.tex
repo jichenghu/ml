@@ -1,0 +1,861 @@
+﻿
+% https://deepgenerativemodels.github.io/
+
+\chapter{Deep Generative Models}
+\setcounter{section}{-1}
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Overview}
+%-------------------------------------------
+% https://deepgenerativemodels.github.io/
+
+Generative models are widely used in many subfields of AI and Machine Learning. Recent 
+advances in parameterizing these models using deep neural networks, combined with 
+progress in stochastic optimization methods, have enabled scalable modeling of complex, 
+high-dimensional data including images, text, and speech. In this chapter, we will 
+study the probabilistic foundations and learning algorithms for deep generative models, 
+including variational autoencoders, generative adversarial networks, autoregressive 
+models, normalizing flow models, energy-based models, and score-based models. This 
+chapter will also discuss application areas that have benefitted from deep generative 
+models, including computer vision, speech and natural language processing, graph mining, 
+reinforcement learning, reliable machine learning, and inverse problem solving.
+
+Intelligent agents are constantly generating, acquiring, and processing
+data. This data could be in the form of {\em images} that we capture on our
+phones, {\em text} messages we share with our friends, {\em graphs} that model
+interactions on social media, {\em videos} that record important events,
+etc. Natural agents excel at discovering patterns, extracting
+knowledge, and performing complex reasoning based on the data they observe. How
+can we build artificial learning systems to do the same?
+
+In this chapter, we will study generative models that view the world under the lens of probability.
+In such a worldview, we can think of any kind of
+observed data, say $\mathcal{D}$, as a finite set of samples from an
+underlying distribution, say $p_{\mathrm{data}}$. At its very core, the
+goal of any generative model is then to approximate this data
+distribution given access to the dataset $\mathcal{D}$. The hope is that
+if we are able to {\em learn} a good generative model, we can use the
+learned model for downstream {\em inference}.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Learning}
+
+We will be primarily interested in parametric approximations to the data
+distribution, which summarize all the information about the dataset $\mathcal{D}$ in
+a finite set of parameters. In contrast with non-parametric models,
+parametric models scale more efficiently with large datasets but are
+limited in the family of distributions they can represent.
+
+In the parametric setting, we can think of the task of learning a
+generative model as picking the parameters within a family of model
+distributions that minimizes some notion of distance\footnote{
+  As we shall see later, functions that do not satisfy all 
+  properties of a distance metric are also used in practice, e.g., KL
+  divergence.} 
+between the model distribution and the data distribution.
+
+%\begin{comment}
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.49\linewidth}
+		\centering
+		\includegraphics[scale=0.518]{pix/dgm/learning_1.png}
+	\end{minipage}
+	%\qquad
+	\begin{minipage}{0.49\linewidth}
+		\centering
+		\includegraphics[scale=0.518]{pix/dgm/learning_2.png}
+	\end{minipage}
+\end{figure}
+%\end{comment}
+
+For instance, we might be given access to a dataset of dog images $\mathcal{D}$ and
+our goal is to learn the parameters of  a generative model $\theta$ within a model 
+family $\mathcal{M}$ such that
+the model distribution $p_\theta$ is close to the data distribution over dogs
+$p_{\mathrm{data}}$. Mathematically, we can specify our goal as the
+following optimization problem: 
+\begin{equation}
+\min_{\theta\in \mathcal{M}}d(p_{\mathrm{data}}, p_{\theta})
+\label{eq:learning_gm}
+%\tag{1}
+\end{equation}
+where $p_{\mathrm{data}}$ is accessed via the dataset
+$\mathcal{D}$ and $d(\cdot)$ is a notion of distance between probability distributions.
+
+As we navigate through this chapter, it is interesting to take note of
+the difficulty of the problem at hand. A typical image from a modern
+phone camera has a resolution of approximately $700 \times 1400$ pixels.
+Each pixel has three channels: R(ed), G(reen) and B(lue) and each
+channel can take a value between $0$ to $255$. Hence, the number of possible
+images is given by $256^{700 \times 1400 \times 3}\approx 10 ^{800000}$.
+In contrast, ImageNet, one of the largest publicly available datasets,
+consists of only about 15 million images. Hence, learning a generative
+model with such a limited dataset is a highly underdetermined problem.
+
+Fortunately, the real world is highly structured and automatically
+discovering the underlying structure is key to learning generative
+models. For example, we can hope to learn some basic artifacts about
+dogs even with just a few images: two eyes, two ears, fur etc. Instead
+of incorporating this prior knowledge explicitly, we will hope the model
+learns the underlying structure directly from data. There is no free
+lunch however, and indeed successful learning of generative models will
+involve instantiating the optimization problem in
+$(\ref{eq:learning_gm})$ in a suitable way. In this chapter, we will be
+primarily interested in the following questions:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+What is the representation for the model family $\mathcal{M}$?
+
+\item[-]
+What is the objective function $d(\cdot)$?
+
+\item[-]
+What is the optimization procedure for minimizing $d(\cdot)$?
+\end{itemize}
+
+In the next few sections, we will take a deeper dive into certain
+families of generative models. For each model family, we will note how
+the representation is closely tied with the choice of learning objective
+and the optimization procedure.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Inference}
+
+For a discriminative model such as logistic regression, the fundamental
+inference task is to predict a label for any given datapoint. Generative
+models, on the other hand, learn a joint distribution over the entire
+data.\footnote{Technically, a probabilistic discriminative model is also a
+    generative model of the labels conditioned on the data. However, the
+    usage of the term generative models is typically reserved for high
+    dimensional data.}
+
+While the range of applications to which generative models have been
+used continue to grow, we can identify three fundamental inference
+queries for evaluating a generative model.:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+{\bf Density estimation:} Given a datapoint $\mathbf{x}$, what is the
+    probability assigned by the model, i.e., $p_\theta(\mathbf{x})$?
+
+\item[2.]
+{\bf Sampling:} How can we {\bf generate} novel data from the model
+    distribution, i.e.,
+    $\mathbf{x}_{\mathrm{new}} \sim p_\theta(\mathbf{x})$?
+
+\item[3.]
+{\bf Unsupervised representation learning:} How can we learn meaningful
+    feature representations for a datapoint $\mathbf{x}$?
+\end{itemize}
+
+Going back to our example of learning a generative model over dog
+images, we can intuitively expect a good generative model to work as
+follows. For density estimation, we expect $p_\theta(\mathbf{x})$ to be
+high for dog images and low otherwise. Alluding to the name {\bf generative
+model}, sampling involves generating novel images of dogs beyond the
+ones we observe in our dataset. Finally, representation learning can
+help discover high-level structure in the data such as the breed of
+dogs.
+
+In light of the above inference tasks, we note two caveats. First,
+quantitative evaluation of generative models on these tasks is itself
+non-trivial (in particular, sampling and representation learning) and an
+area of active research. Some quantitative metrics exist, but these
+metrics often fail to reflect desirable qualitative attributes in the
+generated samples and the learned representations. Secondly, not all
+model families permit efficient and accurate inference on all these
+tasks. Indeed, the trade-offs in the inference capabilities of the
+current generative models have led to the development of very diverse approaches as
+we shall see in this course.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Autoregressive Models}
+%-------------------------------------------
+
+We begin our study into generative modeling with autoregressive models. As before, 
+we assume we are given access to a dataset $\mathcal{D}$ of $n$-dimensional 
+datapoints $\mathbf{x}$. For simplicity, we assume the datapoints are binary, i.e., 
+$\mathbf{x} \in \{0,1\}^n$.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Representation}
+
+By the chain rule of probability, we can factorize the joint distribution over the 
+$n$-dimensions as 
+\begin{equation}
+\label{eq:chain_rule}
+p(\mathbf{x}) = \prod\limits_{i=1}^{n}p(x_i \vert x_1, x_2, \ldots, x_{i-1}) = 
+\prod\limits_{i=1}^{n} p(x_i \vert \mathbf{x}_{< i } )
+\end{equation}
+where $\mathbf{x}_{< i}=[x_1, x_2, \ldots, x_{i-1}]$ denotes the vector of random 
+variables with index less than $i$. 
+
+The chain rule factorization can be expressed graphically as a Bayesian network.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{pix/dgm/autoregressive.png}
+\caption{Graphical model for an autoregressive Bayesian network with no 
+conditional independence assumptions.}
+%\label{fig:label}
+\end{figure}
+
+Such a Bayesian network that makes no conditional independence assumptions is said 
+to obey the *autoregressive* property.
+
+The term {\bf autoregressive} originates from the literature on time-series models 
+where observations from the previous time-steps are used to predict the value at 
+the current time step. Here, we fix an ordering of the variables $x_1, x_2, \ldots, 
+x_n$ and the distribution for the $i$-th random variable depends on the values of 
+all the preceding random variables in the chosen ordering $x_1, x_2, \ldots, x_{i-1}$.
+
+If we allow for every conditional $p(x_i \vert \mathbf{x}_{< i})$ to be specified 
+in a tabular form, then such a representation is fully general and can represent 
+any possible distribution over $n$ random variables. However, the space complexity 
+for such a representation grows exponentially with $n$.
+
+To see why, let us consider the conditional for the last dimension, given by 
+$p(x_n \vert \mathbf{x}_{< n})$. In order to fully specify this conditional, we need 
+to specify a probability distribution for each of the $2^{n-1}$ configurations of 
+the variables $x_1, x_2, \ldots, x_{n-1}$. For any one of the $2^{n-1}$ possible 
+configurations of the variables, the probabilities should sum to one. Therefore, we 
+need only one parameter for each configuration, so the total number of parameters 
+for specifying this conditional is given by $2^{n-1}$. Hence, a tabular 
+representation for the conditionals is impractical for learning the joint 
+distribution factorized via chain rule in (\ref{eq:chain_rule}).
+
+In an {\bf autoregressive generative model}, the conditionals are specified as 
+parameterized functions with a fixed number of parameters. That is, we assume the 
+conditional distributions $p(x_i \vert \mathbf{x}_{<i})$ to correspond to a Bernoulli 
+random variable and learn a function that maps the preceding random variables 
+$x_1, x_2, \ldots, x_{i-1}$ to the mean of this distribution. Hence, we have
+$$
+p_{\theta_i}(x_i \vert \mathbf{x}_{< i}) = \mathrm{Bern}(f_i(x_1, x_2, \ldots, x_{i-1}))
+$$
+where $\theta_i$ denotes the set of parameters used to specify the mean function 
+$f_i: \{0,1\}^{i-1}\rightarrow [0,1]$. The term \textit{autoregressive} originates from 
+the literature on time-series models where observations from the previous time-steps are 
+used to predict the value at the current time step. Here, we are predicting the 
+distribution for the $i$-th random variable using the values of the preceeding random 
+variables in the sequence $x_1, x_2, \ldots, x_n$.
+
+The number of parameters of an autoregressive generative model are given by 
+$\sum_{i=1}^n \vert \theta_i \vert$. As we shall see in the examples below, the number 
+of parameters are much fewer than the tabular setting considered previously. Unlike the 
+tabular setting however, an autoregressive generative model cannot represent all 
+possible distributions. Its expressiveness is limited by the fact that we are limiting 
+the conditional distributions to correspond to a Bernoulli random variable with the 
+mean specified via a restricted class of parameterized functions.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/fvsbn.png}
+\caption{A fully visible sigmoid belief network over four variables. \\ The conditionals 
+are denoted by \(\widehat{x}_1, \widehat{x}_2, \widehat{x}_3, \widehat{x}_4\) 
+respectively.}
+%\label{fig:label}
+\end{figure}
+In the simplest case, we can specify the function as a linear combination of the input 
+elements followed by a sigmoid non-linearity (to restrict the output to lie between 0 
+and 1). This gives us the formulation of a \textit{fully-visible sigmoid belief network} 
+(\href{https://papers.nips.cc/paper/1153-does-the-wake-sleep-algorithm-produce-good-density-estimators.pdf}{FVSBN}).
+$$
+f_i(x_1, x_2, \ldots, x_{i-1}) =\sigma\left(\alpha^{(i)}_0 + \alpha^{(i)}_1 x_1 + \ldots + 
+\alpha^{(i)}_{i-1} x_{i-1}\right)  
+$$
+where $\sigma$ denotes the sigmoid function and $\theta_i=\{\alpha^{(i)}_0,\alpha^{(i)}_1, 
+\ldots, \alpha^{(i)}_{i-1}\}$ denote the parameters of the mean function. The conditional 
+for variable $i$ requires $i$ parameters, and hence the total number of parameters in 
+the model is given by $\sum_{i=1}^ni= O(n^2)$. Note that the number of parameters are 
+much fewer than the exponential complexity of the tabular case.
+
+A natural way to increase the expressiveness of an autoregressive generative model is to 
+use more flexible parameterizations for the mean function e.g., multi-layer perceptrons 
+(MLP). For example, consider the case of a neural network with 1 hidden layer. The mean 
+function for variable $i$ can be expressed as
+$$
+\mathbf{h}_i = \sigma(A_i \mathbf{x_{< i}} + \mathbf{c}_i)
+f_i(x_1, x_2, \ldots, x_{i-1}) =\sigma(\boldsymbol{\alpha}^{(i)}\mathbf{h}_i +b_i )
+$$
+where $\mathbf{h}_i \in \mathbb{R}^d$ denotes the hidden layer activations for the MLP 
+and $\theta_i = \{A_i \in \mathbb{R}^{d\times (i-1)},  \mathbf{c}_i \in \mathbb{R}^d, 
+\boldsymbol{\alpha}^{(i)}\in \mathbb{R}^d, b_i \in \mathbb{R}\}$ are the set of parameters 
+for the mean function $\mu_i(\cdot)$. The total number of parameters in this model is 
+dominated by the matrices $A_i$ and given by $O(n^2 d)$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/nade.png}
+\caption{A neural autoregressive density estimator over four variables. The conditionals 
+are denoted by \(\widehat{x}_1, \widehat{x}_2, \widehat{x}_3, \widehat{x}_4\) 
+respectively. The blue connections denote the tied weights \(W[., i]\) used for 
+computing the hidden layer activations.}
+%\label{fig:label}
+\end{figure}
+
+The {\em Neural Autoregressive Density Estimator} (
+\href{http://proceedings.mlr.press/v15/larochelle11a/larochelle11a.pdf}{NADE}) provides 
+an alternate MLP-based parameterization that is more statistically and computationally 
+efficient than the vanilla approach. In NADE, parameters are shared across the functions 
+used for evaluating the conditionals. In particular, the hidden layer activations are 
+specified as
+$$
+\mathbf{h}_i = \sigma(W_{., <i} \mathbf{x_{<i}} + \mathbf{c})\\
+f_i(x_1, x_2, \ldots, x_{i-1}) =\sigma(\boldsymbol{\alpha}^{(i)}\mathbf{h}_i +b_i )  
+$$
+where $\theta=\{W\in \mathbb{R}^{d\times n}, \mathbf{c} \in \mathbb{R}^d, \{\boldsymbol{
+\alpha}^{(i)}\in \mathbb{R}^d\}^n_{i=1}, \{b_i \in \mathbb{R}\}^n_{i=1}\}$ is the full set 
+of parameters for the mean functions $f_1(\cdot), f_2(\cdot), \ldots, f_n(\cdot)$. The 
+weight matrix $W$ and the bias vector $\mathbf{c}$ are shared across the conditionals. 
+Sharing parameters offers two benefits:
+\begin{enumerate}
+\item[1.] 
+The total number of parameters from $O(n^2 d)$ to $O(nd)$ [readers are encouraged 
+to check!].
+
+\item[2.] 
+The hidden unit activations can be evaluated in $O(nd)$ time via the following 
+recursive strategy:
+$$
+\mathbf{h}_i = \sigma(\mathbf{a}_i)\\
+\mathbf{a}_{i+1} = \mathbf{a}_{i} + W[\cdot, i]x_i
+$$
+with the base case given by $\mathbf{a}_1=\mathbf{c}$.
+\end{enumerate}
+
+
+\subsubsection{Extensions to NADE}
+
+The \href{https://arxiv.org/abs/1306.0186}{RNADE} algorithm extends NADE to learn 
+generative models over real-valued data. Here, the conditionals are modeled via a 
+continuous distribution such as a equi-weighted mixture of $K$ Gaussians. Instead 
+of learning a mean function, we now learn the means $\mu_{i,1}, \mu_{i,2},\ldots, 
+\mu_{i,K}$ and variances $\Sigma_{i,1}, \Sigma_{i,2},\ldots, \Sigma_{i,K}$ of the 
+$K$ Gaussians for every conditional. For statistical and computational efficiency, 
+a single function $g_i: \mathbb{R}^{i-1}\rightarrow\mathbb{R}^{2K}$ outputs all 
+the means and variances of the $K$ Gaussians for the $i$-th conditional distribution.
+
+Notice that NADE requires specifying a single, fixed ordering of the variables. The 
+choice of ordering can lead to different models. 
+The \href{https://arxiv.org/abs/1310.1757}{EoNADE} algorithm allows training an 
+ensemble of NADE models with different orderings.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Learning and inference}
+
+Recall that learning a generative model involves optimizing the closeness between the 
+data and model distributions. One commonly used notion of closeness in the KL 
+divergence between the data and the model distributions.
+\begin{align*}
+\min_{\theta\in \mathcal{M}}d_{KL}
+(p_{\mathrm{data}}, p_{\theta}) = \mathbb{E}_{\mathbf{x} \sim p_{\mathrm{data}} }
+\left[\log p_{\mathrm{data}}(\mathbf{x}) - \log p_{\theta}(\mathbf{x})\right]
+\end{align}
+
+Before moving any further, we make two comments about the KL divergence. First, we note 
+that the KL divergence between any two distributions is asymmetric. As we navigate through 
+this chapter, the reader is encouraged to think what could go wrong if we decided to 
+optimize the reverse KL divergence instead\footnote{这里是用 $p_\theta$ 的采样去逼近 
+$p_{\mathrm{data}}$的分布，the reverse KL divergence 则是用 $p_{\mathrm{data}}$ 的采样去逼近 
+$p_\theta$ 的分布}. Secondly, the KL divergences heavily penalizes 
+any model distribution $p_\theta$ which assigns low probability to a datapoint that is 
+likely to be sampled under $p_{\mathrm{data}}$. In the extreme case, if the density 
+$p_\theta(\mathbf{x})$ evaluates to zero for a datapoint sampled from $p_{\mathrm{data}}$, 
+the objective evaluates to $+\infty$.
+
+Since $p_{\mathrm{data}}$ does not depend on $\theta$, we can equivalently recover the 
+optimal parameters via maximizing likelihood estimation.
+\begin{align*}
+\max_{\theta\in \mathcal{M}}\mathbb{E}_{\mathbf{x} \sim p_{\mathrm{data}} }
+\left[\log p_{\theta}(\mathbf{x})\right].
+\end{align*}
+Here, $\log p_{\theta}(\mathbf{x})$ is referred to as the log-likelihood of the datapoint 
+$\mathbf{x}$ with respect to the model distribution $p_\theta$.
+
+To approximate the expectation over the unknown $p_{\mathrm{data}}$, we make an assumption: 
+points in the dataset $\mathcal{D}$ are sampled i.i.d\footnote{独立同分布，
+independent and identically distributed}. from $p_{\mathrm{data}}$. This 
+allows us to obtain an unbiased Monte Carlo estimate of the objective as
+\begin{align}
+\label{eq:mle}
+\max_{\theta\in \mathcal{M}}\frac{1}{\vert D \vert} 
+\sum_{\mathbf{x} \in\mathcal{D} }\log p_{\theta}(\mathbf{x}) 
+= \mathcal{L}(\theta \vert \mathcal{D}).
+\end{align}
+
+The maximum likelihood estimation (MLE) objective has an intuitive interpretation: pick 
+the model parameters $\theta \in \mathcal{M}$ that maximize the log-probability of the 
+observed datapoints in $\mathcal{D}$.
+
+In practice, we optimize the MLE objective using mini-batch gradient ascent. The algorithm 
+operates in iterations. At every iteration $t$, we sample a mini-batch $\mathcal{B}_t$ 
+of datapoints sampled randomly from the dataset ($\vert \mathcal{B}_t\vert < \vert 
+\mathcal{D} \vert$) and compute gradients of the objective evaluated for the mini-batch. 
+These parameters at iteration $t+1$ are then given via the following update rule
+$$
+\theta^{(t+1)} = \theta^{(t)} + r_t \nabla_\theta\mathcal{L}(\theta^{(t)} \vert 
+\mathcal{B}_t)
+$$
+where $\theta^{(t+1)}$ and $\theta^{(t)}$ are the parameters at iterations $t+1$ and $t$ 
+respectively, and $r_t$ is the learning rate at iteration $t$. Typically, we only specify 
+the initial learning rate $r_1$ and update the rate based on a schedule. 
+\href{http://cs231n.github.io/optimization-1/}{Variants} of stochastic gradient ascent, 
+such as RMS prop and Adam, employ modified update rules that work slightly better in 
+practice.
+
+From a practical standpoint, we must think about how to choose hyperparameters (such as 
+the initial learning rate) and a stopping criteria for the gradient descent. For both 
+these questions, we follow the standard practice in machine learning of monitoring the 
+objective on a validation dataset. Consequently, we choose the hyperparameters with the 
+best performance on the validation dataset and stop updating the parameters when the 
+validation log-likelihoods cease to improve\footnote{Given the non-convex nature of such 
+problems, the optimization procedure can get stuck in local optima. Hence, early 
+stopping will generally not be optimal but is a very practical strategy.}.
+
+Now that we have a well-defined objective and optimization procedure, the only remaining 
+task is to evaluate the objective in the context of an autoregressive generative model. 
+To this end, we substitute the factorized joint distribution in 
+Eq.$~\ref{eq:chain_rule}$ of an autoregressive model 
+in the MLE objective in Eq.$~\ref{eq:mle}$ to get
+$$
+\max_{\theta \in \mathcal{M}}\frac{1}{\vert D \vert} \sum_{\mathbf{x} \in\mathcal{D} }
+\sum_{i=1}^n\log p_{\theta_i}(x_i \vert \mathbf{x}_{< i})
+$$
+where $\theta = \{\theta_1, \theta_2, \ldots, \theta_n\}$ now denotes the
+collective set of parameters for the conditionals.
+
+Inference in an autoregressive model is straightforward. For density estimation of an 
+arbitrary point $\mathbf{x}$, we simply evaluate the log-conditionals 
+$\log p_{\theta_i}(x_i \vert \mathbf{x}_{< i})$ for each $i$ and add these up to obtain 
+the log-likelihood assigned by the model to $\mathbf{x}$. Since we know conditioning 
+vector $\mathbf{x}$, each of the conditionals can be evaluated in parallel. Hence, density 
+estimation is efficient on modern hardware.
+
+Sampling from an autoregressive model is a sequential procedure. Here, we first sample 
+$x_1$, then we sample $x_2$ conditioned on the sampled $x_1$, followed by $x_3$ 
+conditioned on both $x_1$ and $x_2$ and so on until we sample $x_n$ conditioned on the 
+previously sampled $\mathbf{x}_{< n}$. For applications requiring real-time generation 
+of high-dimensional data such as audio synthesis, the sequential sampling can be an 
+expensive process. Later in this chapter, we will discuss how parallel WaveNet, an 
+autoregressive model sidesteps this expensive sampling process.
+
+% TODO: add NADE samples figure
+
+Finally, an autoregressive model does not directly learn unsupervised representations of 
+the data. In the next few set of lectures, we will look at latent variable models (e.g., 
+variational autoencoders) which explicitly learn latent representations of the data.
+
+% TODO: Autoregressive generative models based on Autoencoders, RNNs, and CNNs.
+% MADE, Char-RNN, Pixel-CNN, Wavenet
+
+% Additional parameterizations
+% ==============
+% Coming soon: MADE, Char-RNN, Pixel-CNN, Wavenet -->
+
+
+
+
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\KL}[2]{D_\mathrm{KL}\paren{#1 \mathbin{\|} #2}}
+\renewcommand{\P}{\mathcal{P}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Z}{\mathcal{Z}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\M}{\mathcal{B}}
+\newcommand{\ELBO}{\mathrm{ELBO}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\giv}{\mid}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\brac}[1]{\left[#1\right]}
+\newcommand{\veps}{\varepsilon}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\renewcommand{\d}{\mathop{}\!\mathrm{d}}
+\newcommand{\Expect}{\mathbb{E}}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\I}{\mathbf{I}}
+\newcommand{\0}{\mathbf{0}}
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Variational Auto-Encoder}
+%-------------------------------------------
+% https://www.jianshu.com/p/ffd493e10751
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Auto-Encoder}
+
+在说 VAE 之前，先来看一下它的前身 Auto-Encoder (AE)。AE 通过自监督的训练方式，
+能够从原始特征获得一个潜在的特征编码，实现了自动化的特征工程，并且达到了降维和泛化的目的。
+它的网络结构很简单，有编码和解码两个部分组成：
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{pix/dgm/encoder_decoder.png}
+\caption{Auto-Encoder}
+%\label{fig:label}
+\end{figure}
+
+容易看出，之所以是自监督就是因为网络的 target 即是 input 本身，因此不需要额外的标签工作，
+虽然它由编码器和解码器两个部分组成，但是，显然从自编码器这个名字就可以看出，AE 的重点在于编码，
+即得到这个隐藏层的向量，作为 input 的潜在特征，这是常见的一种 embedding 的一种方式。
+而解码的结果，基于训练目标，如果损失足够小的话，将会与 input 相同，从这一点上看解码的值没有任何实际意义，
+除了通过增加误差来补充平滑一些初始的零值或有些许用处。因为，从输入到输出的整个过程，
+都是基于已有的训练数据的映射，尽管隐藏层的维度通常比输入层小很多，
+但隐藏层的概率分布依然只取决于训练数据的分布，这就导致隐藏状态空间的分布并不是连续的，
+于是如果我们随机生成隐藏层的状态，那么它经过解码将很可能不再具备输入特征的特点，
+因此想通过解码器来生成数据就有点强模型所难了。
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{VAE}
+
+正是因为以上的这些原因，有大佬就对 AE 的隐藏层做了些改动，得到了 VAE。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{pix/dgm/variational_encoder_decoder.png}
+\caption{Variational Auto-Encoder}
+%\label{fig:label}
+\end{figure}
+
+VAE 将经过神经网络编码后的隐藏层假设为一个标准的高斯分布，然后再从这个分布中采样一个特征，
+再用这个特征进行解码，期望得到与原始输入相同的结果，损失和 AE 几乎一样，
+只是增加编码推断分布与标准高斯分布的 KL 散度的正则项，显然增加这个正则项的目的就是防止模型退化成普通的 AE，
+因为网络训练时为了尽量减小重构误差，必然使得方差逐渐被降到 0，这样便不再会有随机采样噪声，也就变成了普通的 AE。
+
+没错，我们先抛开变分，它就是这么简单的一个假设... 仔细想一下，就会觉得妙不可言。
+
+它妙就妙在它为每个输入 $x$, 生成了一个潜在概率分布 $p(z|x)$, 然后再从分布中进行随机采样，
+从而得到了连续完整的潜在空间，解决了 AE 中无法用于生成的问题。
+《论语》有言：“举一隅，不以三隅反，则不复也。” ，给我的启发就是看事物应该不能只看表面，
+而应该了解其本质规律，从而可以灵活迁移到很多类似场景。聪明人学习当举一反三，那么聪明的神经网络，
+自然也不能只会怼训练数据。如果我们把原始输入 $x$ 看作是一个表面特征，而其潜在特征便是表面经过抽象之后的类特征，
+它将比表面特征更具备区分事物的能力，而 VAE 直接基于拟合了基于已知的潜在概率分布，
+可以说是进一步的掌握了事物的本质。就拿一个人的某个行为来说，我们不能单纯看行为本身，
+因为这个行为往往代表了他的综合特性，他从出生开始，因为遗传，后天教育和环境，决定了他在面对某种情形的情况下，
+高概率会产生这个行为，也就是说掌握了概率分布，就掌控了一切。
+
+
+Latent variable models form a rich class of probabilistic models that can infer hidden 
+structure in the underlying data. In this post, we will study variational autoencoders, 
+which are a powerful class of deep generative models with latent variables.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Representation}
+
+Consider a directed, latent variable model as shown below.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/vae.png}
+\caption{Graphical model for a directed, latent variable model.}
+%\label{fig:label}
+\end{figure}
+
+In the model above, $\bz$ and $\bx$ denote the latent and observed variables 
+respectively. The joint distribution expressed by this model is given as
+$$
+p_\theta(\bx, \bz) = p(\bx \giv \bz)p(\bz).
+$$
+
+From a generative modeling perspective, this model describes a generative process for 
+the observed data $\bx$ using the following procedure
+\begin{align*}
+\bz &\sim p(\bz) \\
+\bx &\sim p(\bx \giv \bz).
+\end{align}
+
+If one adopts the belief that the latent variables $\bz$ somehow encode semantically 
+meaningful information about $\bx$, it is natural to view this generative process as 
+first generating the "high-level" semantic information about $\bx$ first before fully 
+generating $\bx$. Such a perspective motivates generative models with rich latent 
+variable structures such as hierarchical generative models $p(\bx, \bz_1, \ldots, \bz_m) 
+= p(\bx \giv \bz_1)\prod_i p(\bz_i \giv \bz_{i+1})$---where information about $\bx$ 
+is generated hierarchically---and temporal models such as the Hidden Markov Model---where 
+temporally-related high-level information is generated first before constructing $\bx$.
+
+We now consider a family of distributions $\mathcal{P}_\bz$ where $p(\bz) \in \mathcal{P}_\bz$ describes 
+a probability distribution over $\bz$. Next, consider a family of conditional 
+distributions $\mathcal{P}_{\bx\giv \bz}$ where $p_\theta(\bx \giv \bz) \in \mathcal{P}_{\bx\giv \bz}$ 
+describes a conditional probability distribution over $\bx$ given $\bz$. Then our 
+hypothesis class of generative models is the set of all possible combinations
+\begin{align*}
+\mathcal{P}_{\bx,\bz} = \set{p(\bx, \bz) \giv p(\bz) \in \mathcal{P}_\bz, p(\bx \giv \bz) \in 
+\mathcal{P}_{\bx\giv\bz}}.
+\end{align}
+
+Given a dataset $\D = \set{\bx^{(1)}, \ldots, \bx^{(n)}}$, we are interested in the 
+following learning and inference tasks
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Selecting $p \in \mathcal{P}_{\bx,\bz}$ that "best" fits $\D$.
+
+\item[-]
+Given a sample $\bx$ and a model $p \in \mathcal{P}_{\bx,\bz}$, what is the posterior 
+distribution over the latent variables $\bz$?
+
+\item[-]
+Approximate marginal inference of $\bx$: given partial access to certain dimensions 
+of the vector $\bx$, how do we impute the missing parts?
+\end{itemize}
+
+We shall also assume the following
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Intractability: computing the posterior probability $p(\bz \giv \bx)$ is intractable.
+
+\item[-]
+Big data: the dataset $\D$ is too large to fit in memory; we can only work with 
+small, sub-sampled batches of $\D$.
+\end{itemize}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Learning Directed Latent Variable Models}
+
+One way to measure how closely $p(\bx, \bz)$ fits the observed dataset $\D$ is to 
+measure the Kullback-Leibler (KL) divergence between the data distribution (which 
+we denote as $p_{\mathrm{data}}(\bx)$) and the model's marginal distribution 
+$p(\bx) = \int p(\bx, \bz) \d \bz$. The distribution that ``best'' fits the data is 
+thus obtained by minimizing the KL divergence. 
+\begin{align*}
+\min_{p \in \P_{\bx, \bz}}\KL{p_{\mathrm{data}}(\bx)}{p(\bx)}.
+\end{align}
+
+As we have seen previously, optimizing an empirical estimate of the KL divergence is 
+equivalent to maximizing the marginal log-likelihood $\log p(\bx)$ over $\D$
+\begin{align*}
+\max_{p \in \P_{\bx, \bz}} \sum_{\bx \in \D} \log p(\bx) = \sum_{\bx \in \D} \log\int p(\bx, \bz) \d \bz.
+\end{align}
+
+However, it turns out this problem is generally intractable for high-dimensional $\bz$ 
+as it involves an integration (or sums in the case $\bz$ is discrete) over all the 
+possible latent sources of variation $\bz$. One option is to estimate the objective 
+via Monte Carlo. For any given datapoint $\bf x$, we can obtain the following estimate 
+for its marginal log-likelihood
+$$
+\log p(\bx) \approx \log \frac{1}{k} \sum_{i=1}^k p(\bx \vert \bz^{(i)}) \text{, where } \bz^{(i)} \sim p(\bz)
+$$
+
+In practice however, optimizing the above estimate suffers from high variance in 
+gradient estimates. 
+
+Rather than maximizing the log-likelihood directly, an alternate is to instead 
+construct a lower bound that is more amenable to optimization. To do so, we note that 
+evaluating the marginal likelihood $p(\bx)$ is at least as difficult as as evaluating 
+the posterior $p(\bz \mid \bx)$ for any latent vector $\bz$ since by definition 
+$p(\bz \mid \bx) = p(\bx, \bz) / p(\bx)$. 
+
+Next, we introduce a variational family $\Q$ of distributions that approximate the 
+true, but intractable posterior $p(\bz \mid \bx)$. Further henceforth, we will assume 
+a parameteric setting where any distribution in the model family $\P_{\bx, \bz}$ is 
+specified via a set of parameters $\theta \in \Theta$ and distributions in the 
+variational family $\Q$ are specified via a set of parameters $\lambda \in \Lambda$. 
+
+Given $\P_{\bx, \bz}$ and $\Q$, we note that the following relationships hold 
+true\footnote{The first equality only holds if the support of $q$ includes that of 
+$p$. If not, it is an inequality.} for any $\bx$ and all variational distributions 
+$q_\lambda(\bz) \in \Q$
+\begin{align*}
+\log p_\theta(\bx) &= \log \int p_\theta(\bx, \bz) \d \bz \\
+&= \log \int \frac{q_\lambda(\bz)}{q_\lambda(\bz)} p(\bx, \bz) \d \bz\\
+&\ge\int q_\lambda(\bz) \log \frac{p_\theta(\bx, \bz)}{q_\lambda(\bz)} \d \bz \\
+&= \Expect_{q_\lambda(\bz)} \left[\log \frac{p_\theta(\bx, \bz)}{q_\lambda(\bz)}\right] \\
+&:=\ELBO(\bx; \theta, \lambda)
+\end{align}
+where we have used Jensen's inequality in the final step. The Evidence Lower Bound 
+or ELBO in short admits a tractable unbiased Monte Carlo estimator
+\begin{align*}
+\frac{1}{k} \sum_{i=1}^k \log \frac{p_\theta(\bx, \bz^{(i)})}{q_\lambda(\bz^{(i)})} \text{, where } \bz^{(i)} \sim q_\lambda(\bz),
+\end{align}
+so long as it is easy to sample from and evaluate densities for $q_\lambda(\bz)$. 
+
+Which variational distribution should we pick? Even though the above derivation holds 
+for any choice of variational parameters $\lambda$, the tightness of the lower bound 
+depends on the specific choice of $q$. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.318]{pix/dgm/klgap.png}
+\caption{Illustration for the KL divergence gap between the marginal log-likelihood 
+\(\log p_\theta(\bx)\) for a point \(\bx\) and the corresponding ELBO for a 
+single 1D-parameter variational distribution \(q_\lambda(\bx)\).}
+%\label{fig:label}
+\end{figure}
+
+In particular, the gap between the original objective(marginal log-likelihood 
+$\log p_\theta(\bx) $) and the ELBO equals the KL divergence between the approximate 
+posterior $q(\bz)$ and the true posterior $p(\bz \giv \bx)$. The gap is zero when the 
+variational distribution $q_\lambda(\bz)$ exactly matches $p_\theta(\bz \giv \bx)$. 
+
+In summary, we can learn a latent variable model by maximizing the ELBO with respect 
+to both the model parameters $\theta$ and the variational parameters $\lambda$ for any 
+given datapoint $\bx$
+
+\begin{align}
+\max_{\theta} \sum_{\bx \in \D} \max_{\lambda} \Expect_{q_\lambda(\bz)} \left[\log \frac{p_\theta(\bx, \bz)}{q_\lambda(\bz)}\right].
+\end{align}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Black-Box Variational Inference}
+
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{变分自编码是怎么炼成的}
+%-------------------------------------------
+
+读了上面的内容之后，你应该对 VAE 模型有了一个较为直观和感性的认知，但是可能会疑惑所谓的变分到底在哪里？
+放心，变分并没有被作者吃掉，接下来，我们就从变分推断的角度，对 VAE 进行一个理性的推导。有了上面的基础，
+再读下面的内容时就会轻松愉快很多。
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{变分推断}
+
+变分自编码器（VAE）的想法和名字的由来便是变分推断了，那么什么是变分推断呢？
+变分推断是 MCMC 搞不定场景的一种替代算法，它考虑一个贝叶斯推断问题，给定观测变量 $x\in\mathbb{R}^n$ 
+和潜变量 $z\in\mathbb{R}^d$, 其联合概率分布为 $p(z,x) = p(z)p(x|z)$, 目标是计算后验分布 
+$p(z|x)$。然后我们可以假设一个变分分布 $q(z)$ 来自分布族 $Q$，通过最小化 KL 散度来近似后验分布 
+$p(z|x)$:
+$$
+q^* = \operatorname{arg min}_{q(z)\in Q} D_{KL}(q(z) ~ \| ~ p(z|x))
+$$
+这么一来，就成功的将一个贝叶斯推断问题转化为了一个优化问题。
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{变分推导过程}
+
+有了变分推断的认知，我们再回过头去看一下 VAE 模型的整体框架。VAE 就是将 AE 
+的编码和解码过程转化为了一个贝叶斯概率模型：我们的训练数据即为观测变量 $x$，
+假设它由不能直接观测到的潜变量 $z$ 生成。于是，生成观测变量过程便是似然分布：$p(x | z)$，
+也就是解码器，因而编码器自然就是后验分布：$p(z | x)$。根据贝叶斯公式,建立先验、后验和似然的关系：
+$$
+p(z|x) = \frac{p(x|z)p(z)}{p(x)} = \int_z\frac{p(x|z)p(z)}{p(x)}dz
+$$
+接下来，基于上面变分推断的思想，我们假设变分分布 $q_x(z)$, 通过最小化 KL 散度来近似后验分布 $p(z|x)$，
+于是，最佳的 $q_x^*$ 便是：
+\begin{align*}
+q_x^* &= \operatorname{arg min}\left( D_{KL}(q_x(z) \| p(z|x)) \right) \\
+&= \operatorname{arg min}\left( \mathbb{E}_{q_x(z)}\left[ 
+\log q_x(z) - \log p(x|z) - \log p(z) \right] + \log p(x) \right)
+\end{align}
+因为训练数据 $x$ 是确定的，因此 $\log~p(x)$ 是一个常数，于是上面的优化问题等价于：
+\begin{align*}
+q_x^* &= \operatorname{arg min}\left( \mathbb{E}_{q_x(z)}\left[ 
+\log q_x(z) - \log p(x|z) - \log p(z) \right] \right) \\
+&= \operatorname{arg min}\left( \mathbb{E}_{q_x(z)}\left[ 
+ - \log p(x|z) + (\log q_x(z) - \log p(z)) \right] \right) \\
+&= \operatorname{arg min}\left( \mathbb{E}_{q_x(z)}\left[ 
+ - \log p(x|z) + D_{KL}(q_x(z) ~\|~ p(z)) \right] \right)
+\end{align}
+
+此时，优观察一下优化方程的形式，已经是我们前面所说的 VAE 的损失函数了。
+显然，跟我们希望解码准确的目标是一致的。要解码的准，则 $p(x|z)$ 应该尽可能的小，编码特征 $z$ 
+的分布 $q_x(z)$ 同 $p(z)$ 尽可能的接近。此时恰好 $-\log p(x|z)$ 和 $D_{KL}(q_x(z) \| p(z|x))$ 
+都尽可能的小，与损失的优化的目标也一致。
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{如何计算极值}
+
+正如前面所提到的 AE 潜变量的局限性，我们希望 VAE 的潜变量分布 $p(z)$ 应该能满足海量的输入数据 $x$ 
+并且相互独立。基于中心极限定理，以及为了方便采样，我们有理由直接假设 $p(z)$ 是一个标准的高斯分布 
+$\mathcal{N}(0,1)$。
+
+
+\subsubsection{编码部分}
+
+我们先来看一下编码部分，我们希望拟合一个分布 $q_x(z) = \mathcal{N}(\mu, \sigma)$ 尽可能接近 
+$p(z) = \mathcal{N}(0,1)$。关键就在于基于输入 $x$ 计算 $\mu$ 和 $\sigma$。直接算有点困难，
+于是就使用两个神经网络 $f(x)$ 和 $g(x)$ 来无脑拟合 $\mu$ 和 $\sigma$。
+
+值得一提的是，很多地方实际使用的 $f(x)$、$g(x)$ 两部分神经网络并不是独立的，而是有一部分交集。
+即他们都先通过一个 $h(x)$ 映射到一个中间层 $h$, 然后分别对 $h$ 计算 $f(h)$ 和 $g(h)$。
+这样做的好处一方面是可以减少参数数量，另外也会导致拟合的效果差一些，算是防止过拟合吧。
+
+
+\subsubsection{解码部分}
+
+解码，即从潜变量 $z$ 生成数据 $x$ 的过程，在于最大化似然 $p(x|z)$，那这应该是个什么分布呢？
+通常我们假设它是一个{\bf 伯努利分布}或是{\bf 高斯分布}。
+这是因为伯努利分布简单，高斯分布自然。
+
+知道了分布类型，那计算 $-\log p(x|z)$ 最小值其实只要把分布公式带进去算就可以了。
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+高斯分布
+\begin{align*}
+\operatorname{arg min}(-\log q(x|z))
+&= \operatorname{arg min}\frac{1}{2}
+\left\| \frac{x-\tilde{\mu}(z)}{\tilde{\sigma}(z)} \right\|^2 
++ \frac{c}{2}\log 2\pi + \frac{1}{2} \\
+&= \operatorname{arg min}\frac{1}{2}
+\left\| \frac{x-\tilde{\mu}(z)}{\tilde{\sigma}(z)} \right\|^2
+\end{align}
+和预期一样，演变为了均方误差。
+
+\item[-]
+伯努利分布
+假设伯努利的二元分布是 $p$ 和 $1-p$ (注意这里是输出没一维组成的向量)
+$$
+\operatorname{arg min}(-\log q(x|z)) = \operatorname{arg min}(-x\log p - (1-x)\log(1-p))
+$$
+很对，正好就是交叉熵的损失。
+\end{itemize}
+
+然后，将编码和解码部分组合到一起，就形成了完整的 VAE 网络。
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{一点微不足道的技巧}
+
+训练的时候似乎出了点问题。从编码得到的分布 $\mathcal{N}(\mu,\sigma)$ 随机采样 $z$ 
+的这个过程没法求导，没法进行误差反向传播。这里可以使用一个叫做重参数（reparametrisation trick） 的技巧：
+$$
+z=f(x)\zeta + g(x), \qquad \zeta\sim N(0,1)
+$$
+真是妙呀，这样一来将采样变成了一个数值变换，整个过程便可导了。
+
+这样，训练好模型之后，我们可以直接将解码部分拿出来，通过标准高斯分布随机采样源源不断的生成数据了。
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{延伸的一些思考}
+
+VAE 中使用神经网络来拟合高斯分布的想法独树一帜，对很多任务能带来启发。
+神经网络在特征化训练数据的过程无异于海量数据的管中窥豹，但是想要让模型超脱于豹，
+而像人一样产生对相似的猫、老虎...之类的概念，VAE 的这种思想颇有一些意味。
+
+\href{https://arxiv.org/pdf/1312.6114.pdf}{Auto-Encoding Variational Bayes}
+
+\href{}{Understanding Variational Autoencoders}
+

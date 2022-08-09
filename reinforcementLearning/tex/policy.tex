@@ -1375,7 +1375,7 @@ in the direction of the gradient.
 J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta(\tau)}[R(\tau)] 
 \end{align}
 
-So for notational convenience, again if you see me write some $p\theta$ or $\pi_\theta$ 
+So for notational convenience, again if you see me write some $p_\theta$ or $\pi_\theta$ 
 that denotes the distribution over trajectories, unfortunately we are here a little 
 inconsistent $p_\theta(\tau)$ and $\pi_\theta(\tau)$ mean exactly the same thing. so don't 
 worry about that, We'll fix those later, and $R(\tau)$ is just shorthand for the total 
@@ -1446,10 +1446,13 @@ is equal to.
 
 So here we're going to bring back our equation for the distribution over trajectories. So 
 this is the $p_\theta(\tau)$, and what it's equal to:
-\begin{equation*}
+\begin{equation}
+\label{eq_pg_p_theta_trajectories}
+%\label{eq_pg_p_theta_trajectories_s}
 \underbrace{p_{\theta}(s_1, a_1, ..., s_T, a_T)}_{p_{\theta}(\tau)} = p(s_1)
-\prod_{t=1}^T\pi_\theta(a_t|s_t) p(s_{t+1}|s_t, a_t)
+\prod_{t=1}^T p_\theta(a_t|s_t) p(s_{t+1}|s_t, a_t)
 \end{equation}
+(此公式在后面公式(\ref{eq_pg_p_theta_trajectories_s})还要使用)
 and because we're after $\nabla_\theta\log p_\theta(\tau)$, we take the logarithm of both 
 sides, now when you take the logarithm of a product, you get a sum of logarithms:
 \begin{equation*}
@@ -1478,7 +1481,13 @@ choose to buy or not buy lottery tickets, the probability of winning the lottery
 altered by your policy, that's determined by the universe. So random transitions are 
 unaffected by $\theta$, initial state probabilities are not affected by $\theta$, so both of 
 these cancel out. and we're just left with the $\log p_\theta$ terms, which are actually 
-the only terms in the sum, that we know, because that's our policy. So we can rewrite the 
+the only terms in the sum: 
+\begin{align}
+\label{eq_pg_gradient_of_log_p_trajectory}
+\nabla_\theta\log p_\theta(\tau) = \sum_{t=1}^T \nabla_\theta\log p_\theta (a_t | s_t)
+\end{align}
+(后面 (\ref{eq_pg_off_policy_deducing}) 还要用到这个公式)
+that we know, because that's our policy. So we can rewrite the 
 gradients of the policy like this, 
 \begin{align*}
 \nabla_\theta J(\theta) 
@@ -1621,7 +1630,7 @@ Loop of REINFORCE algorithm:
 %\setlength{\parsep}{0pt}
 \setlength{\parskip}{0pt}
 \item[1.]
-sample ${\tau^i}$ from $\pi_\theta(a_t|s_t)$ (run it on the robot)
+sample $\{\tau^i\}$ from $\pi_\theta(a_t|s_t)$ (run it on the robot)
 
 \item[2.]
 $\nabla_\theta J(\theta) \approx \sum_i(\sum_t\nabla_\theta\log\pi_\theta(a_t^i|s_t^i))
@@ -2019,8 +2028,8 @@ quite a lot better.
 In fact, it work so much better, that you will often see standard derivations of policy 
 gradient, that say that they don't look like this, but instead they use the term reward 
 to go often denoted with $Q$\_hat.
-
-\begin{align*}
+\begin{align}
+\label{eq_pg_on_policy}
 \nabla_\theta J(\theta) 
 \approx \frac{1}{N}\sum_{i=1}^N
 \sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t})
@@ -2238,20 +2247,586 @@ the first term, and I get an equation for $b$ which says:
 b = \frac{\mathbb{E}\left[ g(\tau)^2 r(\tau) \right]}{\mathbb{E}\left[ g(\tau)^2 \right]}
 \leftarrow \text{This is just expected reward, but weighted by gradient magnitudes!}
 \end{align}
-And now this thing actually looks an awful lot like expected reward except I don't average 
-the rewards together. I instead weight them by their squared gradient, so this is just 
-expected reward weighted by gradient magnitude. Now your gradient is a vector, it has more 
-than one number in it. And if you actually evaluate this formula, $b$ also becomes a 
-vector. you actually get a different baseline value for every entry in your gradient 
-depending on the degree to which each trajectory is affected by that parameter dimension. 
+And now this thing actually looks an awful lot {\bf like expected reward except I don't 
+average the rewards together}. I {\bf instead weight them by their squared gradient}, so 
+this is just {\bf expected reward weighted by gradient magnitude}. Now your gradient is 
+a vector, it has more than one number in it. And if you actually evaluate this formula, 
+$b$ also becomes a vector. You actually get a different baseline value for every entry in 
+your gradient depending on the degree to which each trajectory is affected by that parameter 
+dimension. 
+
 So you actually get a per dimension baseline if you do this, which is just average reward 
 weighted by the magnitude of the gradient for that dimension, and this is the optimal 
 baseline, this is the baseline that actually minimizes variance, but if you want to do this 
-in practice, my suggestion would be when coding it up, don't bother just use average reward, 
-but if you want actually know what the real answer is this the real answer.
+in practice, my suggestion would be when coding it up, don't bother just use average reward. 
+But if you want actually know what the real answer is, this the real answer.
 
-any questions about this? Yes, because it minimizes variance, I think if you want to get a little bit of intuition for it, it basically goes something like this, that if that particular dimension is very sensitive, then you want to basically emphasize the trajectories, whose probabilities are going to be strongly affected by that dimension. So if you have some trajectories that have a very high reward, but their probability will not be changed by changing that dimension in your parameter vector, then you should not consider them in your baseline. It's kind of intuitively somewhat makes sense, but the mathematical reasons that it minimizes variance. So the question is it still optimal, if you also account for the fact that your estimate of b will have error do the samples. that's a good question I don't know the answer to that, but yeah maybe we can discuss that afterwards.
+It minimizes variance, I think if you want to get a little bit of intuition for it, it 
+basically goes something like this. If that particular dimension is very sensitive, then 
+you want to basically emphasize the trajectories, whose probabilities are going to be 
+strongly affected by that dimension. So if you have some trajectories that have a very 
+high reward, but their probability will not be changed by changing that dimension in 
+your parameter vector, then you should not consider them in your baseline. It's kind of 
+intuitively somewhat makes sense, but the mathematical reasons that it minimizes variance. 
 
+\noindent
+{\bf Q:} So the question is it still optimal, if you also account for the fact that your 
+estimate of $b$ will have error do the samples. 
+
+\noindent
+{\bf A:}  That's a good question I don't know the answer to that, but yeah maybe we can 
+discuss that afterwards.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Review}
+
+So let's briefly recap we talked about how the policy gradient has high variance. We 
+talked about how we can reduce its variance at essentially no cost by just not adding 
+the stuff from the past to the sum. And we talked about baselines which keep the policy 
+gradient unbiased, and reduce variance. Let me talk about how we can analyze the variance 
+of policy gradient, and use it to drive optional baselines. So in practice if you want 
+to get the simplest version of policy gradient that actually works. Definitely use the 
+average reward baseline that thing alone will probably do the most to get your policy 
+gradient working nicely, then use this causality thing because it's easy and it never 
+hurts, and at that point you'll actually get an algorithm that can be used to solve some 
+meaningful reinforcement learning problems. So that that's sort of the most basic version 
+of policy gradient that actually does something useful, but there's a lot more that 
+you could do.
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+The high variance of policy gradient
+
+\item
+Exploiting causality
+	\begin{itemize}
+	%\setlength{\itemsep}{0pt}
+	%\setlength{\parsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\item[-]
+	Future doesn't affect the past
+	\end{itemize}
+
+\item
+Baselines
+	\begin{itemize}
+	%\setlength{\itemsep}{0pt}
+	%\setlength{\parsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\item[-]
+	Unbiased!
+	\end{itemize}
+
+\item
+Analyzing variance
+	\begin{itemize}
+	%\setlength{\itemsep}{0pt}
+	%\setlength{\parsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\item[-]
+	Can derive optimal baselines
+	\end{itemize}
+\end{itemize}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Policy gradient is on-policy}
+%-------------------------------------------
+
+In this section, we're going to talk about how the policy gradient is on policy. And 
+what we can do about it. So what is on policy mean? {\bf On policy means that every time 
+you change your policy, you need to generate new samples, in order to improve your 
+policy further.} And you can't reuse old samples that came from other policies, you 
+can't even reuse old samples that came from older versions of your own policy. So why 
+is that? 
+\begin{align*}
+\theta^* &= \underset{\theta}{\operatorname{arg max}} J(\theta) \\
+J(\theta) &= \mathbb{E}_{\tau\sim p_\theta(\tau)} [r(\tau)] \\
+\nabla_\theta J(\theta) =& 
+\mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \nabla_\theta \log p_\theta(\tau) r(\tau) \right]
+\end{align}
+Well because the policy gradient is this expectation of $\nabla_\theta \log p_\theta(\tau) r$, 
+and the expectation is taken under $p_\theta(\tau)$, and this bit is trouble. 
+\begin{align*}
+\nabla_\theta J(\theta) &= 
+\mathbb{E}_{\underset{\textcolor{blue}{\uparrow}}{\textcolor{red}{\tau\sim p_\theta(\tau)}}}
+\left[ \nabla_\theta \log p_\theta(\tau) r(\tau) \right] \\
+&\text{\textcolor{blue}{this is trouble}}
+\end{align}
+It means that every time you want to estimate your gradient, you need to calculate a sample 
+wise estimate of an expectation under your current policy. If you apply that gradient and 
+change your policy, then you cannot use those same samples to get an unbiased estimate of 
+this expectation, because your samples came from now a different distribution. So you now 
+generate new samples, so the REINFORCE algorithm which I had before, 
+\begin{emp_box}
+Loop of REINFORCE algorithm:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+sample $\{\tau^i\}$ from $\pi_\theta(a_t|s_t)$ (run it on the robot) 
+\textcolor{red}{$\leftarrow$ can't just skip this!}
+\item[2.]
+$\nabla_\theta J(\theta) \approx \sum_i(\sum_t\nabla_\theta\log\pi_\theta(a_t^i|s_t^i))
+(\sum_tr(s_t^i, a_t^i))$
+\item[3.]
+$\theta \leftarrow \theta + \alpha\nabla_\theta J(\theta)$
+\end{itemize}
+\end{emp_box}\noindent
+this step one, which is sample your trajectories from your policy, you can't just skip 
+that stuff. You have to have it there. If you skip that step, then you're not getting a 
+real policy gradient, and your policy may not improve.
+
+Now this is a little bit of a problem when we're doing deep reinforcement learning, 
+because neural networks typically change only a little bit with each gradient step. 
+In general the more non-linear your function approximator is, the smaller the step 
+you'll need, the less it'll change with each gradient step, which means that you might 
+need many gradient steps which means that for the REINFORCE algorithm, you might need 
+a whole lot of samples. And if those samples are expensive, if they involve, let's say 
+driving a real car in the edge of a cliff, you'll need an awful lot of cars in order to 
+improve your policy substantially. On policy learning can be extremely inefficient for 
+this reason, but that doesn't mean that it's not useful. You might have a setting, where 
+you're using a cheap simulator, there it's no problem to generate tons of samples. In 
+fact we won't have you driving real cars, we'll have you driving simulated lunar landers, 
+and half cheetahs.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Off-policy learning & importance sampling}
+
+But there is something that we can do, if we want this method to be more efficient. We can actually turn policy gradients into a somewhat off policy algorithm, it is sort of what I would call textbook off policy. in reality we can debate as to how a policy really is, but in principle this will be an off policy algorithm, and we'll do that using importance sampling.
+
+So what if we don't have samples from $p_\theta(\tau)$, and we still want to do our 
+policy gradient. well we say that we have some samples from some other $p_\theta(\tau)$ 
+instead, in practice $\bar{p}(\tau)$ would often be a previous version of our policy, 
+but it doesn't have to be, it's just some other distribution. And to briefly recap for 
+those of you that don't remember what important sampling is. Important sampling is a 
+very simple, very convenient technique, that we can use to estimate expectations under 
+one distribution when we only have access to samples from a different distribution. So 
+if I want to estimate the expectation of $f(x)$ under $p(x)$, 
+\begin{align*}
+\mathbb{E}_{x\sim p(x)} [f(x)]
+\end{align}
+again whenever you see expectation you need to actually do some math, get rid of the 
+expectation symbol, just write it as an integral. 
+\begin{align*}
+\mathbb{E}_{x\sim p(x)} [f(x)] = \int p(x) f(x) dx
+\end{align}
+And now it's very convenient and mathematical, so you can always multiply something by 
+one, and not change its value. So that's what we're going to do, we're going to multiply 
+it by one, specifically by the one that is equal to $q(x) / q(x)$, and now we'll just 
+take this little fraction symbol, and we'll slide it over a little bit to write it like 
+following. 
+\begin{align*}
+\mathbb{E}_{x\sim p(x)} [f(x)] 
+&= \int p(x) f(x) dx \\
+&= \int \frac{q(x)}{q(x)} p(x) f(x) dx \\
+&= \int q(x) \frac{p(x)}{q(x)} f(x) dx
+\end{align}
+Very nice trick and now it's an integral with a q(X) out front which means that it's an 
+expectation under $q(x)$, so the expectation under $p(x)$ of $f(x)$ is equal to the 
+expectation under $q(x)$ of $(p(x) / q(x)) * f(x)$. 
+\begin{emp_box}
+\noindent
+importance sampling:
+\begin{align*}
+\mathbb{E}_{x\sim p(x)} [f(x)] 
+&= \int p(x) f(x) dx \\
+&= \int \frac{q(x)}{q(x)} p(x) f(x) dx \\
+&= \int q(x) \frac{p(x)}{q(x)} f(x) dx \\
+&= \mathbb{E}_{x\sim q(x)} \left[ \frac{p(x)}{q(x)} f(x) \right]
+\end{align}
+\end{emp_box}\noindent
+And that's basically the equation for important sampling, it means that if you have 
+samples from $q(x)$ just multiply them by the ratio of their probabilities, then multiply 
+them by your function value, averaged together your samples, and you will have an 
+unbiased estimate of the quantity that you want.
+
+So we can plug that into policy gradient, and bang there, we have our off-policy policy 
+gradient. 
+\begin{align*}
+J(\theta) = \mathbb{E}_{\tau \sim \bar{p}(\tau)}
+\left[ \frac{p_\theta(\tau)}{\bar{p}_\theta(\tau)} r(\tau) \right]
+\end{align}
+Now there's a little bit of a problem though, because you know these these $p_\theta(\tau)$, 
+$\bar{p}_\theta(\tau)}$. They contain a bunch of stuff in there that we don't know, 
+(see equation (\ref{eq_pg_p_theta_trajectories}))
+\begin{equation}
+%\label{eq_pg_p_theta_trajectories}
+\label{eq_pg_p_theta_trajectories_s}
+p_{\theta}(\tau) = p(s_1)
+\prod_{t=1}^T p_\theta(a_t|s_t) p(s_{t+1}|s_t, a_t)
+\end{equation}
+like $p(s_1)$, $p(s_{t+1}|s_t,a_t)$ and so on. So we're not quite ready to implement this 
+thing yet. We need to actually unpack this probability and see what it's equal to. So that 
+we can make it practical. So remember our trajectory probabilities are given by this 
+equation which means that if we write out this ratio, we get this thing. So we have all 
+the terms on the top, and all the terms on the bottom, and conveniently enough. 
+\begin{align*}
+\frac{p_\theta(\tau)}{\bar{p}_\theta(\tau)} =
+\frac{\cancel{p(s_1)} \prod_{t=1}^T p_\theta(a_t|s_t) \cancel{p(s_{t+1}|s_t,a_t)}}{
+\cancel{p(s_1)} \prod_{t=1}^T \bar{p}_\theta(a_t|s_t) \cancel{p(s_{t+1}|s_t,a_t)}}
+= \frac{\prod_{t=1}^T p_\theta(a_t|s_t)}{\prod_{t=1}^T \bar{p}_\theta(a_t|s_t)}
+\end{align}
+All of the things that we don't know, the $p(s_1)$ and the $p(s_{t+1}|s_t,a_t)$ appear 
+on both the top and bottom which means that we can cancel them out. So all we're left with 
+is a ratio of the products of the action probabilities under the new policy divided by 
+the products of the action probabilities under the old policy, and that's actually 
+something we can code up, that's something we can implement. So these are the actual 
+importance weights that we have.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Deriving the policy gradient with IS}
+
+Now you can actually use important sampling to derive the policy gradients in an 
+alternate way, so we had one derivation at the beginning of the lecture, now I'll very 
+briefly show a slightly different derivation that uses important sampling. And this kind 
+of view of policy gradient will actually be useful later on in subsequent lectures also. 
+So let's take our objective value, and let's express our objective value in terms of some 
+new parameters $\theta'$. So we can write out $J(\theta')$ as the expectation under 
+$p_\theta$ that's our old policy of the importance sampling ratio times $r(\tau)$. 
+\begin{align*}
+\theta^* &= \underset{\theta}{\operatorname{arg max}} J(\theta) \\
+J(\theta) &= \mathbb{E}_{\tau\sim p_\theta(\tau)} [r(\tau)] \\
+J(\theta') &= \mathbb{E}_{\tau\sim p_\theta(\tau)} 
+\left[ \frac{p_{\theta'}(\tau)}{p_\theta(\tau)} r(\tau) \right] 
+\end{align}
+And the nice thing about this equation is that $\theta'$ only appears in the numerator 
+of this fraction and not in the distribution with respect to which we take the expectation. 
+So now when we go to take the gradient of this, we don't even have to worry about how 
+we're sampling or what we're sampling from, this is the only bit that depends on $\theta'$. 
+So if we write out $\nabla_{\theta'} J(\theta')$ basically just literally take the 
+derivative of this quantity up here, we get this,
+\begin{align*}
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \frac{\nabla_{\theta'} p_{\theta'}(\tau)}{p_\theta(\tau)} r(\tau) \right] \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \frac{p_{\theta'}(\tau)}{p_\theta(\tau)} 
+\nabla_{\theta'} \log p_{\theta'}(\tau) r(\tau) \right]
+\end{align}
+Then we apply our $\nabla_\theta \log p$ trick again. The convenient identity and we get 
+this. and now $\theta'$ appears in the numerator, and it appears over here, and it 
+appears nowhere else. So if we want to use this to obtain a formula for the standard 
+on-policy policy gradient, that's just the special case of this equation, where $\theta$ 
+is equal to $\theta'$. So if we want to estimate the policy gradient locally around the 
+current value of the parameters which is $\theta$, then this ratio becomes 1, 
+\begin{align*}
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \frac{\nabla_{\theta'} p_{\theta'}(\tau)}{p_\theta(\tau)} r(\tau) \right] \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \frac{\cancel{p_{\theta'}(\tau)}}{\cancel{p_\theta(\tau)}} 
+\nabla_{\theta'} \log p_{\theta'}(\tau) r(\tau) \right]
+\end{align}
+and we get our old familiar policy gradient: 
+\begin{align*}
+\nabla_\theta J(\theta) = \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \nabla_\theta \log p_\theta(\tau) r(\tau) \right]
+\end{align}
+So this is an alternative way to derive the policy gradient, starting from important 
+sampling without having to worry about how we're sampled whatever or where the sampling 
+is always with respect to the old policy. But of course we could also consider the case 
+where $\theta$ is not equal to $\theta'$, and then get an actual off-policy policy gradient.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{The off-policy policy gradient}
+
+So the off policy policy gradient, the same formula, but when $\theta$ is not equal to 
+$\theta'$. 
+\begin{align*}
+\theta^* &= \underset{\theta}{\operatorname{arg max}} J(\theta) \\
+J(\theta) &= \mathbb{E}_{\tau\sim p_\theta(\tau)} [r(\tau)] \\
+J(\theta') &= \mathbb{E}_{\tau\sim p_\theta(\tau)} 
+\left[ \frac{p_{\theta'}(\tau)}{p_\theta(\tau)} r(\tau) \right] \\
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \frac{p_{\theta'}(\tau)}{p_\theta(\tau)} 
+\nabla_{\theta'} \log p_{\theta'}(\tau) r(\tau) \right]
+\end{align}
+So now we're going to substitute in our equation for the importance weights 
+from before, and we get this thing(注意前面的公式(\ref{eq_pg_gradient_of_log_p_trajectory})): 
+\begin{align}
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \frac{p_{\theta'}(\tau)}{p_\theta(\tau)} 
+\nabla_{\theta'} \log p_{\theta'}(\tau) r(\tau) \right] \notag\\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \left( \prod_{t=1}^T\frac{p_{\theta'}(a_t|s_t)}{p_\theta(a_t|s_t)} \right) 
+\left( \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t) \right) 
+\left( \sum_{t=1}^T r(s_t, a_t) \right)
+\right]
+\label{eq_pg_off_policy_deducing}
+\end{align}
+So before we have two terms, we had the sum over the $\nabla_\theta\log p$, and the 
+rewards, now we have three terms, we've also multiplied in the importance weights.
+
+\noindent
+{\bf Q:} Why is it a bad idea to do this? What might go wrong with this formula? 
+What if T is really big. 
+
+\noindent
+{\bf A:} So the intuition here is that these this product you know you have a product 
+of ratios, it's the same as a ratio of products, you can put the product on the top, 
+and the product on the bottom, and probabilities are numbers between $0$ & $1$. So when 
+you take a very large number of numbers between $0$ & $1$ and you multiply them together, 
+you get really really small numbers. So you have a really small number on top, and a 
+really small number on the bottom. How small will exponentially small, because it's on 
+you know if all of your probabilities are on the order of epsilon, both the numerator 
+and the denominator are on the order of epsilon to the power $T$. So you take the ratio 
+of these things, and you're going to get weights that are either gigantic or tiny, and 
+that will do exactly the thing that we least want for our policy gradients which rule 
+it'll reach that it will increase the variance. And all that hard work would put into 
+designing baselines and so on will be negated by the enormous variance that we'll get 
+from those crazy importance weights, that's a big problem for important sample policy 
+gradients.
+\begin{align*}
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \left( \prod_{t=1}^T\frac{p_{\theta'}(a_t|s_t)}{p_\theta(a_t|s_t)} \right) 
+\left( \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t) \right) 
+\left( \sum_{t=1}^T r(s_t, a_t) \right)
+\right] \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t)
+\left( \prod_{t'=1}^t\frac{p_{\theta'}(a_{t'}|s_{t'})}{p_\theta(a_{t'}|s_{t'})} \right) 
+\left( \sum_{t'=t}^T r(s_{t'}, a_{t'}) 
+\left( \prod_{t"=t}^{t'}\frac{p_{\theta'}(a_{t"}|s_{t"})}{p_\theta(a_{t"}|s_{t"})} \right)
+\right) \right]
+%\label{eq_pg_off_policy_deducing}
+\end{align}
+We can do a few tricks, we can exploit this causality thing, so we can basically take 
+this product, and we can put a piece of it inside the reward term, and put the other 
+piece over here, and then the rewards can go from $t$ to $T$ instead of $1$ to $T$. 
+\begin{align*}
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \left( \prod_{t=1}^T\frac{p_{\theta'}(a_t|s_t)}{p_\theta(a_t|s_t)} \right) 
+\left( \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t) \right) 
+\left( \sum_{t=1}^T r(s_t, a_t) \right)
+\right] \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t)
+\underset{\textcolor{blue}{\uparrow}}{\left( 
+\textcolor{red}{\prod_{t'=1}^t\frac{p_{\theta'}(a_{t'}|s_{t'})}{p_\theta(a_{t'}|s_{t'})}} \right)} 
+\left( \sum_{t'=t}^T r(s_{t'}, a_{t'}) 
+\left( \prod_{t"=t}^{t'}\frac{p_{\theta'}(a_{t"}|s_{t"})}{p_\theta(a_{t"}|s_{t"})} \right)
+\right) \right] \\
+&\qquad\qquad\qquad\qquad\qquad
+\text{\textcolor{blue}{future actions don't affect current weight}}
+%\label{eq_pg_off_policy_deducing}
+\end{align}
+So we can still apply that trick, but we haven't really solved the real problem, which 
+is that we're multiplying together all of $T$ different numbers between $0$ and $1$. 
+So causality hopefully all of you I've got that picture. Now one thing we can do at this 
+point is we could just delete this part of the weights, that will actually change the 
+algorithm. So you will not get the same gradient if you do that, but it turns out that 
+if you set this part to $1$, you do still get an algorithm where each gradient step will 
+improve the policy, but for a different reason. So if you set this part to $1$, you actually 
+get a policy iteration algorithm, 
+\begin{align*}
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \left( \prod_{t=1}^T\frac{p_{\theta'}(a_t|s_t)}{p_\theta(a_t|s_t)} \right) 
+\left( \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t) \right) 
+\left( \sum_{t=1}^T r(s_t, a_t) \right)
+\right] \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t)
+\left( \prod_{t'=1}^t\frac{p_{\theta'}(a_{t'}|s_{t'})}{p_\theta(a_{t'}|s_{t'})} \right) 
+\left( \sum_{t'=t}^T r(s_{t'}, a_{t'}) 
+\left( \prod_{t"=t}^{t'}\frac{p_{\theta'}(a_{t"}|s_{t"})}{p_\theta(a_{t"}|s_{t"})} \right)
+\right) \right] \\
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t)
+\left( \prod_{t'=1}^t\frac{p_{\theta'}(a_{t'}|s_{t'})}{p_\theta(a_{t'}|s_{t'})} \right) 
+\left( \sum_{t'=t}^T r(s_{t'}, a_{t'}) 
+\underset{\textcolor{blue}{\uparrow}}{\left( \xcancel{
+\prod_{t"=t}^{t'}\frac{p_{\theta'}(a_{t"}|s_{t"})}{p_\theta(a_{t"}|s_{t"})}} \right)}
+\right) \right] \\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad
+\text{\textcolor{blue}{if we ignore this, we get }} \\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\quad
+\text{\textcolor{blue}{a policy iteration algorithm }} \\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad
+\text{\textcolor{blue}{(more on this later in this chapter)}} 
+%\label{eq_pg_off_policy_deducing}
+\end{align}
+And we'll cover policy iteration later on in this chapter, but you can't actually show 
+that setting this bit to one will allow you to still improve your policy, but for a 
+different reasons. 
+
+So the policy gradient will not be equal to the old policy gradient, but the policy will 
+still improve, and that we'll cover later on when we talk about policy iteration. but even 
+after doing that you're still left with this piece, and this is still a product of $O$(
+$T$ numbers between $0$ and $1$). So we're still in trouble.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{A first-order approximation for IS}
+
+\begin{align*}
+\nabla_{\theta'} J(\theta')  
+= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t)
+\left( \prod_{t'=1}^t\frac{p_{\theta'}(a_{t'}|s_{t'})}{p_\theta(a_{t'}|s_{t'})} \right) 
+\left( \sum_{t'=t}^T r(s_{t'}, a_{t'}) \right) \right] 
+%\label{eq_pg_off_policy_deducing}
+\end{align}
+So here is one somewhat hand-waving thing we can do, it'll be hand waving today, it'll 
+be less hand waving in the second half of the chapter. So what we can do is we can employ 
+a kind of a first order approximation. And you'll understand order approximation in a 
+subsequent lecture, but for now I just want to tell you what it is, just so if you have 
+to implement it, you'll know the general idea. 
+\begin{align*}
+\nabla_{\theta'} J(\theta')  
+&= \mathbb{E}_{\tau\sim p_\theta(\tau)}
+\left[ \sum_{t=1}^T \nabla_{\theta'}\log p_{\theta'} (a_t | s_t)
+\underset{\textcolor{blue}{\uparrow}}{\left( 
+\textcolor{red}{\prod_{t'=1}^t\frac{p_{\theta'}(a_{t'}|s_{t'})}{p_\theta(a_{t'}|s_{t'})}} \right)} 
+\left( \sum_{t'=t}^T r(s_{t'}, a_{t'}) \right) \right] \\
+&\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad
+\textcolor{blue}{\text{exponential in }T\ldots} 
+%\label{eq_pg_off_policy_deducing}
+\end{align}
+So this red bit is still exponential in $T$, and we're very unhappy about that. So let's 
+write the objective a little bit differently.
+Here is our on-policy policy gradient from equation (\ref{eq_pg_on_policy}), 
+\begin{align*}
+%\label{eq_pg_on_policy}
+&\text{on-policy policy gradient:} \\
+&\nabla_\theta J(\theta) 
+\approx \frac{1}{N}\sum_{i=1}^N
+\sum_{t=1}^T \nabla_\theta\log 
+\textcolor{red}{p_\theta(a_{i,t}\underset{\textcolor{blue}{\uparrow}}{|}s_{i,t})}
+\hat{Q}_{i,t} \\
+&\qquad\qquad\qquad\qquad\qquad\qquad
+\textcolor{blue}{(s_{i,t},a_{i,t}) \sim p_\theta(s_t,a_t)} 
+\end{align}
+\noindent
+and this on-policy policy gradient, here I wrote it in this kind of reward to go form 
+using the $Q$ hat from before. This on policy policy gradient requires us to sample these 
+$s_{i,t}$ and $a_{i,t}$ from the state action marginal, remember the state action marginal 
+from last chapter. Here it doesn't actually matter that these $s_{i,t}$'s and $a_{i,t}$'s 
+come from the same trajectory or not, they're just multiplied by the reward to go so long 
+as they come from the state action marginal, we're happy, which means that we can write 
+the off-policy policy gradient with importance weights a little bit differently. we can 
+write it with the importance weights given by the ratio of state action marginal probabilities.
+\begin{align*}
+%\label{eq_pg_on_policy}
+&\text{off-policy policy gradient:} \\
+&\nabla_{\theta'} J(\theta') \\
+&\approx \frac{1}{N}\sum_{i=1}^N
+\sum_{t=1}^T \frac{p_{\theta'}(s_{i,t},a_{i,t})}{p_\theta(s_{i,t},a_{i,t})}
+\nabla_{\theta'}\log p_{\theta'}(a_{i,t}|s_{i,t}) \hat{Q}_{i,t}
+\end{align}
+\noindent
+so we have $p_{\theta'}(a_{i,t}|s_{i,t})/p_\theta(s_{i,t},a_{i,t})$. Now there's still a 
+bit problematic, because we don't know what the state action marginals are, we just have 
+a policy. But that doesn't stop us from factorizing this using the chain rule into a 
+product of two terms, the policy term which we're all familiar with, and this really 
+annoying state marginal term. We have no idea what the state marginals are, but what we 
+can do is we can sort of embrace our ignorance there, and just ignore that part. 
+\begin{align*}
+%\label{eq_pg_on_policy}
+&\text{off-policy policy gradient:} \\
+&\nabla_{\theta'} J(\theta') \\
+&\approx \frac{1}{N}\sum_{i=1}^N
+\sum_{t=1}^T \frac{p_{\theta'}(s_{i,t},a_{i,t})}{p_\theta(s_{i,t},a_{i,t})}
+\nabla_{\theta'}\log p_{\theta'}(a_{i,t}|s_{i,t}) \hat{Q}_{i,t} \\
+&= \frac{1}{N}\sum_{i=1}^N \sum_{t=1}^T 
+\underset{\textcolor{blue}{\uparrow}}{\cancel{ \frac{p_{\theta'}(s_{i,t})}{p_\theta(s_{i,t})} }}
+\frac{p_{\theta'}(a_{i,t} | s_{i,t})}{p_\theta(a_{i,t} | s_{i,t})}
+\nabla_{\theta'}\log p_{\theta'}(a_{i,t}|s_{i,t}) \hat{Q}_{i,t} \\
+&\qquad\qquad\qquad
+\textcolor{blue}{\text{ignore this part}} 
+\end{align}
+\noindent
+And this will actually work, if $\theta'$ is close to $θ$, we'll find out why this works 
+later in this chapter, when we talk about advanced policy gradients. But you can actually 
+show that when theta and theta prime are close enough to each other, the error that you get 
+from deleting this term is small. For now you'll have to take my word for it, but if you 
+want to actually implement important sample policy gradient in practice, please don't do 
+this. I made that mistaken in one of my paper several years ago(2013), do this instead 
+will work much better. and then you'll find out why it's actually okay to do later on.
+
+This is just basically using importance sampling to estimate this quantity, so this quantity 
+is the policy gradient, whenever $s_{i,t}$ and $a_{i,t}$ are drawn from the state action 
+marginal, i mean it's true whenever they're drawn from a trajectory distribution, but 
+because only the state action marginal lecture depends on $s_t$, $a_t$, you can say well 
+instead of putting in $p_\theta(\tau)$ here just put in p_\theta(s_t,a_t)$, because that's 
+the only thing that depends on the state and action at time $t$. and once you know that, 
+then you can do the same exact important sampling that we did before for trajectories, 
+only now at the level of state action marginals, ordinarily this wouldn't be very useful, 
+because we don't know what the state action marginals are, but if we just delete the 
+state part, then we have two terms that we do understand, and that that's something we 
+can implement. Well so the version that you would implement is this thing, so you cannot 
+implement this part, because evaluating state marginals is extremely difficult. so you 
+would not implement this, you would just implement this.
+
+yes precisely if we look at the KL divergence of theta, yes so so as sort of a preview for a lecture four weeks from now. yes the this this thing is okay to do, if the KL divergence between πθ’ and πθ is small. yes right so the question is why are we doing all this stuff, the reason we're doing this is so that in the off policy setting, as you said we can include more samples in our sample wise estimate, because variance is high which means that we want lots of samples to get a good estimate. we can't use samples from old policies, unless we do something like important sampling, so in practice the effective number of samples we can utilize becomes much larger. So this is a slightly more complex question, so the question for those of you that didn't hear is, are we only allowed to use samples from our own previous policies or can we use samples from somewhere else. It depends on which formula we're talking about, so if we go back here this thing, this thing you can do for any old policy or anybody else's policy, so any policy can be plugin in place of pi theta into this formula, and that will be correct. the bit where I killed the this ratio that does assume that pi theta was my own old policy, so there I'm actually making that assumption, but if I don't kill that part, I can use any policy I want. if you're doing this thing, and actually deleting the state probabilities, this you should only do when PI theta is a recent old policy, because you need PI theta and PI theta prime to be close together.
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Policy gradient with automatic differentiation}
+
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Policy gradient in pratice}
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Review}
+
+Brief review and then I'll conclude the policy gradient is an on-policy method, You 
+can derive an off policy variant using important sampling. The importance weights have 
+exponential scaling in $T$. You can ignore parts of the weights which gives you an 
+approximation which we're now it looks like a hack, but later on we'll see that it 
+actually makes some mathematical sense, and you can implement it with automatic 
+differentiation software, but you have to be a little careful to make sure that you 
+don't naively just compute out all the $\nabla_\theta\log p$ and instead ask your audit 
+if software to do it for you. 
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+Policy gradient is on-policy
+
+\item
+Can derive off-policy variant
+	\begin{itemize}
+	%\setlength{\itemsep}{0pt}
+	%\setlength{\parsep}{0pt}
+	\setlength{\parskip}{0pt}
+	\item[-]
+	Use importance sampling
+
+	\item[-]
+	Exponential scaling in $T$
+
+	\item[-]
+	Can ignore state portion (approximation)
+	\end{itemize}
+
+\item
+Can implement with automatic differentiation - need to know what to backpropagate
+
+\item
+Practical considerations: batch size, learning rates, optimizers
+\end{itemize}
 
 
 %+++++++++++++++++++++++++++++++++++++++++++

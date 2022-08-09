@@ -19,6 +19,7 @@
 \end{itemize}
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{What is Reinforcement Learning?}
 
 Say, there is an unknown environment that we're trying to put an agent on. By 
@@ -31,6 +32,7 @@ agent from experimental trials and relative simple feedback received. With the
 optimal policy, the agent is capable to actively adapt to the environment to
 maximize future rewards.
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Return}
 
 The goal of agent is to maximize the cumulative reward in the long run. In 
@@ -50,6 +52,7 @@ what it would be worth if it were received immediately. And also, it provides
 mathematical convenience since as $k\rightarrow\infty$ then $\gamma^k\rightarrow 0$.
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Policy}
 
 Policy, which is denoted as $\pi$, is the behaviour function of the agent. $\pi$ 
@@ -72,6 +75,7 @@ $\quad\pi(a|s)=P(A_t=a|S_t=s)$
 \end{itemize}
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Value Function}
 
 Value function measures how good a particular state is (or how good it is to 
@@ -103,7 +107,9 @@ v_\pi(s)=\sum_{a\in\mathcal{A}}q_\pi(s,a)\pi(a|s)
 
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \section{Markov Decision Processes}
+%-------------------------------------------
 
 {\bf Markov decision processes (MDPs)} formally describe an environment for RL. 
 And almost all RL problems can be formalised as MDPs.
@@ -138,7 +144,7 @@ $\gamma\in[0, 1]$ is a discount factor for future reward
 
 \begin{definition}\label{def_FMDP} {\rm\bf (FMDP)}
 A Finite Markov Decision Process is given a tuple $<\mathcal{S}, \mathcal{A}, \mathcal{T}, 
-\mathcal{R}, H, \gamma>$
+\rho, \mathcal{R}, H, \gamma>$
 \begin{itemize}
 %\setlength{\itemsep}{0pt}
 %\setlength{\parsep}{0pt}
@@ -152,7 +158,11 @@ Set of actions $\mathcal{A}$
 \item[-]
 $\mathcal{T}: \mathcal{S}\times\mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
 \rightarrow [0,1]$ \\
-$\mathcal{T}_t(s,a,s')=P(s_{t+1}=s'|s_t=s,a_t=a)$
+$\mathcal{T}_t(s,a,s')=P(s_{t+1}=s'|s_t=s,a_t=a)$ \\
+$T(\cdot \vert s,a)$ is the transition kernel
+
+\item[-]
+$\rho$ the initial state distribution
 
 \item[-]
 $R$: \mathcal{S}\times\mathcal{A}\times\mathcal{S}\times\{0,1,\ldots,H\}
@@ -175,6 +185,7 @@ $$
 $$
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Optimal Policy and Optimal Value Function}
 
 For finite MDPs (finite state and action space), we can precisely define an 
@@ -209,6 +220,7 @@ q_*(s,a)=\max_{\pi}q_\pi(s,a)
 \end{equation}
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Bellman Equations}
 
 A fundamental property of value functions used throughout RL is that they satisfy 
@@ -236,6 +248,7 @@ q_\pi(s,a)&\doteq\mathbb{E}_\pi[G_t|S_t=s,A_t=a] \\
 \end{align}
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Bellman Backup Diagram}
 
 Backup diagram of state-value function and action-value function respectively
@@ -919,7 +932,7 @@ U_1(X) &= R(X) + \gamma\max_a\sum_{s'} T(s,a,s') U_0(s') \\
 R(X) &= -0.04
 \end{align}
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -939,7 +952,7 @@ $$
 $$
 
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -959,7 +972,7 @@ $$
 $$
 
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -979,7 +992,7 @@ $$
 $$
 
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -1018,7 +1031,7 @@ Since,
 $U_1(X) = 0.36$, $U_1(A) = -0.04$, $U_1(C) = -0.04$, $U_1(G)=1$, $U_1(B)=-1$,
 and, $U_2(X) = R(X) + \gamma\max_a \sum_{s'} T(s,a,s')U_1(s')$, $R(X)=-0.04$
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -1037,7 +1050,7 @@ $$
 \left[\sum_{s'} T(s,a,s') U_1(s') = 0.8 - 0.004 + 0.036 = 0.832\right]_{\text{right}}
 $$
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -1056,7 +1069,7 @@ $$
 \left[\sum_{s'} T(s,a,s') U_1(s') = -0.032 + 0.1 - 0.004 = 0.064\right]_{\text{down}}
 $$
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -1075,7 +1088,7 @@ $$
 \left[\sum_{s'} T(s,a,s') U_1(s') = 0.288 + 0.1 - 0.004 = 0.384\right]_{\text{up}}
 $$
 
-\begin{table}[htb]   
+\begin{table}[H]   
 \begin{center}   
 %\caption{title}  
 %\label{table:1} 
@@ -1144,3 +1157,340 @@ $\pi_{t+1} = \arg\max_a\sum_{s'} T(s,a,s')U_t(s')$
 
 Here ends an interesting MDP example calculation.
 
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Control as Inference}
+\label{Control-as-Inference}
+%-------------------------------------------
+% https://dibyaghosh.com/blog/rl/controlasinference.html
+\noindent
+\begin{emp_box}
+Stuffing RL into a graphical model
+\end{emp_box}
+
+In this section, we'll focus on a finite-horizon MDP with horizon $T$: this is simply 
+for convenience, and all the derivations and proofs can be extended to the infinite 
+horizon case simply. Recall that an MDP is $<\mathcal{S}, \mathcal{A}, \mathcal{T}, 
+\rho, \mathcal{R}, H, \gamma>$, where $\mathcal{S}$, $\mathcal{A}$ are the state and 
+action spaces, $T(\cdot | s,a)$  is the transition kernel, $\rho$ the initial state 
+distribution, and $\mathcal{R}$ the reward.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{The Graphical Model}
+
+Trajectories in an MDP as detailed above can be modelled by the following graphical model.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{pix/mdp/state_action.png}
+%\caption{Lagrange乘数法}
+%\label{fig:label}
+\end{figure}
+
+The graphical model has a state variable $S_t$, an action variable $A_t$ for each timestep 
+$t$.
+
+We'll define the distributions of the variables in this graphical model in a way such that 
+the probability of a trajectory $\tau = (s_0, a_0, s_1, a_1, \dots s_T)$ is equal to the 
+probability of the trajectory under the MDP's dynamics.
+
+We set the distribution of $S_0$ to be $\rho(s)$ (the initial state distribution of the MDP).
+
+For subsequent $S_t$, the distribution is defined using transition probabilities of the MDP.
+$$
+P(S_{t+1} = s' \vert S_{t}=s, A_t = a) = T(s' \vert a,s)
+$$
+
+The distribution for the action variables $A_t$ is uniform on the action space.
+$$
+P(A_t = a) = C
+$$
+
+It may seem odd that the actions are sampled uniformly, but don't worry! These are only prior 
+probabilities, and we'll get interesting action distributions once we start conditioning 
+(Hang tight!)
+
+The probability of a trajectory $\tau = (s_0, a_0, s_1, a_1 , \dots s_T,a_T)$ in this model 
+factorizes as
+\begin{align*}
+P(\tau) &= P(S_0 = s_0) \prod_{t=0}^{T-1} P(A_t = a_t)P(S_{t+1} = s_{t+1} | S_t = s_t, A_t = a_t)\\ 
+&= C^T \left(\rho(s_0) \prod_{t=0}^{T-1} T(s_{t+1} \vert s_t, a_t)\right)\\  
+&\propto \left(\rho(s_0)\prod_{t=0}^{T-1} T(s_{t+1} | s_t,a_t)\right) 
+\end{align*}
+
+The probability of a trajectory in our graphical model is thus directly proportional to the 
+probability under the system dynamics.
+
+In the special case that dynamics are deterministic, then 
+$P(\tau) \propto 1 \{\text{Feasible}\}$ 
+(that is, all trajectories are equally likely).
+
+
+\subsubsection{Adding Rewards}
+
+So far, we have a general structure for describing the likelihood of trajectories in an MDP, 
+but it's highly uninteresting since at the moment, all trajectories are equally likely. To 
+highlight interesting trajectories, we'll introduce the concept of {\em optimality}.
+
+We'll say that an agent is {\bf optimal} at timestep $t$ with some probability which depends 
+on the current state and action : $P(\text{Optimal at } t) = f(s_t,a_t)$. We'll embed 
+optimality into our graphical model with a binary random variable at every timestep $e_t$, 
+where $P(e_t = 1 \vert S_t=s_t, A_t=a_t) = f(s_t,a_t)$.
+
+While we're at it, let's define a function $r(s,a)$ to be $r(s_t,a_t) = \log f(s_t,a_t)$. 
+The notation is very suggestive, and indeed we'll see very soon that this function 
+$r(s,a)$ plays the role of a reward function.
+
+The final graphical model, presented below, ends up looking much like one for a Hidden 
+Markov Model.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{pix/mdp/state_action_reward.png}
+%\caption{Lagrange乘数法}
+%\label{fig:label}
+\end{figure}
+
+For a trajectory $\tau$, the probability that it is optimal at all timesteps is proportional 
+(exponentially) to the total reward received in the trajectory.
+$$
+P(\text{All } e_t=1 | \tau)  =\exp \left(\sum_{t=0}^T r(s_t,a_t)\right)
+$$
+{\bf PROOF}
+\begin{align*}
+P(\text{All } e_t=1 | \tau) 
+&= \prod_{t=0}^T P(e_t = 1 \vert S_t=s_t, A_t=a_t) \\ 
+&= \prod_{t=0}^T f(s_t,a_t) \\ &= \prod_{t=0}^T \exp{r(s_t,a_t)} \\ 
+&=  \exp \left(\sum_{t=0}^T r(s_t,a_t)\right)
+\end{align*}
+
+We'll describe the {\bf optimal trajectory distribution} as the distribution when 
+conditioned on being optimal at all time steps.
+$$
+\pi_{\text{optimal}}(\tau) = P(\tau \vert \text{All } e_t =1) = P(\tau~\vert~e_{1:T} = 1)
+$$
+Explicitly writing out this distribution, we have that
+$$
+P(\tau ~\vert ~e_{1:T} = 1) \propto \exp\left(\sum_{t=0}^T r(s_t,a_t)\right)P(\tau)
+$$
+{\bf PROOF}
+\begin{align*}
+P(\tau ~\vert~ e_{1:T} =1) 
+&= \frac{P(e_{1:T} =1 \vert \tau)P(\tau)}{P(e_{1:T} =1)} \\ 
+&\propto P(e_{1:T} =1 \vert \tau)P(\tau) \\ 
+&\propto \exp\left(\sum_{t=0}^T r(s_t,a_t)\right)P(\tau)
+\end{align*}
+Under deterministic dynamics, since $P(\tau) \propto 1\{\text{Feasible}\}$, the probability 
+of any feasible trajectory is
+$$
+P(\tau~\vert~ e_{1:T} =1) \propto \exp\left(\sum_{t=0}^T r(s_t,a_t)\right)
+$$
+This can be viewed as a special form of an energy-based model, where the energy of a 
+trajectory is proportional to the reward.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Exact Inference in the Graphical Model}
+
+We now have a model for what the optimal trajectory distribution is, so the next appropriate 
+step is to look at optimal action distributions. If I am at state $s$ on timestep $t$, what 
+is the "optimal" distribution of actions?
+
+Pedantically, this corresponds to finding
+$$
+\pi_{t}(a \vert s) = P(A_t = a~\vert~S_t = s,e_{1:T} =1)
+$$
+In our graphical model, $A_t$ is independent of all events before $t$ (
+$A_t \perp E_1 \dots E_{t-1})$). We can verify this mathematically, but the intuition is 
+that the distribution of actions at a timestep shouldn't be impacted by what happened 
+previously (the environment is Markovian). So,
+$$
+\pi_{t}(a \vert s) = P(A_t = a \vert S_t = s, e_{t:T} =1)
+$$
+Solving for these probabilities corresponds to doing exact inference in the graphical model 
+above, which looks much like the forward-backward algorithm for HMMs. The procedure goes 
+as follows:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+{\em Backward message passing}: Compute probabilities
+$P(e_{t:T} = 1 ~\vert~ S_t =s)$ and $P(e_{t:T} = 1 ~\vert~ S_t =s, A_{t} = a)$
+
+\item[2.]
+{\em Forward message passing}: Compute probabilities
+$P(A_t = a \vert S_t = s, e_{t:T} =1)$ using Bayes Rule and the backwards messages.
+
+\end{itemize}
+
+
+\subsubsection{Backward Messages}
+
+We can compute these backward messages recursively, since
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+$P(e_{t:T} = 1\vert A_t =a, S_t=s)$ can be expressed in terms of 
+$P(e_{t+1:T} = 1 \vert S_{t+1} = s')$
+
+\item[2.]
+$P(e_{t:T} = 1\vert S_t=s)$ can be expressed in terms of 
+$P(e_{t:T} = 1\vert S_t=s, A_t =a)$
+
+\end{itemize}
+Working through the math (see the proof for more details)
+$$
+P(e_{t:T} = 1 = e^{r(s,a)} \mathbb{E}_{s' \sim T(\cdot \vert s,a)}[P(e_{t+1:T}=1 \vert S_{t+1}=s')]
+$$
+$$
+P(e_{t:T} = 1\vert S_t=s) = \mathbb{E}_{a}[P(e_{t:T} = 1 \vert A_t=a, S_t =s)]
+$$
+{\bf PROOF}
+\begin{align*} 
+P(e_{t:T} = 1&\vert A_t =a, S_t=s)\\ &= \int_{\mathcal{S}} P(e_{t:T}=1, S_{t+1}=s' \vert S_t=s, A_t=a) ds'\\
+&= \int_{\mathcal{S}} P(e_t = 1 | S_t=s, A_t=a)P(e_{t+1:T}=1, S_{t+1}=s' \vert S_t=s, A_t=a) ds'\\
+&= P(e_t = 1 | S_t=s, A_t=a) \int_{\mathcal{S}} P(e_{t+1:T}=1 \vert S_{t+1}=s') P(S_{t+1} = s' \vert S_t=s, A_t=a) ds'\\
+&= e^{r(s,a)} \mathbb{E}_{s' \sim T(\cdot \vert s,a)}[P(e_{t+1:T}=1 \vert S_{t+1}=s')]\\
+P(e_{t:T} = 1&\vert S_t=s)\\ &= \int_{\mathcal{A}} P(e_{t:T} = 1, A_t=a \vert S_t=s) da\\
+&= \int_{\mathcal{A}} P(e_{t:T} = 1 \vert A_t=a , S_t=s) P(A_t=a) da \\ 
+&= \mathbb{E}_{a}[P(e_{t:T} = 1 \vert A_t=a, S_t =s)]\\
+\end{align*}
+
+That looks pretty ugly and uninterpretable, but if we view the expressions in 
+log-probability space, there's rich meaning.
+
+Let's define
+$$
+Q_t(s,a) = \log P(e_{t:T} = 1\vert A_t =a, S_t=s)
+$$
+$$
+V_t(s) = \log P(e_{t:T} = 1 \vert S_t=s)
+$$
+$Q$  and $V$ are very suggestively named for a good reason: we'll discover that they are 
+the analogue of the $Q$ and $V$ functions in standard RL. Rewriting the above expressions 
+with $Q_t(\dot, \dot)$ and $V_t(\dot)$:
+$$
+Q_t(s,a)  = r(s,a) + \log  \mathbb{E}_{s' \sim T(\cdot \vert s,a)}[e^{V_{t+1}(s')}]
+$$
+$$
+V_t(s) = \log \mathbb{E}_a [e^{Q_t(s,a)}]
+$$
+Remember that the function $\log \mathbb{E}[\exp(f(X))]$ acts as a "soft" maximum 
+operation: that is
+$$
+\log \mathbb{E}[\exp(f(X))] = \text{soft} \max_X f(X) \approx \max_{X} f(X)
+$$
+We'll denote it as soft $\max$ from now on - but don't get it confused with the actual 
+softmax operator. With this notation:
+$$
+Q_t(s,a) = r(s,a) + \text{soft} \max_{s'} V_{t+1}(s')
+$$
+$$
+V_t(s) = \text{soft} \max_{a} Q_{t}(s,a)
+$$
+These recursive equations look very much like the Bellman backup equations!
+
+These are the {\bf soft Bellman backup equations}. They differ from the traditional 
+Bellman backup in two ways:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+The value function is a "soft" maximum over actions, not a hard maximum.
+
+\item[2.]
+The $q$-value function is a "soft" maximum over next states, not an expectation: this 
+makes the $Q$-value "optimistic wrt the system dynamics" or "risk-seeking". It'll favor 
+actions which have a low probability of going to a really good state over actions which 
+have high probability of going to a somewhat good state. When dynamics are deterministic, 
+then the $Q$-update is equivalent to the normal backup:
+$Q_t(s,a) = r(s,a) + V_{t+1}(s')$
+
+\end{itemize}
+{\bf Passing backwards messages corresponds to performing Bellman updates in an MDP}, 
+albeit with slightly different backup operations
+
+
+\subsubsection{Forward Messages}
+
+Now that we know that the $Q$ and $V$ functions correspond to backward messages, let's 
+now compute the optimal action distribution.
+\begin{align*}
+P(A_t =a \vert S_t=s, e_{t:T}=1) &= \frac{P(e_{t:T}=1 \vert A_t =a,  S_t=s)P(A_t = a \vert S_t =s)}{P(e_{t:T}=1\vert S_t=s)}\\
+&= \frac{e^{Q_t(s,a)}C}{e^{V_t(s)}}\\
+&\propto \exp(Q_t(s,a) - V_t(s))\\
+&\propto \exp(A_t(s,a))
+\end{align*}
+If we define the {\rm advantage} $A_t(s,a) = Q_t(s,a) - V_t(s)$, then we find that the 
+optimal probability of picking an action is simply proportional to the exponentiated 
+advantage!
+
+Haarnoja et al perform a derivation similar to this to find an algorithm called Soft 
+$Q$-Learning. In their paper, they show that the soft bellman backup update is a 
+contraction, and so $Q$-learning with the soft backup equations have the same convergence 
+guarantees that $Q$-learning has in the discrete case. Empirically, they show that this 
+algorithm can learn complicated continuous control tasks with high sample efficiency. 
+In follow-up works, they deploy the algorithms on robots and also present actor-critic 
+methods in this framework.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Approximate Inference with variational methods}
+
+Let's try to look at inference in this graphical model in a different way. Instead of 
+doing exact inference in the original model to get a policy distribution, we can attempt 
+to learn a variational approximation to our intended distribution
+$q_{\theta}(\tau) \approx P(\tau \vert e_{1:T}=1)$.
+
+The motivation is the following: we want to learn a policy $\pi(a|s)$ such that sampling 
+actions from $\pi$ causes the trajectory distribution to look as close to 
+$P(\tau \vert e_{1:T} = 1)$ as possible. We'll define a variational distribution 
+$q_\theta(\tau)$ as follows:
+\begin{align*}
+q_\theta(\tau) &= P(S_0 = s_0) \prod_{t=0}^T q_{\theta}(a_t \vert s_t) P(S_{t+1} \\
+&= s_{t+1} \vert S_{t} = s_t, A_t = a_t) \\
+&= \left(\prod_{t=0}^T q(a_t | s_t)\right) P(\tau)
+\end{align}
+This variational distribution can change the distribution of actions, but fixes the 
+system dynamics in place. This is a form of structured variational inference, and we 
+attempt to find the function $q_{\theta}(a \vert s)$ which minimizes the KL divergence 
+with our target distribution.
+$$
+\min_{\theta} D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1))
+$$
+If we simplify the expressions, it turns out that
+$$
+\arg\min_{\theta} D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1)) 
+= \arg \max_{\theta} \mathbb{E}_{\tau \sim q}[ \sum_{t=0}^T  r(s_t,a_t) 
++ \mathcal{H}(q_{\theta}(\cdot \vert s_t)]
+$$
+{\bf PROOF}
+Remember from the first section that
+$$
+P(\tau \vert \text{All } e_t=1) = P(\tau) \exp(\sum_{t=0}^T r(s_t,a_t))
+$$
+\begin{align*}
+D_{KL}(q_{\theta}(\tau) \| P(\tau \vert \text{All } e_t = 1)) &= -\mathbb{E}_{\tau \sim q}[\log \frac{P(\tau \vert \text{All } e_t = 1)}{q_{\theta}(\tau)}]\\
+ &= -\mathbb{E}_{\tau \sim q}[\log \frac{P(\tau) \exp(\sum_{t=0}^T r(s_t,a_t))}{ P(\tau)\left(\prod_{t=0}^T q_{\theta}(a_t | s_t)\right)}]\\
+ &= -\mathbb{E}_{\tau \sim q}[\log \frac{\exp(\sum_{t=0}^T r(s_t,a_t))}{\prod_{t=0}^T q_{\theta}(a_t | s_t)}]\\
+&= -\mathbb{E}_{\tau \sim q}[\log \frac{\exp(\sum_{t=0}^T r(s_t,a_t))}{\exp (\sum_{t=0}^T \log q_{\theta}(a_t | s_t)}]\\
+ &=  -\mathbb{E}_{\tau \sim q}[ \sum_{t=0}^T  r(s_t,a_t) - \log q_{\theta}(a_t | s_t))]\\
+\end{align*}
+Recalling that $-\log q(a_t | s_t)$ is a point estimate of the entropy of 
+$\mathcal{H}(q(\cdot \vert s))$, we get our result.
+$$
+D_{KL}(q_{\theta}(\tau) \| P(\tau \vert e_{1:T} = 1)) = -\mathbb{E}_{\tau \sim q}[ \sum_{t=0}^T  r(s_t,a_t) + \mathcal{H}(q_{\theta}(\cdot \vert s_t)]
+$$
+
+The best policy $q_\theta(a|s)$ is thus the one that maximizes expected reward with 
+an entropy bonus. This is the the objective for {\bf maximum entropy reinforcement 
+learning}. Performing structured variational inference with this particular family 
+of distributions to minimize the KL divergence with the optimal trajectory distribution 
+is equivalent to doing reinforcement learning in the max-ent setting!
+
+A cross check out can be found in \nameref{Reinforcement-Learning-eq-Reverse-KL}.
