@@ -141,7 +141,7 @@ state $s\in S$}.
 \subsection{策略需要有探索能力(随机性)}
 
 抛开RL算法的细节，几乎所有RL算法可以抽象成如下的形式：
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/exploration.jpg}
 \caption{Two tasks of an RL algorithm}
@@ -210,7 +210,7 @@ has to forage food from the environment in order to satisfy
 its hunger. It then receives rewards on the basis of the 
 fruit it eats:
 
-\begin{figure}[h]
+\begin{figure}[H]
 
 \centering
 \includegraphics[scale=0.5]{pix/example1.png}
@@ -271,7 +271,7 @@ $\pi_2 = \text{right, right, right, down, down, down} \to \text{Apple}$
 \end{itemize}
 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{pix/example1_1.png}
 \caption{example figure1}
@@ -287,7 +287,7 @@ U(\pi_1) &= -1-1+5 = +3 \\
 U(\pi_2) &= -1-1-1-1-1+10 = +5
 \end{align}
 
-\begin{figure}[h]
+\begin{figure}[H]
 
 \centering
 \includegraphics[scale=0.3]{pix/example1_2.png}
@@ -435,7 +435,7 @@ the learning is from the data off the target policy（引自《Reinforcement
 Learning An Introduction》）。也就是说 RL 算法中，数据来源于一个单独的用于探索的策略
 (不是最终要求的策略)。以 Q-Learning 为例，它的算法流程如下：
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/qlearning.jpg}
 \caption{Q-Learning}
@@ -444,7 +444,7 @@ Learning An Introduction》）。也就是说 RL 算法中，数据来源于一�
 
 算法流程图不够直观，将算法中的值函数更新式改写成另外一种形式后将算法用图描绘。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/qlearning_flow.jpg}
 \caption{Flow of Q-Learning}
@@ -592,7 +592,7 @@ on-policy的特点就是：the target and the behavior polices are the same。
 on-policy的算法，下图所示为SARSA的算法示意图，可以看出算法中只有一种策略，
 训练的数据来自于它。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/SARSA_flow.jpg}
 \caption{Flow of SARSA algorithm}
@@ -713,7 +713,7 @@ Hope this helps anyone ever getting stuck at this.
 When I was learning this part, I found it very confusing too, so I put 
 together the two pseudo-codes from R.Sutton and A.G.Barto hoping to make 
 the difference clearer(见下面图\ref{fig:SARSA}).
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{pix/sarsa.jpg}
 \caption{SARSA: An on-policy TD control algorithm}
@@ -884,7 +884,7 @@ of being optimal.
 %-------------------------------------------
 \section{An example}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.17]{pix/example.jpg}
 \caption{An Example of Monte Carlo Methods with First-visit Technic}
@@ -1018,7 +1018,7 @@ $$
 所谓确定性策略，是只在某种状态下要执行的动作是确定即唯一的，而非确定性动作在每种状态下要执行的动作是随机的，
 可以按照一定的概率值进行选择。这种做法的原理如下图\ref{fig:output_of_stochastic_policy}所示。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/policy/output_of_stochastic_policy.png}
 \caption{stochastic output.}
@@ -1339,7 +1339,7 @@ expected value, and we'll actually use this sampling based estimator multiple ti
 this subsection, not just to obtain the value for the objective, but also to actually 
 figure out how to improve it.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/policy/steps_in_trajectories.jpg}
 %\caption{Soft state value}
@@ -1540,7 +1540,7 @@ $$
 \theta \leftarrow \theta + \alpha\nabla_\theta J(\theta)
 $$
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/policy/policy_gradient_processing_flow.jpg}
 %\caption{Soft state value}
@@ -1595,7 +1595,7 @@ talked about how every reinforcement learning algorithm consists of three parts,
 generation of samples, fitting a model or estimating a return, and improving the policy. 
 and this algorithm does do all three of those things. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.8]{pix/policy/policy_gradient_processing_flow.jpg}
 \caption{Three parts of policy gradient algorithm}
@@ -1707,7 +1707,7 @@ Maximum likelyhood:
 \left( \sum_{t=1}^T \nabla_\theta\log p_\theta(a_{i,t}|s_{i,t}) \right)
 \end{align}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.382]{pix/policy/pg_mle.png}
 \caption{comparison to supervised learning}
@@ -1816,7 +1816,7 @@ got it wrong do it less often. So this is basically the intuition behind this me
 Now let's come back to this partial observibility point, and here I'm going to ask a 
 question, can I do policy gradients with partial observibility? 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{pix/policy/pg_partial_observability.png}
 %\caption{Histogram of Count Variable}
@@ -1901,7 +1901,7 @@ usually one-dimensional but pretend this like some one-dimensional projection,an
 vertical axis I'm gonna overload it to mean both probabilities and rewards. So that blue 
 curve represents my Gaussian policy, 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{pix/policy/pg_gaussian_reward.png}
 %\caption{Histogram of Count Variable}
@@ -1923,7 +1923,7 @@ obtained from these rewards will be very different, because now the policy is tr
 make this more probable, and this even more probable. So it'll actually spread out a little 
 bit to cover all three of those things. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{pix/policy/pg_partial_observability_add_big_constant.png}
 %\caption{Histogram of Count Variable}

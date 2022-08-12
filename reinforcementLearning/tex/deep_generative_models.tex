@@ -1,6 +1,29 @@
 ﻿
 % https://deepgenerativemodels.github.io/
 
+
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\KL}[2]{D_\mathrm{KL}\paren{#1 \mathbin{\|} #2}}
+\renewcommand{\P}{\mathcal{P}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Z}{\mathcal{Z}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\M}{\mathcal{B}}
+\newcommand{\ELBO}{\mathrm{ELBO}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\giv}{\mid}
+\newcommand{\paren}[1]{\left(#1\right)}
+\newcommand{\brac}[1]{\left[#1\right]}
+\newcommand{\veps}{\varepsilon}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\renewcommand{\d}{\mathop{}\!\mathrm{d}}
+\newcommand{\Expect}{\mathbb{E}}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\I}{\mathbf{I}}
+\newcommand{\0}{\mathbf{0}}
+
+
 \chapter{Deep Generative Models}
 \setcounter{section}{-1}
 
@@ -20,6 +43,40 @@ chapter will also discuss application areas that have benefitted from deep gener
 models, including computer vision, speech and natural language processing, graph mining, 
 reinforcement learning, reliable machine learning, and inverse problem solving.
 
+Generative models are classified as unsupervised learning. In a very general way, a
+generative model is one that given a number of samples (training set) drawn from a 
+distribution $p(\bx)$, is capable of learning an estimate $p_g(\bx)$ of such distribution 
+somehow.
+
+There are several estimation methods on which generative models are based. However, to 
+simplify their classification \cite{Goodfellow2016}, only generative models based on 
+maximum likelihood will be considered.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/taxonomy_goodfellow.jpeg}
+\caption{Taxonomy of generative models based on maximum likelihood. Extracted from \cite{Goodfellow2016}}
+\label{fig:taxonomy_generative_models}
+\end{figure}
+
+The idea behind the maximum likelihood framework lies in modeling the approximation of 
+the prior distribution of the data, which is known as the likelihood, through some 
+parameters $\theta$: $p_\theta(\bx)$. Then the parameters that maximize the likelihood 
+will be selected.
+\begin{align}
+\theta^* = \argmax_\theta \prod_{i=1}^N p_\theta(x^{(i)})
+\end{align}
+In practice, it is typical to maximize the log likelihood $\log p_\theta(x^{(i)})$ as 
+it is less likely to suffer numeric instability when implemented on a computer.
+\begin{align}
+\theta^* = \argmax_\theta \sum_{i=1}^N \log p_\theta(x^{(i)})
+\end{align}
+
+If only generative models based on maximum likelyhood are considered, they can be 
+classified in two groups according to how they calculate the likelihood (or an 
+approximation of it): explicit density models or implicit density models. The whole 
+taxonomy tree is shown in figure \ref{fig:taxonomy_generative_models}.
+
 Intelligent agents are constantly generating, acquiring, and processing
 data. This data could be in the form of {\em images} that we capture on our
 phones, {\em text} messages we share with our friends, {\em graphs} that model
@@ -36,6 +93,33 @@ goal of any generative model is then to approximate this data
 distribution given access to the dataset $\mathcal{D}$. The hope is that
 if we are able to {\em learn} a good generative model, we can use the
 learned model for downstream {\em inference}.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Explicit Density Models}
+
+Explicit density models can be subdivided in two types: those capable of directly 
+maximizing an explicit density $p_\theta(\bx)$ and those capable of maximizing an 
+approximation of it. This subdivision represents two different ways of dealing with 
+the problem of tractability when maximizing the likelihood. Some of the most famous 
+approaches to tractable density models are Pixel Recurrent Neural Networks 
+(PixelRNN) [12] and Nonlinear Independent Components Analysis (NICA) [13].
+The models that maximize an approximation of the density function $p_\theta(\bx)$ 
+are likewise subdivided into two categories depending on whether the approximation 
+is deterministic or stochastic: variational or Markov chain. Later in this chapter 
+the most widely approach to variational learning, the variational autoencoder also 
+known as VAE will be analyzed in detail (see Section 3 and Section 4).
+Furthermore, Section 2.2 describes one of the simplest explicit density models, 
+Probabilistic PCA, and serves as an introduction to this type of models.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Implicit Density Models}
+
+These are models that do not estimate the density probability but instead define a 
+stochastic procedure which directly generates data [14]. This procedure involves 
+comparing real data with generated data. Some of the most famous approaches are 
+the Generative Stochastic Network [15] and Generative Adversarial Network [16].
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
@@ -467,28 +551,6 @@ variational autoencoders) which explicitly learn latent representations of the d
 
 
 
-
-\newcommand{\D}{\mathcal{D}}
-\newcommand{\KL}[2]{D_\mathrm{KL}\paren{#1 \mathbin{\|} #2}}
-\renewcommand{\P}{\mathcal{P}}
-\newcommand{\X}{\mathcal{X}}
-\newcommand{\Z}{\mathcal{Z}}
-\newcommand{\Q}{\mathcal{Q}}
-\newcommand{\bx}{\mathbf{x}}
-\newcommand{\M}{\mathcal{B}}
-\newcommand{\ELBO}{\mathrm{ELBO}}
-\newcommand{\bz}{\mathbf{z}}
-\newcommand{\giv}{\mid}
-\newcommand{\paren}[1]{\left(#1\right)}
-\newcommand{\brac}[1]{\left[#1\right]}
-\newcommand{\veps}{\varepsilon}
-\newcommand{\set}[1]{\left\{#1\right\}}
-\renewcommand{\d}{\mathop{}\!\mathrm{d}}
-\newcommand{\Expect}{\mathbb{E}}
-\newcommand{\Normal}{\mathcal{N}}
-\newcommand{\I}{\mathbf{I}}
-\newcommand{\0}{\mathbf{0}}
-
 %+++++++++++++++++++++++++++++++++++++++++++
 \section{Variational Auto-Encoder}
 %-------------------------------------------
@@ -498,14 +560,38 @@ variational autoencoders) which explicitly learn latent representations of the d
 %+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Auto-Encoder}
 
-在说 VAE 之前，先来看一下它的前身 Auto-Encoder (AE)。AE 通过自监督的训练方式，
+在说 VAE 之前，先来看一下它的前身 Auto-Encoder (AE)。AE 的初衷是为了数据降维。假设原始特征 $x$ 
+维度过高，我们希望通过编码器 $E$ 将其编码成低维特征向量 $z=E(x)$，编码的原则是尽可能保留原始信息。
+因此我们再训练一个解码器 $D$，希望能通过 $z$ 重构原始信息，即 $x\approx D(E(x))$，其优化目标一般是
+$$
+E,D = \argmin_{E,D}\mathbb{E}_{x\sim \D}\left[\|x-D(E(x))\|^2\right]
+$$
+AE 通过自监督的训练方式，
 能够从原始特征获得一个潜在的特征编码，实现了自动化的特征工程，并且达到了降维和泛化的目的。
-它的网络结构很简单，有编码和解码两个部分组成：
+它的网络结构很简单，有编码 $E$ 和解码 $D$ 两个部分组成：
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{pix/dgm/encoder_decoder.png}
 \caption{Auto-Encoder}
+%\label{fig:label}
+\end{figure}
+
+训练过程中加上一些扰动，就可以变成去噪自编码器（DAE）：
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{pix/dgm/dae.png}
+%\caption{Auto-Encoder}
+%\label{fig:label}
+\end{figure}
+
+或者用遮盖（MIM，mask image modeling）的方法来加扰动
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{pix/dgm/MIM.png}
+%\caption{Auto-Encoder}
 %\label{fig:label}
 \end{figure}
 
@@ -539,19 +625,30 @@ VAE 将经过神经网络编码后的隐藏层假设为一个标准的高斯分�
 
 没错，我们先抛开变分，它就是这么简单的一个假设... 仔细想一下，就会觉得妙不可言。
 
-它妙就妙在它为每个输入 $x$, 生成了一个潜在概率分布 $p(z|x)$, 然后再从分布中进行随机采样，
+它妙就妙在它为每个输入 $\bx$, 生成了一个潜在概率分布 $p(\bx|\bz)$, 然后再从分布中进行随机采样，
 从而得到了连续完整的潜在空间，解决了 AE 中无法用于生成的问题。
 《论语》有言：“举一隅，不以三隅反，则不复也。” ，给我的启发就是看事物应该不能只看表面，
 而应该了解其本质规律，从而可以灵活迁移到很多类似场景。聪明人学习当举一反三，那么聪明的神经网络，
-自然也不能只会怼训练数据。如果我们把原始输入 $x$ 看作是一个表面特征，而其潜在特征便是表面经过抽象之后的类特征，
+自然也不能只会怼训练数据。如果我们把原始输入 $\bx$ 看作是一个表面特征，而其潜在特征便是表面经过抽象之后的类特征，
 它将比表面特征更具备区分事物的能力，而 VAE 直接基于拟合了基于已知的潜在概率分布，
 可以说是进一步的掌握了事物的本质。就拿一个人的某个行为来说，我们不能单纯看行为本身，
 因为这个行为往往代表了他的综合特性，他从出生开始，因为遗传，后天教育和环境，决定了他在面对某种情形的情况下，
 高概率会产生这个行为，也就是说掌握了概率分布，就掌控了一切。
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{pix/dgm/vae_details.png}
+%\caption{Variational Auto-Encoder}
+%\label{fig:label}
+\end{figure}
+上面我们已经谈到 VAE 的损失为重构误差 + KL散度。深入来看，对于每一个样本，需要用神经网络拟合均值 $u$ 
+和方差 $\delta^2$，然后用标准正态分布采样得到 $\bz$，然后再恢复成 
+$\bx$。其中方差项是核心，是用来进行对抗生成的关键。重构部分误差项会让 $u$ 尽量接近真实值，而 KL 
+散度会保证生成器拥有标准的随机性。在后续的讨论中我们将称 $\bz$ 为隐含变量(latent variable), 而称 $\bx$ 
+为观测变量(observed variable)。
 
 Latent variable models form a rich class of probabilistic models that can infer hidden 
-structure in the underlying data. In this post, we will study variational autoencoders, 
+structure in the underlying data. In this section, we will study variational autoencoders, 
 which are a powerful class of deep generative models with latent variables.
 
 
@@ -629,6 +726,101 @@ Intractability: computing the posterior probability $p(\bz \giv \bx)$ is intract
 Big data: the dataset $\D$ is too large to fit in memory; we can only work with 
 small, sub-sampled batches of $\D$.
 \end{itemize}
+
+Representation (表示)的另一个说法是编码空间，不同的表示即选取不同的编码空间。
+下面我们再从编码空间的角度看看 representation 的问题，或许能增强形象的理解。
+{\bf 个人认为这里如果将编码空间叫做表示空间 (representation space) 似乎更恰当。}
+
+假如每个样本都可以重构得很好，那么我们可以将 $\bz$ 当作是 $\bx$ 
+的等价表示，也就是说把 $\bz$ 研究好了就相当于把 $\bx$ 研究好了。现在我们将每个 $\bx$ 
+都编码出对应的特征向量 $\bz$，然后我们关心一个问题：这些 $\bz$ 覆盖的空间的形态是个什么样子？
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/representation_space.png}
+\caption{经过自编码器后，原始观测样本对应表示空间中的一个点}
+%\label{fig:label}
+\end{figure}
+
+为什么要关心这个问题呢？因为我们可以有很多不同的编码表示方式，不同编码方式得到的特征向量也有好坏之分，
+从“表示空间长什么样”可以大致地看出特征向量的好坏。比如下面四个不同的编码向量的分布形状模拟图：
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{pix/dgm/diff_represent_spaces.png}
+\caption{四种不同的表示空间形状模拟图，分别代表无规律、线性、环形、圆形}
+%\label{fig:label}
+\end{figure}
+
+第一个图的向量分布没什么特别的形状，比较散乱，说明编码空间并不是特别规整；第二个图的向量集中在一条线上，
+说明其实编码向量的维度之间存在冗余；第三个图是一个环形，说明其圆心附近并没有对应的真实样本；第四个图是一个圆形，
+表明它比较规整地覆盖了一块连续空间。就四个图来看，最后一个图所描绘的向量分布形状是最理想的：规整、无冗余、连续，
+这意味着我们从中学习了一部分样本，就很容易泛化到未知的新样本上去，因为我们知道编码空间是规整连续的，
+所以我们知道训练样本的编码向量之间的“缝隙”（图中的两个点之间的空白部分），实际上也对应着未知的真实样本，
+因此把已知的搞好了，很可能未知的也搞好了。
+
+\begin{emp_box}\noindent
+研究思路：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+多空间编码，区分不同特征
+
+\item[-]
+Mahananobis semi-normal 分布，消除相关性及重要性一致，偏置项的作用。
+
+\item[-]
+同胚映射，边界映射为边界。在目标函数中增加边界强化分离项。
+
+\end{itemize}
+\end{emp_box}
+
+总的来说，大体上我们关心编码空间的如下问题：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+所有编码向量覆盖一个怎样的区域？
+
+\item[2.]
+是否有未知的真实样本对应空白之处的向量？
+
+\item[3.]
+有没有“脱离群众”的向量？
+
+\item[4.]
+有没有办法让编码空间更规整一些？
+\end{itemize}
+
+常规的自编码器由于没有特别的约束，因此很难回答上述问题。于是，变分自编码器出来了，从编码角度来看，它的目的是：
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+让编码空间更规整一些；
+\item[2.]
+让编码向量更紧凑一些。
+\end{itemize}
+为了达到这个目的，变分自编码器先引入了后验分布 $p(z|x)$。
+
+该怎么理解后验分布 $p(z|x)$ 呢？直观来看，我们可以将后验分布理解为一个“椭圆”，原来每个样本对应着一个编码向量，
+也就是编码空间中的一个点，引入后验分布之后，相对于说现在每个样本 $x$ 都对应一个“椭圆”。刚才说希望编码向量更“紧凑”一些，
+但理论上来讲，再多的“点”也没有办法把一个“面”覆盖完，但要是用“面”来覆盖“面”，那么就容易把目标覆盖住了。
+这就是变分自编码器做出的主要改动之一。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{pix/dgm/ellipse_cover.png}
+\caption{每个样本的编码从一个点变成了一个面（椭圆），于是原本由点覆盖的编码空间变成了由面覆盖}
+%\label{fig:label}
+\end{figure}
+为什么非得要椭圆呢？矩形或者其他形状可以吗？概率论中椭圆对应着“假设 $p(z|x)$ 各分量独立的高斯分布”，
+从概率的角度来看，高斯分布是比较容易处理的一类概率分布，所以我们用高斯分布，也就对应着椭圆，
+其他形状也就对应这其他分布，比如矩形可以跟均匀分布对应，但后面再算 KL 散度的时候会比较麻烦，因此一般不使用。
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
@@ -720,6 +912,78 @@ given datapoint $\bx$
 
 %+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Black-Box Variational Inference}
+
+In this subsection, we shall focus on first-order stochastic gradient methods for 
+optimizing the ELBO. These optimization techniques are desirable in that they allow 
+us to sub-sample the dataset during optimization---but require our objective function 
+to be differentiable with respect to the optimization variables. 
+
+As such, we shall posit for now that any $p(\bx, \bz) \in \P_{\bx, \bz}$ and 
+$q(\bz) \in \Q$ are alternatively parameterizable as $p_\theta(\bx, \bz)$ and 
+$q_\lambda(\bz)$ and that these distributions are differentiable with respect to 
+$\theta$ and $\lambda$.
+
+This inspires Black-Box Variational Inference (BBVI), a general-purpose 
+Expectation-Maximization-like algorithm for variational learning of latent variable 
+models, where, for each mini-batch $\M = \set{\bx^{(1)}, \ldots, \bx^{(m)}}$, the 
+following two steps are performed.
+
+
+\subsubsection{Step 1}
+
+We first do {\bf per-sample} optimization of $q$ by iteratively applying the update
+\begin{align}
+\lambda^{(i)} \gets \lambda^{(i)} + \tilde{\nabla}_\lambda \ELBO(\bx^{(i)}; \theta, \lambda^{(i)}),
+\end{align}
+where $\text{ELBO}(\bx; \theta, \lambda) 
+= \Expect_{q_\lambda(\bz)} \left[\log \frac{p_\theta(\bx, \bz)}{q_\lambda(\bz)}\right]$, and 
+$\tilde{\nabla}_\lambda$ denotes an unbiased estimate of the ELBO gradient. This step seeks to 
+approximate the log-likelihood $\log p_\theta(\bx^{(i)})$.
+
+\subsubsection{Step 2}
+
+We then perform a single update step based on the mini-batch
+\begin{align}
+\theta \gets \theta + \tilde{\nabla}_\theta \sum_{i} \ELBO(\bx^{(i)}; \theta, \lambda^{(i)}),
+\end{align}
+which corresponds to the step that hopefully moves $p_\theta$ closer to $p_{\mathrm{data}}$.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Gradient Estimation}
+
+The gradients $\nabla_\lambda \ELBO$ and $\nabla_\theta \ELBO$ can be estimated via Monte Carlo 
+sampling. While it is straightforward to construct an unbiased estimate of $\nabla_\theta \ELBO$ 
+by simply pushing $\nabla_\theta$ through the expectation operator, the same cannot be said for 
+$\nabla_\lambda$. Instead, we see that
+\begin{align}
+\nabla_\lambda \Expect_{q_\lambda(\bz)} \left[\log \frac{p_\theta(\bx, \bz)}{q_\lambda(\bz)} \right]= \Expect_{q_\lambda(\bz)} \brac{\paren{\log \frac{p_\theta(\bx, \bz)}{q_\lambda(\bz)}} \cdot \nabla_\lambda \log q_\lambda(\bz)}.
+\end{align}
+This equality follows from the log-derivative trick (also commonly referred to as the REINFORCE 
+trick). The full derivation involves some simple algebraic manipulations and is left as an exercise 
+for the reader. The gradient estimator $\tilde{\nabla}_\lambda \ELBO$ is thus
+\begin{align}
+\frac{1}{k}\sum_{i=1}^k \brac{\paren{\log \frac{p_\theta(\bx, \bz^{(i)})}{q_\lambda(\bz^{(i)})}} \cdot \nabla_\lambda \log q_\lambda(\bz^{(i)})} \text{, where } \bz^{(i)} \sim q_\lambda(\bz).
+\end{align}
+However, it is often noted that this estimator suffers from high variance. One of the key 
+contributions of the variational autoencoder paper is the reparameterization trick, which introduces 
+a fixed, auxiliary distribution $p(\veps)$ and a differentiable function $T(\veps; \lambda)$ such 
+that the procedure
+\begin{align}
+\veps &\sim p(\veps)\\
+\bz &\gets T(\veps; \lambda),
+\end{align}
+is equivalent to sampling from $q_\lambda(\bz)$. By the 
+\href{https://en.wikipedia.org/wiki/Law_of_the_unconscious_statistician}{Law of the Unconscious Statistician}, 
+we can see that
+\begin{align}
+\nabla_\lambda \Expect_{q_\lambda(\bz)} \left[\log \frac{p_\theta(\bx, \bz)}{q_\lambda(\bz)}\right] = \Expect_{p(\veps)} \left[\nabla_\lambda \log \frac{p_\theta(\bx, T(\veps; \lambda))}{q_\lambda(T(\veps; \lambda))}\right].
+\end{align}
+In contrast to the REINFORCE trick, the reparameterization trick is often noted empirically to have 
+lower variance and thus results in more stable training. 
+
+\rs{I think there exists pathological examples where REINFORCE has lower variance than reparamterization. 
+Should we talk about that?}
 
 
 

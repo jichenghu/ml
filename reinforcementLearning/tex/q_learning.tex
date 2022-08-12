@@ -42,7 +42,7 @@ $Q$-learning is at the heart of all reinforcement learning algorithms.
 $Q$-Learning is a Reinforcement learning policy that will find the next best action, 
 given a current state. It chooses this action at random and aims to maximize the reward.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/3-components-q.jpg}
 \caption{Components of Q-Learning}
@@ -61,7 +61,7 @@ recommendation system, the ads you get are based on your previous purchases or w
 you may have visited. If you've bought a TV, you will get recommended TVs of different 
 brands. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/4-adrecommend.jpg}
 \caption{Ad Recommendation System}
@@ -72,7 +72,7 @@ Using $Q$-learning, we can optimize the ad recommendation system to recommend pr
 that are frequently bought together. The reward will be if the user clicks on the 
 suggested product.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/5-ad-q.jpg}
 \caption{Ad Recommendation System with Q-Learning}
@@ -114,7 +114,7 @@ that state, along with the maximum expected reward and a discount rate, which de
 its importance to the current state, to find the next state of our agent. The learning 
 rate determines how fast or slow, the model will be learning. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/6-bellman.jpg}
 \caption{Bellman Equation}
@@ -150,7 +150,7 @@ If the robot reaches the end goal, the robot gets 100 points.
 Now, the obvious question is: {\bf How do we train a robot to reach the end goal 
 with the shortest path without stepping on a mine?}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_robot_maze.png}
 \caption{Maze}
@@ -179,7 +179,7 @@ $Q$-Table is just a fancy name for a simple lookup table where we calculate the
 maximum expected future rewards for action at each state. Basically, this table 
 will guide us to the best action at each state.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_robot_maze_actions.png}
 \caption{Maze: actions}
@@ -192,7 +192,7 @@ So, let's model this environment in our $Q$-Table.
 
 In the $Q$-Table, the columns are the actions and the rows are the states.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_robot_maze_table.png}
 \caption{Maze: $q$-table}
@@ -236,7 +236,7 @@ command. The steps taken to construct a $q$-table are :
 When we initially start, the values of all states and rewards will be $0$. Consider 
 the $Q$-Table shown below which shows a dog simulator learning to perform actions :
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/7-initial.jpg}
 \caption{Initial $q$-table}
@@ -248,7 +248,7 @@ the $Q$-Table shown below which shows a dog simulator learning to perform action
 This is the starting point. We have performed no other action as of yet. Let us say 
 that we want the agent to sit initially, which it does. The table will change to:
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/8-qtable.jpg}
 \caption{$Q$-table after performing an action}
@@ -261,7 +261,7 @@ Bellman Equation
 For the action performed, we need to calculate the value of the actual reward and 
 the $Q( S, A )$ value
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/9-updatingq.jpg}
 \caption{Updating $q$-table with Bellman Equation}
@@ -273,7 +273,7 @@ the $Q( S, A )$ value
 The agent continues taking actions and for each action, the reward and $Q$-value are 
 calculated and it updates the table.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/10-finalq.jpg}
 \caption{Final $q$-table at end of an episode}
@@ -291,7 +291,7 @@ calculated and it updates the table.
 
 The Q-function uses the Bellman equation and takes two inputs: state (s) and action (a).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_function.png}
 \caption{Maze: q-function}
@@ -311,7 +311,7 @@ Now, let's understand how the updating takes place.
 
 \subsection{Introducing the $Q$-learning algorithm process}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{pix/q_learning/q_learning_algorithm_process.png}
 \caption{Maze: algorithm process}
@@ -324,7 +324,7 @@ Each of the colored boxes is one step. Let's understand each of these steps in d
 We will first build a $Q$-table. There are $n$ columns, where $n=$ number of actions. 
 There are m rows, where m= number of states. We will initialise the values at 0.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/q_robot_maze_table_init.png}
 \caption{Maze: q-table initialization}
@@ -362,7 +362,7 @@ For the robot example, there are four actions to choose from: up, down, left, an
 right. We are starting the training now — our robot knows nothing about the 
 environment. So the robot chooses a random action, say right.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/q_robot_maze_perform_action.png}
 \caption{Maze: perform an action}
@@ -378,7 +378,7 @@ Bellman equation.
 Now we have taken an action and observed an outcome and reward. We need to update 
 the function $Q(s,a)$.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/q_robot_maze_q_function.png}
 \caption{Maze: q-function}
@@ -399,7 +399,7 @@ mine $= -100$
 end $= +100$
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{pix/q_learning/q_robot_maze_iteration.png}
 %\caption{Maze: q-function}
@@ -461,7 +461,7 @@ An agent is in the bottom left cell of a grid. The grey cell is a wall. The two 
 cells give a reward. There is a reward of $1$ of being in the top-right (diamond) cell, 
 but a negative value of $-1$ for the cell immediately below (explosive).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.7]{pix/q_learning/gridworld.png}
 %\caption{Example: Gridworld}
@@ -642,7 +642,7 @@ With this in mind, the loss from the network is calculated by comparing the outp
 $Q$-values to the target $Q$-values from the right hand side of the Bellman equation, 
 and as with any network, the objective here is to minimize this loss.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/q_network.png}
 \caption{DQN states actions}
@@ -689,7 +689,7 @@ on each of these four frames we mentioned earlier – the grayscale conversion, 
 cropping, and the scaling – and then we'd take the preprocessed frames and stack them on 
 top of each other in the order of which they occurred in the game.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.49\linewidth}
   \centering
@@ -705,7 +705,7 @@ top of each other in the order of which they occurred in the game.
 \end{minipage}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.49\linewidth}
   \centering
@@ -744,7 +744,7 @@ of the environment.
 \subsection{Q-targets}
 % https://theaisummer.com/Taking_Deep_Q_Networks_a_step_further/
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/DDQN.jpg}
 %\caption{Calculation of the Actor Loss}
@@ -885,7 +885,7 @@ idea behind Dueling $Q$ Networks relies on the representation of the $Q$ functio
 of the Value and the advantage function. We simply have two networks to learn each part of 
 the sum and then we aggregate their outputs.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/q_learning/DDQN.jpg}
 \caption{Dueling Network Architectures for Deep Reinforcement Learning}
@@ -1105,7 +1105,7 @@ result of the previous state-action pair $(s_t, a_t)$, and the next state of the
 environment $s_{t+1}$. This tuple indeed gives us a summary of the agent's experience 
 at time $t$.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/q_learning/replay_memory.png}
 %\caption{Experience replay and replay memory}

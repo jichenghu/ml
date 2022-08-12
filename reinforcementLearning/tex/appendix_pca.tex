@@ -1,0 +1,48 @@
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{PCA}
+%-------------------------------------------
+% file:///F:/mygit/ml/reinforcementLearning/refs/dgm/TFG_final.pdf
+
+Principal Component Analysis (known as PCA) \cite{Shlens2014} is a technique used for 
+dimensionality reduction, lossy data compression and data visualization that has 
+wide-ranging applications in fields such as signal processing, mechanical engineering or 
+data analysis.
+Depending on the field scope, it can also be named discrete Karthunen-Loéve transform.
+
+PCA is a technique that can be analyzed from two different points of view: linear
+algebra and probability. In this section it is presented an overview of PCA from the
+probabilistic point of view as it is closely related to the simplest case of the variational
+autoencoder and a good starting point to latent variable models. The explanation is largely
+based on Bishop's book \cite{Bishop2006} page 570-587.
+
+Although PCA was firstly conceived by Karl Pearson in 1901, it was not until
+the late 90s when probabilistic PCA was formulated by Tipping and Bishop and
+by Roweis. Probabilistic PCA holds several advantages compared to conventional
+PCA. One of them is that it can be used as a simple generative model and this is why this
+algorithm is meaningful in this tech report.
+
+As its name states, PCA finds the principal components of data, or in other words,
+it finds the features, the directions where there is the most variance. So given a dataset 
+$X = \{x^{(i)}\}^N_1$ with dimensionality $D_x$, the main idea behind PCA is to obtain a subspace
+(called the principal-component subspace) with dimension $D_z$, being $D_z << D_x$, so that
+each $x^{(i)}$ is represented with a $z^{(i)}$ (latent variable) in the best possible way. Then, it is
+possible to recover $x^{(i)}$ from $z^{(i)}$.
+$$
+x^{(i)} \in \mathcal{R}^{D_x} \, \rightarrow \, z^{(i)} \in \mathcal{R}^{D_z}
+$$
+
+The probabilistic PCA is a maximum likelihood solution of a probabilistic latent variable model in 
+which all marginal and conditional distributions are Gaussian. The likelihood function to be 
+maximized is expressed as:
+\begin{align}
+p(x) = \int p(x | z) p(z) dz
+\end{align}
+As all distributions are Gaussian, the probability distribution of $x$ can be expressed
+as $p(x) = N(x | \mu, C)$ where the covariance matrix is $C = WW^T + \sigma^2$. Therefore, 
+the parameters of the model are the $D_x x D_z$ matrix $W$, the $D_x$ dimensional vector 
+$\mu$ and the scalar $\sigma^2$.
+
+
+

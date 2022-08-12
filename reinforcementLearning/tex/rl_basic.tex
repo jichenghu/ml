@@ -28,7 +28,7 @@ Reinforcement learning is useful when you have no training data or specific enou
 expertise about the problem. On a high level, you know WHAT you want, but not really 
 HOW to get there. After all, not even Lee Sedol knows how to beat himself in Go.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/agent_n_env.png}
 \caption{Agent and Environment}
@@ -147,7 +147,7 @@ over all the possibilities, weighting each by its probability of occurring. It s
 that the value of the start state must equal the (discounted) value of the expected next 
 state, plus the reward expected along the way.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/backup_diagrams_rl.png}
 \caption{Backup diagrams for (a) $V^\pi$ and (b) $Q^\pi$.}
@@ -184,7 +184,7 @@ in a reward of $0$, except those that move the agent out of the special states $
 \colorbox{yellow}{From state $A$, all four actions yield a reward of $+10$ and take the 
 agent to $A'$.} From state $B$, all actions yield a reward of $+5$ and take the agent to $B'$.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/gridworld.png}
 \caption{(a) exceptional reward dynamics; (b) state-value function for the equiprobable random policy.}
@@ -240,7 +240,7 @@ contour lines shown in the figure. Putting doesn't get us out of sand traps, so 
 have a value of $-\infty$. Overall, it takes us six strokes to get from the tee to the 
 hole by putting.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.4]{pix/golf.png}
 \caption{A golf example: the state-value function for putting (above) and the optimal action-value function for using the driver (below).}

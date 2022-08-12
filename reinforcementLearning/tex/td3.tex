@@ -113,14 +113,14 @@ Gradients 则是回合更新。我们就比较贪心了，又想处理连续动�
 UNREAL 建立在 A3C 的基础上，加入多个辅助任务。A3C 算法是 on policy 
 的，而辅助任务利用 A3C 中的 Replay buffer，是 off policy 的。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.118]{pix/td3/1.png}
 %\caption{Agent and Environment}
 %\label{fig:label}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.118]{pix/td3/2.png}
 %\caption{Agent and Environment}
@@ -159,7 +159,7 @@ we need a total of 4 networks to run this algorithm;
 an actor $\mu$ (also represented as $\pi$ sometimes, as in the TD3 paper), a critic 
 $Q$ and their respective targets, $\mu'$ and $Q'$.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/td3/ddpg_schematics.png}
 \caption{DDPG uses a total of 4 networks - one actor, one critic and their 
@@ -198,7 +198,7 @@ on the action selected by the other network. Thus, the input to the critic, here
 is the state and the predicted action, while the output layer of the network has a 
 single neuron that produces the $Q$-value of the given state-action pair.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/td3/ddpg_critic.png}
 \caption{Calculation of Q-values in DQN vs DDPG Critic}
@@ -215,7 +215,7 @@ $$
 y = r + \gamma \cdot Q'(s', \mu'(s'))
 $$
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/td3/ddpg_critic_loss.png}
 \caption{Calculation of TD-Target that is used in the Critic Loss}
@@ -243,7 +243,7 @@ $$
 L_{\text{actor}} = - Q(s, \mu(s))
 $$
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{pix/td3/ddpg_actor_loss.png}
 \caption{Calculation of the Actor Loss}
@@ -310,7 +310,7 @@ $\arg\max\Q_{\text table}$的方式去选择动作。这往往会过大估计价
 \end{itemize}
 
 DDPG 中的网络架构如下面图\ref{fig:ddpg_net_architecture}。
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/td3/ddpg_architecture.jpg}
 \caption{DDPG 网络架构}
@@ -319,7 +319,7 @@ DDPG 中的网络架构如下面图\ref{fig:ddpg_net_architecture}。
 
 TD3 通过 Critic 网络估算动作的 A 值。一个 Critic 的评估可能会较高，所以我们加一个。
 如是 TD3 的网络架构如图\ref{fig:td3_net_architecture}所示。
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/td3/td3_architecture.jpg}
 \caption{TD3 网络架构}
@@ -499,7 +499,7 @@ a_\text{low},a_\text{high}), \\
 在 DDPG 中，计算 target 的时候，我们输入时 $s'$ 和 $a'$，获得 $q$，也就是这块布上的一点 $A$。
 通过估算 target 估算另外一点 $(s，a)$，也就是布上的另外一点 $B$ 的 $Q$ 值。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/td3/q_table_distribution.jpg}
 \caption{$Q$-distribution}
@@ -510,7 +510,7 @@ a_\text{low},a_\text{high}), \\
 在一定范围内随机。这又什么好处呢。好处就是，当更新多次的时候，就相当于用 $A$ 点附近的一小部分范围
 （准确来说是在 $s'$ 这条线上的一定范围）的去估算 $B$，这样可以让 $B$ 点的估计更准确，更健壮。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.618]{pix/td3/perturbed_in_q_distribution.jpg}
 \caption{perturbed $Q$-distribution}

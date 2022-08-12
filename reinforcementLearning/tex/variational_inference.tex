@@ -14,7 +14,7 @@ $P(z)$来表示这些数据内部的分布情况，而在这个新的分布$P(z)
 
 以下图中右图为例：% probabilistic_1.png
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{pix/probabilistic_1.png}
 \caption{Probabilistic Latent Variable Models}
@@ -33,7 +33,7 @@ $$
 在下图中，$p(x|z)$是多元高斯分布，均值和方差通过神经网络的输出得到，而$p(z)$
 是一个简单的一维高斯分布。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{pix/latent_variable.png}
 \caption{Latent Variable}
@@ -46,7 +46,7 @@ $$
 一般的机器学习算法训练生成模型的过程中使用的是最大似然函数作为损失函数，在隐变量模型中，
 将上文中重新定义的目标带入模型中可以得到新的损失函数，但此时这个损失函数是很难求解的。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{pix/latent_variable_models.png}
 \caption{Latent Variable Models}
@@ -103,7 +103,7 @@ $$
 从KL散度的角度也能看出，要最大化$\log p(x_i)$，最大化下界$\mathcal{L}_i(p,q_i)$即可。
 同时我们想要下界越接近目标，就需要KL散度越接近0，因此需要$q_i(z)$接近$p(z|x_i)$。
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.3]{pix/lost_function.png}
 \caption{Lost function}
