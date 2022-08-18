@@ -1,5 +1,9 @@
 
+
 \chapter{RL Basics}\label{rl_basics}
+\setcounter{section}{-1}
+
+\ifx\never_defined\defined
 待重读的资源：
 \begin{itemize}
 %\setlength{\itemsep}{0pt}
@@ -21,8 +25,22 @@
 \item[-]
 \url{https://inst.eecs.berkeley.edu/~cs188/sp10/slides/SP10%20cs188%20lecture%2011%20--%20reinforcement%20learning%20(6PP).pdf}
 
+\item[-]
+\url{https://www.simplilearn.com/tutorials/artificial-intelligence-tutorial/ai-vs-machine-learning-vs-deep-learning}
 \end{itemize}
+\fi
 
+Artificial Intelligence is the process of building intelligent machines from vast 
+volumes of data. Systems learn from past learning and experiences and perform 
+human-like tasks. It enhances the speed, precision, and effectiveness of human 
+efforts. AI uses complex algorithms and methods to build machines that can make 
+decisions on their own. Machine Learning and Deep learning forms the core of 
+Artificial Intelligence. 
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Overview}
+%-------------------------------------------
 
 Reinforcement learning is useful when you have no training data or specific enough 
 expertise about the problem. On a high level, you know WHAT you want, but not really 
@@ -35,10 +53,213 @@ HOW to get there. After all, not even Lee Sedol knows how to beat himself in Go.
 %\label{fig:label}
 \end{figure}
 
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Types of Artificial Intelligence}
+
+The main aim of Artificial Intelligence is to enable machines to perform a human-like 
+function. Thus the primary way of classification of AI is based on how well it is able 
+to replicate human-like actions. AI can, by and large, be classified based on two 
+types, both of which are based on its ability to replicate the human brain. One type 
+of classification, which is “Based on Functionality”, classify AI on the basis of their 
+likeness to the human mind and their ability to think and feel like humans. The second 
+way of classification is more prominent in the tech industry, which is” Based on 
+Capabilities” of AI vis-à-vis Human Intelligence.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/basics/Types-of-AI.png}
+\caption{two types of AI which are based on Functionality and Capabilities}
+%\label{fig:label}
+\end{figure}
+
+
+\subsubsection{Based on Functionality}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/basics/Types-of-Artificial-Intelligence-2.3.png}
+\caption{Types based on functionality}
+%\label{fig:label}
+\end{figure}
+
+
+\subsubsection{1. Reactive Machine}
+
+They are the most basic and oldest type of Artificial Intelligence. They replicate 
+a human's ability to react to different kinds of stimuli. This type of AI has no 
+memory power, so they lack the capability to use previously gained 
+information/experience to obtain better results. Therefore, these kinds of AI don't 
+have the ability to train themselves like the ones we come across nowadays.
+
+{\bf Example:} Deep Blue, IBM's chess-playing supercomputer, is the perfect example 
+of these kinds of machines. It is famous for defeating international grandmaster 
+Garry Kasparov in the late 1990s. Deep Blue can identify different pieces in the 
+chessboard and how each moves. It can identify all the possible legal moves for 
+itself and its opponents. Based on the option, it selects the best possible move. 
+However, it doesn't have the ability to learn from its past moves as these machines 
+don't have any memory of their own.
+
+
+\subsubsection{2. Limited Theory}
+
+This type of AI, along with the ability of Reactive Machines, have memory capabilities 
+so they can use past information/experience to make better future decisions. Most of 
+the common applications existing around us fall under this category. These AI 
+applications can be trained by a large volume of training data they store in their 
+memory in a reference model.
+
+{\bf Example:} Limited Memory technology is used in many self-driving cars use. They 
+store data like GPS location, speed of nearby cars, size /nature of obstructions, 
+among a hundred other kinds of data to drive just like a human does.
+
+
+\subsubsection{3. Theory of Mind}
+
+Theory of Mind is the next level of AI, which has very limited to no presence in our 
+day-to-day lives. These kind of AI are mostly in the “Work in Progress” stage and are 
+usually confined to research labs. These kinds of AI, once developed, will have a very 
+deep understating of human minds ranging from their needs, likes, emotions, thought 
+process, etc. Basis their understanding of Human minds and their whims, the AI will be 
+able to alter its own response.
+
+{\bf Example:} Researcher Winston in his research, showed a prototype of a robot that 
+can walk down the small corridor with other robots coming from the opposite direction; 
+the AI can foresee other robots movements and can turn right, left or any other way so 
+as to avoid a possible collision with the incoming robots. As per Wilson, this Robot 
+determines its action based on its “common sense” of how other robots will move.
+
+
+\subsubsection{4. Self-Aware AI}
+
+This is the final stage of AI. Its current existence is only hypothetical and can be 
+found only in Science fiction movies. These kinds of AI can understand and evoke human 
+emotions and have emotions of their own. These kind of AI are decades, if not centuries, 
+away from materializing. It is this kind of AI which AI skeptics like Elon Musk are 
+wary of. This is because once it is self-aware, the AI can get into Self-Preservation 
+mode; it might consider humanity as a potential threat and may directly or indirectly 
+pursue endeavor to end humanity.
+
+
+\subsubsection{Based on Capabilities}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/basics/Types-of-Artificial-Intelligence-3.png}
+\caption{Types based on capabilities}
+%\label{fig:label}
+\end{figure}
+
+
+\subsubsection{1. Artificial Narrow Intelligence (ANI)}
+
+All the existing AI applications which we see around us falls under this category. 
+ANI includes an AI system that can perform narrowly defined specific tasks just like 
+humans. However these machines cannot perform tasks for which it was not programmed 
+before-hand, so they fail at performing an unprecedented task. Based on the 
+classification mentioned above, this system is a combination of all reactive and 
+limited memory AI. AI algorithms that we use in today's world to perform the most 
+complex Prediction Modelling fall under this category of AI.
+
+
+\subsubsection{2. Artificial General Intelligence (ANI)}
+
+AGI has the capability to train, learn, understand and perform functions just like 
+a normal human does. These systems will have multi-functional capabilities cutting 
+across different domains. These systems will be more agile and will react and 
+improvise just like humans while facing unprecedented scenarios. There is no 
+real-world example of this kind of AI, but a good amount of progress has been made 
+in this field.
+
+
+\subsubsection{3. Artificial Super Intelligence (ASI)}
+
+Artificial Super Intelligence will be the top-most point of AI development. ASI 
+will be the most potent form of intelligence to ever exist on this planet. It will 
+be able to perform all the tasks better than humans because of its inordinately 
+superior data processing, memory, and decision-making ability. Some of the 
+researchers fear that the advent of ASI will ultimately result in “Technological 
+Singularity”. It is a hypothetical situation in which the growth in technology will 
+reach an uncontrollable stage, resulting in an unimaginable change in Human 
+Civilization.
+
+At present, it is very hard to foresee how our future will look like when a more 
+dexterous form of AI materializes. However, with great certainty, we are still a 
+long distance apart to reach that stage as we are just in the very nascent stage 
+of the development of advanced AI. For the proponents of AI, we can say that we 
+are just scratching the surface to unearth the true potential of AI, and for the 
+AI skeptics, it is too soon to get chills about Technological Singularity.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Learning Models}
+
+In terms of the feedback, AI learning models can be classified based on the interactions 
+with the outside environment, users and other external factors. Factoring its 
+representation of knowledge, AI learning models can be classified in two main types: 
+inductive and deductive.
+
+
 如果学习时不尝试去理解环境, 这种方法叫做 model-free。所谓 model 就是用模型来表示环境。
 反过来，用一个模型来代表环境的方法就是 model-based 方法。 Qlearning, Sarsa, 
 Policy Gradients 都是从环境中得到反馈然后从中学习的 model-free 方法。
 
+Learning is the fundamental building blocks of artificial intelligence it helps in 
+improving the knowledge of Artificial intelligence programming. AI learning processes 
+focused mainly on processing of a collection of input-output pairs for a specific 
+function and predicts the outputs for new inputs. The learning models used in AI and 
+ML are
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Reinforcement Learning
+
+\item[-]
+Supervised Learning
+
+\item[-]
+Semi-supervised Learning
+
+
+\item[-]
+Unsupervised Learning
+\end{itemize}
+
+Deep learning models are broadly classified into supervised and unsupervised 
+models:
+
+{\bf Supervised DL models:}
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Artificial Neural Networks (ANNs)
+
+\item[-]
+Recurrent Neural Networks (RNNs)
+
+\item[-]
+Convolutional Neural Networks (CNNs)
+\end{itemize}
+
+
+{\bf Unsupervised DL models:}
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+Self Organizing Maps (SOMs)
+
+\item[-]
+Boltzmann Machines
+
+\item[-]
+Autoencoders
+\end{itemize}
 
 \section{Value Functions}
 % http://www.incompleteideas.net/book/ebook/node34.html

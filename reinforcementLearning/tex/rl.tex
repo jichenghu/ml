@@ -181,15 +181,29 @@ sorting=ynt
 \import{D:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
 \fi
 
+% Boltzmann Machines
+\ifx\allfiles\undefined
+\import{D:/mygit/ml/reinforcementLearning/tex/}{bm.tex}
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{bm.tex}
+\fi
+
 % variational inference
 \ifx\allfiles\undefined
 \else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
 \fi
 
+% dgm
 \ifx\allfiles\undefined
 \else
 \import{D:/mygit/ml/reinforcementLearning/tex/}{deep_generative_models.tex}
+\fi
+
+% variational method
+\ifx\allfiles\undefined
+\else
+\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_method.tex}
 \fi
 
 % entropy

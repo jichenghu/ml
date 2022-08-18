@@ -8,10 +8,14 @@
 \newcommand{\X}{\mathcal{X}}
 \newcommand{\Z}{\mathcal{Z}}
 \newcommand{\Q}{\mathcal{Q}}
+\newcommand{\bb}{\mathbf{b}}
+\newcommand{\bc}{\mathbf{c}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bv}{\mathbf{v}}
 \newcommand{\bx}{\mathbf{x}}
+\newcommand{\bz}{\mathbf{z}}
 \newcommand{\M}{\mathcal{B}}
 \newcommand{\ELBO}{\mathrm{ELBO}}
-\newcommand{\bz}{\mathbf{z}}
 \newcommand{\giv}{\mid}
 \newcommand{\paren}[1]{\left(#1\right)}
 \newcommand{\brac}[1]{\left[#1\right]}
@@ -74,8 +78,9 @@ it is less likely to suffer numeric instability when implemented on a computer.
 
 If only generative models based on maximum likelyhood are considered, they can be 
 classified in two groups according to how they calculate the likelihood (or an 
-approximation of it): explicit density models or implicit density models. The whole 
-taxonomy tree is shown in figure \ref{fig:taxonomy_generative_models}.
+approximation of it): explicit density models or implicit density models. 
+{\bf 基于极大似然的生成模型分为显式概率密度模型和隐式概率密度模型两种}。
+The whole taxonomy tree is shown in figure \ref{fig:taxonomy_generative_models}.
 
 Intelligent agents are constantly generating, acquiring, and processing
 data. This data could be in the form of {\em images} that we capture on our
@@ -84,6 +89,31 @@ interactions on social media, {\em videos} that record important events,
 etc. Natural agents excel at discovering patterns, extracting
 knowledge, and performing complex reasoning based on the data they observe. How
 can we build artificial learning systems to do the same?
+
+生成模型能够从训练集中学习数据分布。学到数据分布之后，就可以生成新的数据样本。如下图 \ref{fig:dgm_generating_data} 所示，
+给定一个二维点集，假设它是由一个随机变量生成出来的。假设这个随机变量服从正态分布 $p(z)$。
+根据观测到的数据点，能够估计正态分布的均值和方差。知道 $p(z)$ 之后，可以根据 $p(z)$ 
+来生成一些新的数据点。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/generating_data.jpeg}
+\caption{Learning and generating}
+\label{fig:dgm_generating_data}
+\end{figure}
+
+我们可以将这个例子进行拓展，将 $\bz$ 看作一幅图像或者自然语言的句子。比如把 $\bz$ 
+想象成一幅图像。给定观测到的手写数字的图像集合，可以尝试学习手写数字图像的分布 $p(\bz)$。
+然后根据 $p(\bz)$ 的采样，来生成下图\ref{fig:dgm_digital_numbers}右边所示的图像。在这个例子中，
+生成模型主要做的事情是抓住手写数字图像的结构，以生成的类似的图像。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/hand_writn_digitals.jpeg}
+\caption{hand-written digital numbers}
+\label{fig:dgm_digital_numbers}
+\end{figure}
+
 
 In this chapter, we will study generative models that view the world under the lens of probability.
 In such a worldview, we can think of any kind of
@@ -261,6 +291,102 @@ model families permit efficient and accurate inference on all these
 tasks. Indeed, the trade-offs in the inference capabilities of the
 current generative models have led to the development of very diverse approaches as
 we shall see in this course.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Energy Based Model(EBM)}
+%-------------------------------------------
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{基于能量的模型}
+
+基于能量的模型中常用的一个概率分布是玻尔兹曼分布，其概率密度函数形式如下：
+\begin{align*}
+p(z) = \frac{e^{-E(z)}}{\Sigma_z e^{-E(z)}}
+\end{align}
+其中 $E(z)$ 为能量函数，$\Sigma_z e^{-E(z)}$ 为配分函数或归一化常数。
+
+当一个事件发生的概率最大的时候，能量最低。例如自然界中的一些事物或者物质，其实是处于低能态，
+因为高能态的东西不太稳定。所以要使得 $E(z)$ 比较小的时候，概率密度比较大。
+
+在基于能量的模型(EBM)中还要加入隐变量来刻画数据生成。为了便于描述，我们将上述 $z$ 改记为 
+$x$。比如假设 $\mathcal{F}(z)$ 包含隐变量 $h$:
+$$
+\mathcal{F}(x) = -\log \Sigma_h e^{-\mathbb{E}(x,h)}
+$$
+在物理学中 $\mathcal{F}(x)$ 称为自由能。
+所以 $p(x)$ 可以写成包含隐变量 $h$ 的联合概率密度函数:
+\begin{align*}
+p(x) =& \sum_h \underset{\textcolor{blue}{\downarrow}}{p(x,h)}
+= \underset{\textcolor{red}{\downarrow}}{\frac{1}{Z}} \sum_h e^{-\mathbb{E}(x,h)}
+= \frac{1}{Z} e^{-\underset{\textcolor{blue}{\downarrow}}{\mathcal{F}(x)}} \\
+&\qquad
+\textcolor{blue}{\text{隐变量}}
+\quad
+\textcolor{red}{Z = \sum_x e^{-\mathcal{F}(x)}}
+\qquad\quad
+\textcolor{blue}{\text{自由能}}
+\end{align}
+已知 $p(x)$ 的形式后，可以使用极大似然估计来学习参数。下面说明如何使用 MLE 来训练 EBM。给定 
+$n$ 个训练样本，将似然函数作为优化目标，其数学表达式为：
+$$
+L(\theta) = \prod_{i=1}^n p(x_i; \theta)
+$$
+优化的目标函数为：
+$$
+l(\theta) = \frac{1}{n}\log L(\theta)
+= \frac{1}{n}\sum_i\log\frac{ e^{-\mathcal{F}(x_i)} }{Z}
+= \frac{1}{n}\sum_i\left( \mathcal{F}(x_i) + \log Z \right)
+$$
+然后用梯度下降法来求解。注意配分函数 $\log Z$ 包含参数信息，不能忽略。关于怎样求解这个东西，简单来说，
+因为 $Z$ 涉及高维积分，求导时我们需要对模型进行一些采样。
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Boltzmann Machine}
+
+基于能量的模型的一个典型例子是 Boltzmann Machine。它其实是一个物理概念。一般而言，
+能量函数为某周特殊形式的基于能量的模型，称为 Boltzmann Machine:
+$$
+p(x) = \frac{e^{-\mathbb{E}(x)}}{Z}
+$$
+Boltzmann Machine 是联合概率分布模型。在 Boltzmann Machine 中，能量函数是观测数据变量的一个二次函数:
+\begin{align*}
+&\quad
+\textcolor{blue}{\text{参数矩阵}} \\
+\mathbb{E}(\bx)=& -\bx^T \overset{\textcolor{blue}{\downarrow}}{U} \bx 
+- \underset{\textcolor{blue}{\uparrow}}{\bb^T} \bx \\
+&\qquad\qquad 
+\textcolor{blue}{\text{偏置向量}}
+\end{align}
+其中 $U$ 是参数矩阵，$\bb$ 是偏置向量。根据训练数据学习模型，主要是估计参数 $U$
+ 和 $\bb$。玻尔兹曼机是一个多维联合概率分布，极大似然估计可以解决学习的问题。
+
+假设 $v$ 为观测变量(observed variable)，玻尔兹曼机里还可以加入一些隐变量(latent variable) 
+$h$。此时能量函数同样也是二次函数，但是此时还包含交叉项。例如，观测变量 $v$ 和隐变量 $h$ 
+之间的交叉项，还有隐变量与隐变量之间的二次项、偏置变量。
+
+Boltzmann Machine with latent elements:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+原始变量 $\bx$ 变成为 observed variable $\bv$ 和 latent variable $\bh$ 两部分
+
+\item[-]
+拟合变量之间的非线性关系
+
+\item[-]
+近似任意的离散变量的概率质量函数(probability mass function)
+
+\item[-]
+能量函数可以改写为：
+$$
+\mathbb{E}(\bv, \bh) = \bv^T R \bv - \bv^T W \bh - \bh^T S \bh - \bb^T \bv - \bc^T \bh
+$$
+\end{itemize}
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
@@ -555,6 +681,27 @@ variational autoencoders) which explicitly learn latent representations of the d
 \section{Variational Auto-Encoder}
 %-------------------------------------------
 % https://www.jianshu.com/p/ffd493e10751
+% https://ychai.uk/notes/2020/01/09/Generative/Variational-AutoEncoders/
+
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+PixelCNN define tractable density function with MLE:
+$$
+p(\theta) = \prod_{i=1}^n p_\theta(x_i | x_1, \cdots, x_{i-1})
+$$
+
+\item[-]
+VAE define the intractable density function with latent $\bz$:
+$$
+p(\theta) = \textcolor{red}{\int p_\theta(z) p_\theta(x|z) dz}
+$$
+\end{itemize}
+This cannot directly optimize, VAEs derive and optimize the {\em lower bound} 
+on likelihood instead.
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
@@ -576,6 +723,28 @@ AE 通过自监督的训练方式，
 \caption{Auto-Encoder}
 %\label{fig:label}
 \end{figure}
+
+Autoencoder (AE) encodes the inputs into latent representations $\bz$ with dimension reduction 
+to capture meaningful factors of variation in data. Then employ $\bz$ to reconstruct original 
+data by autoencoding itself.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{pix/dgm/Autoencoder.png}
+%\caption{Auto-Encoder}
+%\label{fig:label}
+\end{figure}
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+After training, throw away the decoder and {\bf only retain the encoder}.
+
+\item[-]
+Encoder can be used to initialize the supervised model on downstream tasks.
+\end{itemize}
 
 训练过程中加上一些扰动，就可以变成去噪自编码器（DAE）：
 
@@ -609,7 +778,7 @@ AE 通过自监督的训练方式，
 %+++++++++++++++++++++++++++++++++++++++++++
 \subsection{VAE}
 
-正是因为以上的这些原因，有大佬就对 AE 的隐藏层做了些改动，得到了 VAE。
+正是因为上面讨论过的那些原因，我们就需要对 AE 的隐藏层做些适当的改动，并进而形成所谓的 VAE。
 
 \begin{figure}[H]
 \centering
@@ -618,22 +787,18 @@ AE 通过自监督的训练方式，
 %\label{fig:label}
 \end{figure}
 
-VAE 将经过神经网络编码后的隐藏层假设为一个标准的高斯分布，然后再从这个分布中采样一个特征，
-再用这个特征进行解码，期望得到与原始输入相同的结果，损失和 AE 几乎一样，
-只是增加编码推断分布与标准高斯分布的 KL 散度的正则项，显然增加这个正则项的目的就是防止模型退化成普通的 AE，
-因为网络训练时为了尽量减小重构误差，必然使得方差逐渐被降到 0，这样便不再会有随机采样噪声，也就变成了普通的 AE。
+VAE 将输入和输出均看作是某个隐含变量 $\bz$（latent variable）的观测结果，输入和输出都是观测变量（observed 
+variable）的采样结果，二者相对于对隐含变量都服从 Gaussian Distribution，都被看成是从这个分布进行采样的结果。
+这样输入是一个采样，输出则是该采样通过神经网络解码的结果，目标函数是期望得到与输入相同的结果，损失函数几乎和 AE 一样，
+只是增加编码推断分布与标准高斯分布的 KL 散度的正则项。增加这个正则项的目的是防止模型退化成普通的 AE，
+这是因为网络优化过程中为了尽量减小重构误差，在训练过程中必然迫使方差逐渐被降到 0。
+从而会逐渐丧失采样的随机性，进而最终退化成普通的 AE。
 
-没错，我们先抛开变分，它就是这么简单的一个假设... 仔细想一下，就会觉得妙不可言。
-
-它妙就妙在它为每个输入 $\bx$, 生成了一个潜在概率分布 $p(\bx|\bz)$, 然后再从分布中进行随机采样，
+这里的重点是{\bf 采样}。其妙处是对每个输入 $\bx$, 对应一个概率分布 $p(\bx|\bz)$, 然后再从此分布中进行随机采样，
 从而得到了连续完整的潜在空间，解决了 AE 中无法用于生成的问题。
-《论语》有言：“举一隅，不以三隅反，则不复也。” ，给我的启发就是看事物应该不能只看表面，
-而应该了解其本质规律，从而可以灵活迁移到很多类似场景。聪明人学习当举一反三，那么聪明的神经网络，
-自然也不能只会怼训练数据。如果我们把原始输入 $\bx$ 看作是一个表面特征，而其潜在特征便是表面经过抽象之后的类特征，
-它将比表面特征更具备区分事物的能力，而 VAE 直接基于拟合了基于已知的潜在概率分布，
-可以说是进一步的掌握了事物的本质。就拿一个人的某个行为来说，我们不能单纯看行为本身，
-因为这个行为往往代表了他的综合特性，他从出生开始，因为遗传，后天教育和环境，决定了他在面对某种情形的情况下，
-高概率会产生这个行为，也就是说掌握了概率分布，就掌控了一切。
+这里的关键是把原始输入 $\bx$ 看作是一个表面观察特征（observed variable），而其对应的隐含特征（latent 
+variable）$\bz$ 是一种深层抽象，其比观察特征更具备区分能力。在下一子节\ref{subsection_vae_representation}中，
+我们将详细从理论上分析这种表示(representation)的细节。
 
 \begin{figure}[H]
 \centering
@@ -654,6 +819,7 @@ which are a powerful class of deep generative models with latent variables.
 
 %+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Representation}
+\label{subsection_vae_representation}
 
 Consider a directed, latent variable model as shown below.
 
@@ -663,12 +829,20 @@ Consider a directed, latent variable model as shown below.
 \caption{Graphical model for a directed, latent variable model.}
 %\label{fig:label}
 \end{figure}
-
+\noindent
 In the model above, $\bz$ and $\bx$ denote the latent and observed variables 
 respectively. The joint distribution expressed by this model is given as
 $$
 p_\theta(\bx, \bz) = p(\bx \giv \bz)p(\bz).
 $$
+
+\begin{emp_box}\noindent
+这里及后续要谈到的 representation 在数学上其实是最 cannonical 的表示，数学上有各种不同种类的表示，
+例如小波框架表示甚至都不是正交表示（其基非正交，意味着表示也非唯一）。
+显而易见的是这里的随机表示不是最恰当的数学表示方法。人类经常用类比来表达表示的方法，
+AI 的算法似乎应该借鉴人类的表示方式，采样更妥当的表示方法来更贴近人类大脑的处理方式。
+除了概率统计的方法，代数的方法、分析的方法都可以尝试一下。
+\end{emp_box}
 
 From a generative modeling perspective, this model describes a generative process for 
 the observed data $\bx$ using the following procedure
@@ -680,11 +854,20 @@ the observed data $\bx$ using the following procedure
 If one adopts the belief that the latent variables $\bz$ somehow encode semantically 
 meaningful information about $\bx$, it is natural to view this generative process as 
 first generating the "high-level" semantic information about $\bx$ first before fully 
-generating $\bx$. Such a perspective motivates generative models with rich latent 
+generating $\bx$. Such a perspective motivates 
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[(1)]
+generative models with rich latent 
 variable structures such as hierarchical generative models $p(\bx, \bz_1, \ldots, \bz_m) 
-= p(\bx \giv \bz_1)\prod_i p(\bz_i \giv \bz_{i+1})$---where information about $\bx$ 
-is generated hierarchically---and temporal models such as the Hidden Markov Model---where 
+= p(\bx \giv \bz_1)\prod_i p(\bz_i \giv \bz_{i+1})$ -- where information about $\bx$ 
+is generated hierarchically, and 
+\item[(2)]
+temporal models such as the Hidden Markov Model -- where 
 temporally-related high-level information is generated first before constructing $\bx$.
+\end{itemize}
 
 We now consider a family of distributions $\mathcal{P}_\bz$ where $p(\bz) \in \mathcal{P}_\bz$ describes 
 a probability distribution over $\bz$. Next, consider a family of conditional 
@@ -730,6 +913,8 @@ small, sub-sampled batches of $\D$.
 Representation (表示)的另一个说法是编码空间，不同的表示即选取不同的编码空间。
 下面我们再从编码空间的角度看看 representation 的问题，或许能增强形象的理解。
 {\bf 个人认为这里如果将编码空间叫做表示空间 (representation space) 似乎更恰当。}
+\textcolor{blue}{从数据集 $\D$ 到表示空间 $\R$ 的映射可以看作是某种有限秩算子，这样前提是原始的算子必须是紧算子，
+才可以用有限秩算子去逼近。文献中未见对该问题的仔细探究，我们有时间可以考虑一下该问题的恰当阐述方式。}
 
 假如每个样本都可以重构得很好，那么我们可以将 $\bz$ 当作是 $\bx$ 
 的等价表示，也就是说把 $\bz$ 研究好了就相当于把 $\bx$ 研究好了。现在我们将每个 $\bx$ 
@@ -824,6 +1009,35 @@ Mahananobis semi-normal 分布，消除相关性及重要性一致，偏置项�
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
+\subsection{采样重构与正则化}
+
+现在每个样本 $x$ 都对应一个“椭圆”，而确定一个“椭圆”需要两个信息：椭圆中心、椭圆轴长，
+它们各自构成一个向量，并且这个向量依赖于样本 $x$，我们将其记为 $\mu(x)$, $\sigma(x)$。
+既然整个椭圆都对应着样本 $x$，我们要求椭圆内任意一点都可以重构 $x$，所以训练目标为：
+$$
+\mu, \sigma, D = \argmin_{\mu, \sigma, D} \mathbb{E}_{x\sim D} \left[ 
+\| x - D(\mu(x) + \epsilon \otimes \sigma(x)) \|^2
+\right], \quad \epsilon \sim \mathcal{N}(0, 1)
+$$
+其中 $D$ 是训练数据，$\mathcal{N}(0, 1)$ 为标准正态分布，我们可以将它理解为一个单位圆，
+也就是说，我们先从单位圆内采样 $\epsilon$，然后通过平移缩放变换 $\mu(x) + \epsilon \otimes \sigma(x)$ 
+将其变为“中心为 $\mu(x)$、轴长为 $\sigma(x)$”的椭圆内的点，这个过程就是所谓的“重参数（Reparameterization）”。
+
+这里的 $\mu(x)$ 其实就对应于自编码器中的编码器 $E(x)$，$\sigma(x)$ 相当于它能泛化的范围。
+
+正则化的过程本质上就是消除维度间冗余及各维度权重统一化的过程，典型的做法是 Mahananobis 
+并加偏置来加强稳定性。
+
+最终的变分自编码器：
+\begin{align}
+\mu, \sigma, D = \argmin_{\mu, \sigma, D} \mathbb{E}_{x\sim D} \left[ 
+\| x - D(\mu(x) + \epsilon \otimes \sigma(x)) \|^2
++ \sum_{i=1}^d \frac{1}{2} \left(
+\mu_i^2(x) + \sigma_i^2(x) - \log\sigma_i^2(x) - 1
+\right) \right], \quad \epsilon \sim \mathcal{N}(0, 1)
+\end{align}
+
+%+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Learning Directed Latent Variable Models}
 
 One way to measure how closely $p(\bx, \bz)$ fits the observed dataset $\D$ is to 
@@ -858,6 +1072,13 @@ construct a lower bound that is more amenable to optimization. To do so, we note
 evaluating the marginal likelihood $p(\bx)$ is at least as difficult as as evaluating 
 the posterior $p(\bz \mid \bx)$ for any latent vector $\bz$ since by definition 
 $p(\bz \mid \bx) = p(\bx, \bz) / p(\bx)$. 
+
+\begin{emp_box}\noindent
+By now it seems that $p(\bz \mid \bx)$ and $p(\bx \mid \bz)$ are dual distributions, 
+$\P$ and $\Q$ are dual spaces. Can we employ Galerkin method to do all the analysis?
+更进一步，在非 VAE 的场景，似乎也有相应的问题，这里不过正好是自监督。非自监督的场景将是真正的对偶，
+测试空间与算子空间形成对偶。
+\end{emp_box}
 
 Next, we introduce a variational family $\Q$ of distributions that approximate the 
 true, but intractable posterior $p(\bz \mid \bx)$. Further henceforth, we will assume 
@@ -986,6 +1207,105 @@ lower variance and thus results in more stable training.
 Should we talk about that?}
 
 
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Parameterizing Distributions via Deep Neural Networks}
+
+So far, we have described $p_\theta(\bx, \bz)$ and $q_\lambda(\bz)$ in the abstract. To 
+instantiate these objects, we consider choices of parametric distributions for 
+$p_\theta(\bz)$, $p_\theta(\bx \giv \bz)$, and $q_\lambda(\bz)$. A popular choice for 
+$p_\theta(\bz)$ is the unit Gaussian
+\begin{align}
+p_\theta(\bz) = \Normal(\bz \giv \0, \I).
+\end{align}
+in which case $\theta$ is simply the empty set since the prior is a fixed distribution. 
+Another alternative often used in practice is a mixture of Gaussians with trainable mean 
+and covariance parameters. 
+
+The conditional distribution $p_\theta(\bx \giv \bz)$ is where we introduce a deep neural 
+network. We note that a conditional distribution can be constructed by defining a 
+distribution family (parameterized by $\omega \in \Omega$) in the target space $\bx$ (i.e. 
+$p_\omega(\bx)$ defines an unconditional distribution over $\bx$) and a mapping function 
+$g_\theta: \Z \to \Omega$. 
+
+It is natural to call $g_\theta$ the decoder that is parameterized by $\theta$. The act of 
+conditioning on $\bz$ is thus equivalent to using the choice of $\omega = g(\bz)$. 
+
+In other words, $g_\theta(\cdot)$ defines the conditional distribution
+\begin{align}
+    p_\theta(\bx \giv \bz) = p_\omega(\bx) \text{ , where } \omega = g_\theta(\bz).
+\end{align}
+The function $g_\theta$ is also referred to as the decoding distribution since it maps a 
+latent {\em code} $\bz$ to the parameters of a distribution over observed variables $\bx$. 
+In practice, it is typical to specify $g_\theta$ as a deep neural network.  
+
+The generative model $p_\theta(\bx, \bz)$ is called a {\em deep} generative model since we 
+will be using a neural network to instantiate the function $g_\theta$.
+
+In the case where $p_\theta(\bx \giv \bz)$ is a Gaussian distribution, we can thus 
+represent it as
+\begin{align}
+    p_\theta(\bx \giv \bz) = \Normal(\bx \giv \mu_\theta(\bz), \Sigma_\theta(\bz)),
+\end{align}
+where $\mu_\theta(\bz)$ and $\Sigma_\theta(\bz)$ are neural networks that specify the mean 
+and covariance matrix for the Gaussian distribution over $\bx$ when conditioned on $\bz$.
+
+Finally, the variational family for the proposal distribution $q_\lambda(\bz)$ needs to be 
+chosen judiciously so that the reparameterization trick is possible. Many continuous 
+distributions in the 
+\href{https://en.wikipedia.org/wiki/Location%E2%80%93scale_family}{location-scale family} 
+can be reparameterized. In practice, a popular choice is again the Gaussian distribution, 
+where
+\begin{align*}
+    \lambda &= (\mu, \Sigma) \\
+    q_\lambda(\bz) &= \Normal(\bz \giv \mu, \Sigma)\\
+    p(\veps) &= \Normal(\veps \giv \0, \I) \\
+    T(\veps; \lambda) &= \mu + \Sigma^{1/2}\veps,
+\end{align}
+where $\Sigma^{1/2}$ is the Cholesky decomposition of $\Sigma$. For simplicity, practitioners 
+often restrict $\Sigma$ to be a diagonal matrix (which restricts the distribution family to 
+that of factorized Gaussians).
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Amortized Variational Inference}
+
+A noticeable limitation of black-box variational inference is that {\bf Step 1} executes an 
+optimization subroutine that is computationally expensive. Recall that the goal of the {\bf 
+Step 1} is to find
+\begin{align}
+    \lambda^* = \argmax_{\lambda\in \Lambda} \ELBO(\bx; \theta, \lambda).
+\end{align}
+For a given choice of $\theta$, there is a well-defined mapping from $\bx \mapsto \lambda^\ast$. 
+A key realization is that this mapping can be {\em learned}. In particular, one can train an 
+encoding function (parameterized by $\phi$) $f_\phi: \X \to \Lambda$ 
+(where $\Lambda$ is the space of $\lambda$ parameters) 
+on the following objective
+\begin{align}
+    \max_{\phi } \sum_{\bx \in \D} \ELBO(\bx; \theta, f_\phi(\bx)).
+\end{align}
+It is worth noting at this point that $f_\phi(\bx)$ can be interpreted as defining the 
+conditional distribution $q_\phi(\bz \giv \bx)$. With a slight abuse of notation, we define
+\begin{align}
+    \ELBO(\bx; \theta, \phi) = \Expect_{q_\phi(\bz \mid \bx)} \left[\log \frac{p_\theta(\bx, \bz)}{q_\phi(\bz \giv \bx)}\right].
+\end{align}
+and rewrite the optimization problem as 
+\begin{align}
+    \max_{\phi } \sum_{\bx \in \D} \ELBO(\bx; \theta, \phi).
+\end{align}
+It is also worth noting that optimizing $\phi$ over the entire dataset as a {\em subroutine} 
+every time we sample a new mini-batch is clearly not reasonable. However, if we believe that 
+$f_\phi$ is capable of quickly adapting to a close-enough approximation of $\lambda^\ast$ 
+given the current choice of $\theta$, then we can interleave the optimization $\phi$ and 
+$\theta$. This yields the following procedure, where for each mini-batch 
+$\M = \set{\bx^{(1)}, \ldots, \bx^{(m)}}$, we perform the following two updates jointly
+\begin{align}
+    \phi &\gets \phi + \tilde{\nabla}_\phi \sum_{\bx \in \M} \ELBO(\bx; \theta, \phi) \\
+    \theta &\gets \theta + \tilde{\nabla}_\theta \sum_{\bx \in \M} \ELBO(\bx; \theta, \phi),
+\end{align}
+rather than running BBVI's {\bf Step 1} as a subroutine. By leveraging the learnability of 
+$\bx \mapsto \lambda^\ast$, this optimization procedure amortizes the cost of variational 
+inference. If one further chooses to define $f_\phi$ as a neural network, the result is the 
+variational autoencoder.
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
@@ -1122,4 +1442,34 @@ VAE 中使用神经网络来拟合高斯分布的想法独树一帜，对很多�
 \href{https://arxiv.org/pdf/1312.6114.pdf}{Auto-Encoding Variational Bayes}
 
 \href{}{Understanding Variational Autoencoders}
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{Application}
+%-------------------------------------------
+
+生成模型在很多领域都有着重要的应用。
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[-]
+可以很好地对使用一些高维的、复杂的概率分布的能力可以进行测试。因为我们经常用概率密度函数去建模一些数据。
+对于低维数据，可以用一些很好的分布去拟合它。但是对于高维分布，很难去回答究竟建模效果如何。
+比如对于图像数据我们设计一个模型并学习到了 $p(\bz)$ 的参数，那么 $p(\bz)$ 究竟对数据刻画有多好？
+一种测试方法是看它生成的图像到底怎么样，是不是像原始的图像。所以这是一个很好的测试方法。
+
+\item[-]
+在强化学习中，当环境发生变化之后，可以利用生成模型去生成预测。
+
+\item[-]
+在半监督学习中，我们有少量的带标签数据，但是有大量的无标签数据。要把半监督学习做好，
+就要刻画这些无标签的数据和有标签的数据在空间中是如何分布和生成的。
+
+\item[-]
+多模态输入以及现实的生成任务。比如说做一些艺术创作，我们需要生成一些现实的图像。
+这些现实图像又是多模态的，例如图像中不只有一种花，而是有好多种花。
+\end{itemize}
+
 
