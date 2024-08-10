@@ -184,9 +184,67 @@ $$
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
-\subsection{Lagrange乘数法的几何意义说明}
+\section{Vector Fields}
+%-------------------------------------------
+% https://tutorial.math.lamar.edu/Classes/CalcIII/CurlDivergence.aspx
 
-\begin{emp_box}
+In this section we are going to introduce the concepts of the gradient of a function, 
+the curl and the divergence of a vector field.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Hamilton operator}
+
+Let's start with the Hamiltonian. A symbolic first-order differential operator, used 
+for the notation of one of the principal differential operations of vector analysis. 
+In a rectangular Cartesian coordinate system $x=(x_1, \ldots, x_n)$ with unit vectors 
+$\be_1, \ldots, \be_n$, the Hamilton operator has the form
+\begin{align}\label{eq_Hamiltonian}
+\nabla = \sum_{j=1}^n \be_j\frac{\partial}{\partial x_j}
+\end{align}
+The Hamilton operator is also called the nabla operator, $\nabla$-operator, or Hamiltonian.
+
+The next topic that we want to briefly mention is the Laplace operator. Let's first 
+take a look at,
+$$
+{\mathop{\rm div}\nolimits} \left( {\nabla f} \right) 
+= \nabla \centerdot \nabla f = {f_{xx}} + {f_{yy}} + {f_{zz}}
+$$
+The Laplace operator is then defined as,
+$$
+{\nabla ^2} = \nabla \centerdot \nabla
+$$
+The Laplace operator arises naturally in many fields including heat transfer and fluid flow.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Gradient}
+
+The application of the Hamilton operator to a scalar function $f$, which is understood as 
+multiplication of the "vector" $\nabla$ by the scalar $f(x)$, yields the gradient of $f$:
+\begin{align}\label{eq:gradient_of_a_function}
+\operatorname{grad} f = \nabla f = \sum_{j=1}^n \be_j\frac{\partial f}{\partial x_j},\
+\end{align}
+i.e. the vector with components $(\partial f/ \partial x_1, \ldots, \partial f/\partial x_n)$. 
+{\bf The gradient of a scalar function is a vector fields}, 
+表示在空间某一位置沿某一坐标方向的变化量。如果要得到在特定方向 $\be_l$ (方向 $l$ 上的单位矢量)上的梯度，
+即方向导数，可以由矢量点乘的几何意义得到：
+$$
+\frac{df}{dl} = \nabla f \cdot \be_l = \| \nabla f \| \cos(\nabla f, \be_l)
+$$
+由此可见，当 $\cos(\nabla f, \be_l) = 1$，即空间任意方向 $l$ 与梯度方向一致时沿该方向具有最大梯度，
+因此 $\nabla f$ 代表了空间中任意点上梯度变化最大的方向与变化量，而且 $\nabla f$ 
+垂直于该点处的等值线或等值面。在下面的 Lagrange 乘数法的几何解释中我们将用到这一点。
+
+The scalar square of the Hamilton operator yields the Laplace operator:
+$$
+\Delta = \nabla \cdot \nabla = \sum_{j=1}^n \frac{\partial^2}{\partial x_j^2}.
+$$
+
+
+\subsubsection{Lagrange乘数法的几何意义说明}
+
+\begin{emp_box}\noindent
 {\bf Lagrange乘数法：}
 \begin{align*}
 &\max f(x,y) \\
@@ -221,12 +279,81 @@ $g(x,y)$（在黄线上）。
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
-\subsection{Curl And Divergence}
-% https://tutorial.math.lamar.edu/Classes/CalcIII/CurlDivergence.aspx
+\subsection{Divergence}
 
-In this section we are going to introduce the concepts of the curl and the divergence of a vector.
+Now let's talk about the second new concept in this section. The vector product of 
+$\nabla$ with the vectors $\ba = (a_1, \ldots, a_n)$ yields the divergence of $\ba$:
+\begin{align}\label{eq_vector_divergence}
+{\mathop{\rm div}\nolimits}\ \ba = \nabla\cdot \ba = \sum_{j=1}^n\frac{\partial a_j}{\partial x_j}
+\end{align}
+\noindent
+If $n=3$, given the vector field
+$\vec F = P\,\vec i + Q\,\vec j + R\,\vec k$ the divergence is as,
+$$
+{\mathop{\rm div}\nolimits} \vec F = \frac{{\partial P}}{{\partial x}} + 
+\frac{{\partial Q}}{{\partial y}} + \frac{{\partial R}}{{\partial z}}
+$$
+可以看出矢量的散度是一个标量，表示空间中某一区域流入或流出的矢量的多少。
+A source vertex is a vertex with indegree zero, while a sink vertex is a vertex with 
+outdegree zero.
+比较典型的例子有点源或者点汇。如下图是一个点汇，周围的矢量均流向该点。
 
-Let's start with the curl. Given the vector field $\vec F = P\,\vec i + Q\,\vec j + R\,\vec k$ 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{pix/appendix/sink_vertex.jpg}
+\caption{Vector fields around a sink vertex(with curl $0$).}
+%\label{fig:dp_gambler_statelist}
+\end{figure}
+
+散度就是作用在向量场上的算子。它把向量场映射到标量场。其中某点的标量代表该点的向量是“流入”的，还是“流出”的。
+在流体力学中，散度指流体运动时单位体积的改变率。
+比如在游泳池中考虑一个封闭的正方体区域，在该区域的六个表面中，要么有液体流出，要么有液体流入。
+设流出为正，流入为负，把六个面的流量相加，如果为正，则代表该区域有正的散度。反之则是负的散度。
+这就是散度界定中“通量”的概念。
+
+如果取一个任意的封闭曲面，则它的通量为曲面表面的向量场在曲面法向量上的分量的积分。
+假如该封闭曲面的体积无限小，则极限是曲面内某一点，这个极限通量就是散度。
+从这个角度说，前文中的“流入”(散度小于零)表示了通量的湮灭，而“流出”(散度大于零)表示了该区域有新的通量产生。
+
+There is also a definition of the divergence in terms of the $\nabla$ operator. The divergence 
+can be defined in terms of the following dot product.
+$$
+{\mathop{\rm div}\nolimits} \vec F = \nabla \centerdot \vec F
+$$
+
+\begin{example}
+Compute $\vec F = {x^2}y\,\vec i + xyz\,\vec j - {x^2}{y^2}\,\vec k$
+\end{example}
+\noindent{\bf Solution}
+
+There really isn't much to do here other than compute the divergence.
+$$
+{\mathop{\rm div}\nolimits} \vec F = \frac{\partial }{{\partial x}}\left( {{x^2}y} \right) 
++ \frac{\partial }{{\partial y}}\left( {xyz} \right) 
++ \frac{\partial }{{\partial z}}\left( { - {x^2}{y^2}} \right) = 2xy + xz
+$$
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Curl}
+
+Now let's talk about the curl. The vector product of $\nabla$ with the vectors 
+$\ba_j = (a_{j1}, \ldots, a_{jn})$, $j=1, \ldots, n-2$, yields the curl 
+(rotation, abbreviated by rot) of the fields $\ba_1, \ldots, \ba_{n-2}$, 
+i.e. the vector
+\begin{align}\label{eq_curl_n}
+[\nabla, \ba_1, \ldots, \ba_{n-2}] = 
+\left| {\begin{array}{*{20}{c}}
+{\be_1} & {\be_2} & {\ldots} & {\be_n} \\
+{\frac{\partial }{\partial x_1}} & {\frac{\partial }{\partial x_2}} 
+& {\ldots} & {\frac{\partial }{\partial x_n}} \\
+{a_{11}} & {a_{12}} & {\ldots} & {a_{1n}} \\
+{\vdots} & {\vdots} & {\ddots} & {\vdots} \\
+{a_{n-2,1}} & {a_{n-2,2}} & {\ldots} & {a_{n-2,n}}
+\end{array}} \right|
+\end{align}
+\noindent
+If $n=3$, given the vector field $\vec F = P\,\vec i + Q\,\vec j + R\,\vec k$ 
 the curl is defined to be,
 $$
 {\mathop{\rm curl}\nolimits} \vec F = \left( {{R_y} - {Q_z}} \right)\vec i + 
@@ -234,7 +361,8 @@ $$
 $$
 
 There is another (potentially) easier definition of the curl of a vector field. To use it we will 
-first need to define the $\nabla$ {\em operator}. This is defined to be,
+need the $\nabla$ {\em operator} define in eq.(\ref{eq_Hamiltonian}). In the case of 3 
+dimensional space, the hamilton operator is as,
 $$
 \nabla  = \frac{\partial }{{\partial x}}\,\,\vec i 
 + \frac{\partial }{{\partial y}}\,\,\vec j 
@@ -280,6 +408,14 @@ partial derivative and ${\mathop{\rm curl}\nolimits} \vec F = \vec 0$ then $\vec
 conservative vector field. This is not so easy to verify and so we won't try.
 \end{itemize}
 
+一个典型的有旋流场是点涡(vortex)，如下图所示，它展示了一个散度为 0 的有旋矢量场。
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{pix/appendix/vortex.jpg}
+\caption{Vector fields around a vortex(with div $0$).}
+%\label{fig:dp_gambler_statelist}
+\end{figure}
+
 \begin{example}
 Determine if $\vec F = {x^2}y\,\vec i + xyz\,\vec j - {x^2}{y^2}\,\vec k$ is a conservative 
 vector field
@@ -301,31 +437,6 @@ is the velocity field of a flowing fluid. Then ${\mathop{\rm curl}\nolimits} \ve
 represents the tendency of particles at the point $(x,y,z)$ to rotate about the axis that 
 points in the direction of ${\mathop{\rm curl}\nolimits} \vec F$. if 
 ${\mathop{\rm curl}\nolimits} \vec F = \vec 0$ then the fluid is called irrotational.
-
-Let's now talk about the second new concept in this section. Given the vector field
-$\vec F = P\,\vec i + Q\,\vec j + R\,\vec k$ the divergence is defined to be,
-$$
-{\mathop{\rm div}\nolimits} \vec F = \frac{{\partial P}}{{\partial x}} + 
-\frac{{\partial Q}}{{\partial y}} + \frac{{\partial R}}{{\partial z}}
-$$
-
-There is also a definition of the divergence in terms of the $\nabla$ operator. The divergence 
-can be defined in terms of the following dot product.
-$$
-{\mathop{\rm div}\nolimits} \vec F = \nabla \centerdot \vec F
-$$
-
-\begin{example}
-Compute $\vec F = {x^2}y\,\vec i + xyz\,\vec j - {x^2}{y^2}\,\vec k$
-\end{example}
-\noindent{\bf Solution}
-
-There really isn't much to do here other than compute the divergence.
-$$
-{\mathop{\rm div}\nolimits} \vec F = \frac{\partial }{{\partial x}}\left( {{x^2}y} \right) 
-+ \frac{\partial }{{\partial y}}\left( {xyz} \right) 
-+ \frac{\partial }{{\partial z}}\left( { - {x^2}{y^2}} \right) = 2xy + xz
-$$
 
 \begin{emp_box}
 We also have the following fact about the relationship between the curl and the divergence.
@@ -366,17 +477,28 @@ $(x,y,z)$ per unit volume. This can also be thought of as the tendency of a flui
 diverge from a point. If ${\mathop{\rm div}\nolimits} \vec F = 0$ then the $\vec F$ 
 is called incompressible.
 
-The next topic that we want to briefly mention is the Laplace operator. Let's first 
-take a look at,
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Gradient, Curl And Divergence}
+
+The following relations are valid:
 $$
-{\mathop{\rm div}\nolimits} \left( {\nabla f} \right) 
-= \nabla \centerdot \nabla f = {f_{xx}} + {f_{yy}} + {f_{zz}}
+[\nabla, \nabla\phi] = {\mathop{\rm rot}\nolimits}\, {\mathop{\rm grad}\nolimits}\phi = 0,
 $$
-The Laplace operator is then defined as,
 $$
-{\nabla ^2} = \nabla \centerdot \nabla
+\nabla\cdot\nabla\, \ba = {\mathop{\rm grad}\nolimits}\, {\mathop{\rm div}\nolimits}\, \ba, \ 
+\nabla[\nabla, \ba] = {\mathop{\rm div}\nolimits}\, {\mathop{\rm rot}\nolimits}\, \ba = 0,
 $$
-The Laplace operator arises naturally in many fields including heat transfer and fluid flow.
+$$
+\left[\nabla, [\nabla, \ba]\right] = {\mathop{\rm rot}\nolimits}\, {\mathop{\rm rot}\nolimits}\, 
+\ba, \ \Delta\phi = \nabla\cdot(\nabla\, \phi) = {\mathop{\rm div}\nolimits}\, 
+{\mathop{\rm grad}\nolimits}\, \phi,
+$$
+
+旋度的运算结果仍然是一个向量，散度把向量场映射到标量场。
+旋度表示了某个局部微元上的旋转倾向，散度则界定流量的“通量”。
+举例来说，把北极圈看作一个极小的局部对象讨论，一个沿着纬度方向的向量场会造成旋度而散度为零；
+沿着经度方向的向量场会造成散度而旋度为零。
 
 The final topic in this section is to give two vector forms of Green's Theorem. The 
 first form uses the curl of the vector field and is,
@@ -423,13 +545,14 @@ The vector form of Green's Theorem that uses the divergence is given by,
 \centerline{The objective of life is just to minimize a KL objective.}
 \end{emp_box}
 
+KL-Divergence is something that allows us to measure {\em how far two distributions are apart}. 
 Here in this section we talk about the {\bf Kullback-Leibler Divergence} from a holistic 
 perspective of reinforcement learning and machine learning. Put simply, the KL divergence 
 between two probability distributions measures how different the two distributions are.
-KL 距离，是Kullback-Leibler差异（Kullback-Leibler Divergence）的简称，
-也叫做相对熵（Relative Entropy）。它衡量的是相同事件空间里的两个概率分布的差异情况。
-并不是一种距离度量方式，其物理意义是：在相同事件空间里，概率分布$p(x)$对应的每个事件，
-若用概率分布$q(x)$编码时，平均每个基本事件（符号）编码长度增加了多少比特。
+Kullback-Leibler Divergence is also called as {\bf relative entropy}. 
+它衡量的是{\bf 相同事件空间里}的两个概率分布的差异情况。
+It's not a distance metric. 其物理意义是：在相同事件空间里，概率分布 $p(x)$ 对应的每个事件，
+若用概率分布 $q(x)$ 编码时，平均每个基本事件（符号）编码长度增加了多少比特。
 \begin{emp_box}\noindent
 Both the problems of supervised learning and reinforcement learning are simply minimizing 
 the KL divergence objective
@@ -454,14 +577,31 @@ D(p\|q)
 \label{Kullback-Leibler_Divergence_expec}\\
 &= H(p,q) - H(p) \notag \\
 &= \sum p(x)\log q(x) + \sum p(x) \log p(x) \notag \\
-&= -\sum_{x\in X} p(x)\log\frac{q(x)}{p(x)} \notag \\
+&= -\sum_{x\in X} p(x)\log\frac{q(x)}{p(x)} \label{KL_q_over_p} \\
 &= \sum_{x\in X} p(x)\log\frac{p(x)}{q(x)}\label{Kullback-Leibler_Divergence}
 \end{align}
+Where the “$\|$” operator indicates “divergence” or $p$'s divergence from $q$.
+
+In eq.(\ref{KL_q_over_p}) KL divergence is calculated as the negative sum of 
+probability of each event in $p$ multiplied by the log of the probability of 
+the event in $q$ over the probability of the event in $p$.
+The value within the sum is {\bf the divergence for a given event}.
+
+This is the same as in equation (\ref{Kullback-Leibler_Divergence}), where it 
+is calculated as the positive sum of probability of each event in $p$ multiplied 
+by the log of the probability of the event in $p$ over the probability of the 
+event in $q$ (e.g. the terms in the fraction are flipped). This is the more 
+common implementation used in practice.
+
+\noindent
 【{\bf 注记}】
 
 There are some immediate notes that are worth pointing out about this definition.
-若 $p$ 表示样本的真实分布，$q$ 表示模型所预测的分布，那么 KL 散度就可以计算两个分布的差异，
-也就是 Loss 损失值。$q$ 的分布越接近 $p$（$q$ 分布越拟合 $p$），那么散度值越小，即损失值越小。
+Suppose there is some true distribution $p(x)$; we'd like to estimate with an 
+approximate distribution $q(x)$. In this context, the KL divergence measures the 
+distance from the approximate distribution $q$ to the true distribution $p$.
+那么 KL 散度就可以计算两个分布的差异，也就是 Loss 损失值。$q$ 的分布越接近 $p$（$q$ 
+分布越拟合 $p$），那么散度值越小，即损失值越小。
 ~\\	%一行空白
 
 有时会将KL散度称为KL距离，但它并不满足距离的性质(下面的4及5)。
@@ -522,9 +662,9 @@ convexity - concave:
 \item[7.]
 {\bf Rewriting the Objective:} With some algebra, we can manipulate the definition of KL 
 divergence in terms of other quantities. The most useful such manipulation is:
-$$
+\begin{align}\label{eq_KL_divergence_n_cross_entropy}
 D_{KL}(p \| q) = \mathbb{E}_{x \sim p}[-\log q(x)] - \mathcal{H}(p(x))
-$$
+\end{align}
 Here, $\mathbb{E}_{x \sim p}[-\log q(x)]$ is the cross entropy between $p$ and $q$ (and 
 denoted $H(p,q)$). The second term $\mathcal{H}(p(x))=\mathbb{E}_{x \sim p}[-\log p(x)]$ 
 is the entropy of $p$.
@@ -752,7 +892,38 @@ the field using KL divergences right now are VAEs and information bottlenecks.
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
-\subsection{用途及实例}
+\subsection{Uses of KL-Divergence}
+
+KL Divergence keeps track of reality by helping the user in identifying the differences 
+in data distributions. Since the data handles are usually large in machine learning 
+applications, KL divergence can be thought of as a diagnostic tool, which helps gain 
+insights on which probability distribution works better and how far a model is from its 
+target.
+
+The intuition for the KL divergence score is that when the probability for an event 
+from $P$ is large, but the probability for the same event in $Q$ is small, there is a 
+large divergence. When the probability from $P$ is small and the probability from $Q$ 
+is large, there is also a large divergence, but not as large as the first case.
+
+It can be used to measure the divergence between discrete and continuous probability 
+distributions, wherein the latter case the integral of the events is calculated instead 
+of the sum of the probabilities of the discrete events.
+
+It is also used to measure the dissimilarity between two probabilities. If we are 
+attempting to approximate an unknown probability distribution, then the target 
+probability distribution from data is $P$ and $Q$ is our approximation of the 
+distribution.
+
+In this case, the KL divergence summarizes the number of additional bits (i.e. 
+calculated with the base-2 logarithm) required to represent an event from the random 
+variable. The better our approximation, the less additional information is required.
+
+The KL divergence is the average number of extra bits needed to encode the data because 
+we used distribution $q$ to encode the data instead of the true distribution $p$.
+
+Well, we can use KL-Divergence as a {\bf loss function} or {\bf something to optimize} 
+strive to get get to a minimum value to zero which is a perfect model the closely 
+related magic cross-entropy s used to accomplish just that ... So how are two related ?
 
 {\bf 几个用途：}
 
@@ -802,6 +973,56 @@ KL(A\paralle C) &= 1/2 \log\frac{1/2}{1/8} + 1/2 \long\frac{1/2}{7/8} = 1/2\log(
 从分布上也可以看出，实际上$B$要比$C$更接近真实分布（因为其与$A$分布的相对熵更小）。
 \end{example}
 
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{KL-Divergence vs Cross-Entropy vs Jensen–Shannon Divergence}
+
+From eq. (\ref{eq_KL_divergence_n_cross_entropy}) we know the relationship between 
+KL-Divergence and Cross-Entropy, where what we do is to take the log and split it into 
+subtraction and get the below two terms(marked as red), and we can see that the 
+negative part is the cross-entropy.
+\begin{align}
+D_{KL}(p \| q) &= \textcolor{magenta}{\mathbb{E}_{x \sim p}[-\log q(x)] \textcolor{red}{-} \mathcal{H}(p(x))} \\
+&= H(p,q) - \mathcal{H}(p(x))
+\end{align}
+
+It's simply the definition of the cross-entropy between the two distributions $p$ and 
+$q$ and then the 2nd part is the negative of the entropy of the real distribution, so 
+it doesn't change and doesn't depend on our model parameters or network weighs Omega 
+at all, so if we are interested in learning the optimal Omega which only appears in 
+the first term this constant can be ignored, as depicted below
+\begin{align*}
+D_{KL}(p \| q) = H(p,q) - \xcancel{\mathcal{H}(p(x))}
+\end{align}
+And so we are just left with the cross-entropy so we can see that if we want to minimize 
+the KL-Divergence between the real world distribution and the estimated distribution with 
+parameters omega then this would be equivalent to simply minimizing the cross-entropy 
+between the two.
+
+Now if the optimal Omega would be the same why do we always use cross-entropy when 
+training neural nets, well one reason would avoid the division operation inside the log 
+which is computationally expensive or just overall computing redundant terms like that 
+constant so because the minimization will produce the same Omega we can choose to use 
+cross-entropy but notice that if we are interested in the value of KL-Divergence itself 
+then this would not be the same as cross-entropy.
+
+Now, we can see that:
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+KL (Kullback–Leibler) Divergence measures how one probability distribution $p$ diverges 
+from a second expected probability distribution $q$.
+
+\item[2.]
+Jensen–Shannon Divergence is another measure of similarity between two probability 
+distributions, bounded by [0, 1]. JS divergence is symmetric and more smooth.
+
+\item[3.]
+Jensen-Shannon divergence extends KL divergence to calculate a symmetrical score and 
+distance measure of one probability distribution from another.
+\end{itemize}
 
 
 %+++++++++++++++++++++++++++++++++++++++++++

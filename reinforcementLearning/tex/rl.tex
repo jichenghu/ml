@@ -138,6 +138,9 @@ sorting=ynt
 
 \begin{document}
 
+\def\allfiles{}
+\newcommand\diskName{F} }
+
 \frontmatter	% 前言部分，页码为小写罗马字母格式；其后的\chapter 不编号。
 
 %\setcounter{secnumdepth}{3}		%增加编号深度
@@ -152,101 +155,105 @@ sorting=ynt
 
 \setcounter{page}{1}
 
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{front.tex}
-
-\def\allfiles{}
+%\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{front.tex}
 
 % basic knowledge
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{rl_basic.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{rl_basic.tex}
 \fi
 
 % q-learning
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{q_learning.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{q_learning.tex}
 \fi
 
 % Markov Decision Processes
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{mdp.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{mdp.tex}
 \fi
 
 % policy
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{policy.tex}
 \fi
 
 % Boltzmann Machines
 \ifx\allfiles\undefined
-\import{D:/mygit/ml/reinforcementLearning/tex/}{bm.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{bm.tex}
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{bm.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{bm.tex}
 \fi
 
 % variational inference
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{variational_inference.tex}
 \fi
 
 % dgm
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{deep_generative_models.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{deep_generative_models.tex}
 \fi
 
 % variational method
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{variational_method.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{variational_method.tex}
 \fi
 
 % entropy
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{entropy.tex}
 \fi
 
 % td3
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{td3.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{td3.tex}
 \fi
 
 % SAC
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{sac.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{sac.tex}
+\fi
+
+% RAG
+\ifx\allfiles\undefined
+\else
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{rag.tex}
 \fi
 
 % 逆强化学习
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{inverse_rl.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{inverse_rl.tex}
 \fi
 
 % homotopy group
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{homotopy.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{homotopy.tex}
 \fi
 
 % 框架代码
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/}{framework.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{framework.tex}
 \fi
 
 % topics
 \ifx\allfiles\undefined
 \else
-\import{D:/mygit/ml/reinforcementLearning/tex/topics/}{functionApproximator.tex}
-\import{D:/mygit/ml/reinforcementLearning/tex/topics/}{clarify.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/topics/}{functionApproximator.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/topics/}{clarify.tex}
 \fi
 
 % 附录
@@ -254,16 +261,16 @@ sorting=ynt
 \else
 \chapter{附录}
 % 附件内容：最大熵
-\import{D:/mygit/ml/reinforcementLearning/tex/}{appendix_entropy_max.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{appendix_entropy_max.tex}
 % 附件内容：dynamic programming
-\import{D:/mygit/ml/reinforcementLearning/tex/}{appendix_dp.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{appendix_dp.tex}
 % 附件内容：Temporal-Difference
-\import{D:/mygit/ml/reinforcementLearning/tex/}{appendix_td.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{appendix_td.tex}
 % 附件内容：Probabilistic PCA
-\import{D:/mygit/ml/reinforcementLearning/tex/}{appendix_pca.tex}
+\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{appendix_pca.tex}
 \fi
 
-%\import{D:/mygit/ml/reinforcementLearning/tex/}{back.tex}
+%\import{\diskName:/mygit/ml/reinforcementLearning/tex/}{back.tex}
 
 \printbibliography
 

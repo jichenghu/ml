@@ -8,8 +8,10 @@
 \newcommand{\X}{\mathcal{X}}
 \newcommand{\Z}{\mathcal{Z}}
 \newcommand{\Q}{\mathcal{Q}}
+\newcommand{\ba}{\mathbf{a}}
 \newcommand{\bb}{\mathbf{b}}
 \newcommand{\bc}{\mathbf{c}}
+\newcommand{\be}{\mathbf{e}}
 \newcommand{\bh}{\mathbf{h}}
 \newcommand{\bv}{\mathbf{v}}
 \newcommand{\bx}{\mathbf{x}}
@@ -31,10 +33,96 @@
 \chapter{Deep Generative Models}
 \setcounter{section}{-1}
 
+% https://ychai.uk/notes/2019/12/17/Generative/Likelihood-based-autoregressive-models/
+% https://analyticsindiamag.com/7-types-of-generative-models-for-your-next-machine-learning-project/
+
+{\bf Unsupervised learning} can be used to capture rich patterns in raw data with deep 
+networks in a {\bf label-free} way.
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+Generative models: recreate raw data distribution
+
+\item
+Goal: learn some underlying hidden structure of the data
+
+\item
+Self-supervised learning: “puzzle” tasks that require semantic understanding to improve 
+downstream tasks.
+
+\item
+Examples: clustering , dimensionality reduction, compression, feature learning, density 
+estimation
+\end{itemize}
+
+Main generative models:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+Autoregressive
+\item
+Normalizing flow
+\item
+Variational Autoencoder
+\item
+Generative Adversarial Networks
+\end{itemize}
+
+Real applications:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+generating data: synthesizing images, videos, speech, texts
+\item
+compressing data: constructing efficient codes
+\item
+anomaly detection
+\end{itemize}
+
+Likelihood-based models:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+estimate from samples
+\end{itemize}
+
+Given a dataset , find $\theta$ by solving the optimization problem:
+
+which is equivalent to minimizing KL divergence between the empirical data distribution 
+and the model:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+MLE + SGD
+
+\item
+$p_\theta \rightarrow$ NN
+\end{itemize}
+
+
 %+++++++++++++++++++++++++++++++++++++++++++
 \section{Overview}
 %-------------------------------------------
 % https://deepgenerativemodels.github.io/
+
+A generative model can be broadly defined as follows:
+{\em A generative model describes how a dataset is generated, in terms of a probabilistic 
+model. By sampling from this model, we are able to generate new data.}
 
 Generative models are widely used in many subfields of AI and Machine Learning. Recent 
 advances in parameterizing these models using deep neural networks, combined with 
@@ -392,6 +480,25 @@ $$
 %+++++++++++++++++++++++++++++++++++++++++++
 \section{Autoregressive Models}
 %-------------------------------------------
+% 未完成阅读的 post, 该 post 总结得非常好，日后有时间再阅读综合
+% https://ychai.uk/notes/2019/12/17/Generative/Likelihood-based-autoregressive-models/
+
+Autoregressive (AR) models share parameters among conditional distributions:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+RNNs
+
+\item[2.]
+Masking convolutions \& attentions
+\end{itemize}
+The AR property is that each output only dependes on the previous input units , but not 
+on the future:
+
+AR models can only model {\bf discrete data}.
 
 We begin our study into generative modeling with autoregressive models. As before, 
 we assume we are given access to a dataset $\mathcal{D}$ of $n$-dimensional 
@@ -678,11 +785,314 @@ variational autoencoders) which explicitly learn latent representations of the d
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
+\section{Gaussian mixture models}
+%-------------------------------------------
+% https://scikit-learn.org/stable/modules/mixture.html
+% https://brilliant.org/wiki/gaussian-mixture-model/
+
+In statistics, a mixture model is a probabilistic model for representing the presence 
+of subpopulations within an overall population, without requiring that an observed data 
+set should identify the sub-population to which an individual observation belongs. 
+Formally a mixture model corresponds to the mixture distribution that represents the 
+probability distribution of observations in the overall population. However, while 
+problems associated with "mixture distributions" relate to deriving the properties of 
+the overall population from those of the sub-populations, "mixture models" are used to 
+make statistical inferences about the properties of the sub-populations given only 
+observations on the pooled population, without sub-population identity information.
+
+A Gaussian mixture model is a probabilistic model that assumes all the data points are 
+generated from a mixture of a finite number of Gaussian distributions with unknown 
+parameters. One can think of mixture models as generalizing $k$-means clustering to 
+incorporate information about the covariance structure of the data as well as the 
+centers of the latent Gaussians.
+
+Gaussian mixture models are a probabilistic model for representing normally distributed 
+subpopulations within an overall population. Mixture models in general don't require 
+knowing which subpopulation a data point belongs to, allowing the model to learn the 
+subpopulations automatically. Since subpopulation assignment is not known, this 
+constitutes a form of unsupervised learning.
+
+For example, in modeling human height data, height is typically modeled as a normal 
+distribution for each gender with a mean of approximately 5'10" for males and 5'5" 
+for females. Given only the height data and not the gender assignments for each data 
+point, the distribution of all heights would follow the sum of two scaled (different 
+variance) and shifted (different mean) normal distributions. A model making this 
+assumption is an example of a Gaussian mixture model (GMM), though in general a GMM 
+may have more than two components. Estimating the parameters of the individual normal 
+distribution components is a canonical problem in modeling data with GMMs.
+
+GMMs have been used for feature extraction from speech data, and have also been used 
+extensively in object tracking of multiple objects, where the number of mixture 
+components and their means predict object locations at each frame in a video sequence.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Motivation}
+
+One hint that data might follow a mixture model is that the data looks multimodal, 
+i.e. there is more than one "peak" in the distribution of data. Trying to fit a 
+multimodal distribution with a unimodal (one "peak") model will generally give a poor 
+fit, as shown in the example below. Since many simple distributions are unimodal, an 
+obvious way to model a multimodal distribution would be to assume that it is generated 
+by multiple unimodal distributions. For several theoretical reasons, the most commonly 
+used distribution in modeling real-world unimodal data is the Gaussian distribution. 
+Thus, modeling multimodal data as a mixture of many unimodal Gaussian distributions 
+makes intuitive sense. Furthermore, GMMs maintain many of the theoretical and 
+computational benefits of Gaussian models, making them practical for efficiently 
+modeling very large datasets.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{pix/dgm/gaussianmixture.png}
+\caption{(Left) Fit with one Gaussian distribution (Right) Fit with Gaussian mixture 
+model with two components}
+\label{fig:vae_gaussian_mixture}
+\end{figure}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{The Model}
+
+A Gaussian mixture model is parameterized by two types of values, the mixture {\bf 
+component weights} and the component {\bf means} and {\bf variances/covariances}. For 
+a Gaussian mixture model with $K$ components, the $k^\text{th}$ component has a mean 
+of $\mu_k$ and variance of $\sigma_k$ for the {\em univariate case} and a mean of 
+$\vec{\mu}_k$ and covariance matrix of $\Sigma_k$ for the multivariate case. The 
+mixture component weights are defined as $\phi_k$ for component $C_k$, with the 
+constraint that $\sum_{i=1}^K\phi_i = 1$ so that the total probability distribution 
+normalizes to $1$. If the component weights aren't learned, they can be viewed as an 
+a-priori distribution over components such that $p(x \text{ generated by component } 
+C_k) = \phi_k$. If they are instead learned, they are the a-posteriori estimates of 
+the component probabilities given the data.
+
+Multi-dimensional Model
+
+\begin{align}
+p(\vec{x}) &= \sum_{i=1}^K\phi_i \mathcal{N}(\vec{x} \;|\; \vec{\mu}_i, \Sigma_i) \\ 
+\mathcal{N}(\vec{x} \;|\; \vec{\mu}_i, \Sigma_i) &= \frac{1}{\sqrt{(2\pi)^K|\Sigma_i|}} 
+\exp\left(-\frac{1}{2}(\vec{x}-\vec{\mu}_i)^\mathrm{T}{\Sigma_i}^{-1}(\vec{x}-\vec{\mu}_i)\right) \\ 
+\sum_{i=1}^K\phi_i &= 1 
+\end{align}
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Learning the Model}
+
+If the number of components $K$ is known, expectation maximization is the technique 
+most commonly used to estimate the mixture model's parameters. In frequentist probability 
+theory, models are typically learned by using maximum likelihood estimation techniques, 
+which seek to maximize the probability, or likelihood, of the observed data given the 
+model parameters. Unfortunately, finding the maximum likelihood solution for mixture 
+models by differentiating the log likelihood and solving for $0$ is usually analytically 
+impossible.
+
+Expectation maximization ({\bf EM}) is a numerical technique for maximum likelihood estimation, 
+and is usually used when closed form expressions for updating the model parameters can be 
+calculated (which will be shown below). Expectation maximization is an iterative 
+algorithm and has the convenient property that the maximum likelihood of the data strictly 
+increases with each subsequent iteration, meaning it is guaranteed to approach a local 
+maximum or saddle point.
+
+
+\subsubsection{EM for Gaussian Mixture Models}
+
+Expectation maximization for mixture models consists of two steps.
+
+The first step, known as the {\bf expectation} step or {\bf E} step, consists of 
+calculating the expectation of the component assignments $C_k$ for each data point 
+$x_i \in X$ given the model parameters $\phi_k$, $\mu_k$, and $\sigma_k$.
+
+The second step is known as the {\bf maximization} step or {\bf M} step, which consists 
+of maximizing the expectations calculated in the {\bf E} step with respect to the model 
+parameters. This step consists of updating the values $\phi_k$, $\mu_k$, and $\sigma_k$. 
+The entire iterative process repeats until the algorithm converges, giving a maximum 
+likelihood estimate. Intuitively, the algorithm works because knowing the component 
+assignment $C_k$ for each $x_i$ makes solving for $\phi_k$, $\mu_k$, and $\sigma_k$ 
+easy, while knowing $\phi_k$, $\mu_k$, and $\sigma_k$ makes inferring $p(C_k|x_i)$ easy. 
+The expectation step corresponds to the latter case while the maximization step 
+corresponds to the former. Thus, by alternating between which values are assumed fixed, 
+or known, maximum likelihood estimates of the non-fixed values can be calculated in an 
+efficient manner.
+
+
+\subsubsection{Algorithm for Univariate Gaussian Mixture Models}
+
+The expectation maximization algorithm for Gaussian mixture models starts with an 
+initialization step, which assigns model parameters to reasonable values based on the 
+data. Then, the model iterates over the expectation $E$ and maximization $M$ steps until 
+the parameters' estimates converge, i.e. for all parameters $\theta_t$ at iteration $t$, 
+$|\theta_{t}-\theta_{t-1}| \le \epsilon∣$ for some user-defined tolerance $\epsilon$. 
+A graphic of the EM algorithm in action for a two-component, bivariate Gaussian mixture 
+model is displayed below.
+
+\begin{figure}[H]
+\centering
+%\includegraphics[scale=0.3]{pix/dgm/em_clustering_of_old_faithful_data.gif}
+\includegraphics[scale=0.618]{pix/dgm/em_clustering_of_old_faithful_data.png}
+\caption{The EM algorithm updating the parameters of a two-component bivariate Gaussian 
+mixture model.}
+\label{fig:em_clustering_of_old_faithful_data}
+\end{figure}
+上面动图的出处参见 \footnote{C. EM\_Clustering\_of\_Old\_Faithful\_data. Retrieved August 1, 2012, 
+from \url{https://commons.wikimedia.org/wiki/File:EM_Clustering_of_Old_Faithful_data.gif}}.
+
+The EM algorithm for a univariate Gaussian mixture model with $K$ components is described 
+below. A variable denoted $\hat{\theta}$ denotes an estimate for the value $\theta$. All 
+equations can be derived algebraically by solving for each parameter as outlined in the 
+section above titled EM for Gaussian Mixture Models.
+
+Initialization Step:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+Randomly assign samples without replacement from the dataset $X=\{x_1, ..., x_N\}$ to the 
+component mean estimates $\hat{\mu}_1, ..., \hat{\mu}_K$. E.g. for $K=3$ and $N=100$, set 
+$\hat{\mu}_1 = x_{45}$, $\hat{\mu}_2 = x_{32}$, $\hat{\mu}_3 = x_{10}$. 
+
+\item
+Set all component variance estimates to the sample variance $\hat{\sigma}_1^2, \ldots , 
+\hat{\sigma}_K^2 = \frac{1}{N}\sum_{i=1}^N(x_i-\bar{x})^2$, where $\bar{x}$ is the sample 
+mean $\bar{x}=\frac{1}{N}\sum_{i=1}^Nx_i$. 
+
+\item
+Set all component distribution prior estimates to the uniform distribution $\hat{\phi}_1, 
+\ldots , \hat{\phi}_K=\frac{1}{K}$. 
+\end{itemize}
+
+Expectation (E) Step:
+
+Calculate $\forall i, k$
+$$
+\hat{\gamma}_{ik} = \frac{\hat{\phi}_k \mathcal{N}(x_i \;|\; \hat{\mu}_k, \hat{\sigma}_k)}{
+\sum_{j=1}^K\hat{\phi}_j \mathcal{N}(x_i \;|\; \hat{\mu}_j, \hat{\sigma}_j)},
+$$
+where $\hat{\gamma}_{ik}$ is the probability that $x_i$ is generated by component 
+$C_k$. Thus, $\hat{\gamma}_{ik}=p(C_k|x_i, \hat{\phi}, \hat{\mu}, \hat{\sigma})$. 
+
+Maximization (M) Step:
+
+Using the $\hat{\gamma}_{ik}$ calculated in the expectation step, calculate the following 
+in that order $\forall k$:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item
+$\displaystyle \hat{\phi}_k = \sum_{i=1}^N\frac{\hat{\gamma}_{ik}}{N}$ 
+
+\item
+$\displaystyle \hat{\mu}_k = \frac{\sum_{i=1}^N\hat{\gamma}_{ik} x_i }{
+\sum_{i=1}^N\hat{\gamma}_{ik}}$ 
+ 
+\item
+$\displaystyle \hat{\sigma}_k^2 = \frac{\sum_{i=1}^N\hat{\gamma}_{ik} (x_i - \hat{\mu}_k)^2 }{
+\sum_{i=1}^N\hat{\gamma}_{ik}}$. 
+\end{itemize}
+
+When the number of components $K$ is not known a priori, it is typical to guess the 
+number of components and fit that model to the data using the EM algorithm. This is 
+done for many different values of $K$. Usually, the model with the best trade-off 
+between fit and number of components (simpler models have fewer components) is kept.
+
+The EM algorithm for the multivariate case is analogous, though it is more complicated 
+and thus is not expounded here.
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{Unsupervised Learning}
+
+Once the EM algorithm has run to completion, the fitted model can be used to perform 
+various forms of inference. The two most common forms of inference done on GMMs are 
+density estimation and clustering.
+
+
+\subsubsection{Density Estimation}
+
+Since the GMM is completely determined by the parameters of its individual components, 
+a fitted GMM can give an estimate of the probabilities of both in-sample and 
+out-of-sample data points, known as density estimation. Furthermore, since numerically 
+sampling from an individual Gaussian distribution is possible, one can easily sample 
+from a GMM to create synthetic datasets.
+
+Sampling from a GMM consists of the following steps:
+
+\begin{itemize}
+%\setlength{\itemsep}{0pt}
+%\setlength{\parsep}{0pt}
+\setlength{\parskip}{0pt}
+\item[1.]
+Sample the Gaussian component according to the distribution defined by 
+$p(C_s) = \phi_s$.
+
+\item[2.]
+Sample $x$ from the distribution for component $C_s$, according to the distribution 
+defined by $\mathcal{N}(x \;|\; \mu_s, \sigma_s)$.
+\end{itemize}
+
+
+\subsubsection{Clustering}
+
+Using Bayes' theorem and the estimated model parameters, one can also estimate the 
+posteriori component assignment probability. Knowing that a data point is likely from 
+one component distribution versus another provides a way to learn clusters, where 
+cluster assignment is determined by the most likely component assignment. Clustering 
+has many uses in machine learning, ranging from tissue differentiation in medical 
+imaging to customer segmentation in market research.
+
+Given a univariate model's parameters, the probability that a data point $x$ belongs 
+to component $C_i$ is calculated using Bayes' theorem:
+$$
+p(C_i \;|\; x) = \frac{p(x, C_i)}{p(x)} 
+= \frac{p(C_i)p(x \;|\; C_i)}{\sum_{j=1}^Kp(C_j)p(x \;|\; C_j)} 
+= \frac{\phi_i \mathcal{N}(x \;|\; \mu_i, \sigma_i)}{
+\sum_{j=1}^K\phi_j \mathcal{N}(x \;|\; \mu_j, \sigma_j)}.
+$$
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/UPLUW-slink-gaussian-datasvg.png}
+\caption{Clustering using a Gaussian mixture model. Each color represents a different 
+cluster according to the model.}
+\label{fig:UPLUW-slink-gaussian-datasvg}
+% C. SLINK-Gaussian-data. Retrieved October 23, 2011, from https://commons.wikimedia.org/wiki/File:SLINK-Gaussian-data.svg
+\end{figure}
+
+Deng, L. (2014). Automatic Speech Recognition- A Deep Learning Approach (pp. 6-8). Springer.
+
+Santosh, D. (2013). Tracking Multiple Moving Objects Using Gaussian Mixture Model. International Journal of Soft Computing and Engineering, 3-2, 114-119.
+
+% Cite as: Gaussian Mixture Model. Brilliant.org. Retrieved 09:14, August 23, 2022, from https://brilliant.org/wiki/gaussian-mixture-model/
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\subsection{sklearn.mixture}
+% https://scikit-learn.org/stable/modules/mixture.html
+
+sklearn.mixture is a package which enables one to learn Gaussian Mixture Models 
+(diagonal, spherical, tied and full covariance matrices supported), sample them, and 
+estimate them from data. Facilities to help determine the appropriate number of 
+components are also provided.
+
+
+
+
+%+++++++++++++++++++++++++++++++++++++++++++
 \section{Variational Auto-Encoder}
 %-------------------------------------------
 % https://www.jianshu.com/p/ffd493e10751
 % https://ychai.uk/notes/2020/01/09/Generative/Variational-AutoEncoders/
 
+AE作为一个生成模型，其基本思路是很容易理解的：把一堆真实样本通过编码器网络变换成一个理想的数据分布，
+然后这个数据分布再传递给一个解码器网络，得到一堆生成样本，生成样本与真实样本足够接近的话，
+就训练出了一个自编码器模型。VAE 是在自编码器模型上做进一步变分处理，
+使得编码器的输出结果能对应到目标分布的均值和方差。
+
+主流的生成模型有隐马尔可夫模型 HMM、朴素贝叶斯模型 NB 和高斯混合模型 GMM，而 VAE 
+的理论基础就是高斯混合模型。
 
 \begin{itemize}
 %\setlength{\itemsep}{0pt}
@@ -1026,9 +1436,7 @@ $$
 这里的 $\mu(x)$ 其实就对应于自编码器中的编码器 $E(x)$，$\sigma(x)$ 相当于它能泛化的范围。
 
 正则化的过程本质上就是消除维度间冗余及各维度权重统一化的过程，典型的做法是 Mahananobis 
-并加偏置来加强稳定性。
-
-最终的变分自编码器：
+并加偏置来加强稳定性。最终的变分自编码器：
 \begin{align}
 \mu, \sigma, D = \argmin_{\mu, \sigma, D} \mathbb{E}_{x\sim D} \left[ 
 \| x - D(\mu(x) + \epsilon \otimes \sigma(x)) \|^2
@@ -1036,6 +1444,12 @@ $$
 \mu_i^2(x) + \sigma_i^2(x) - \log\sigma_i^2(x) - 1
 \right) \right], \quad \epsilon \sim \mathcal{N}(0, 1)
 \end{align}
+一个简单的 Lagrange 乘数法可以算出上式对 $\sigma_i$ 来说当 $\sigma_i(x) = 1$ 时具有最小值。
+另外显而易见对 $\mu_i$ 来说其为 $0$ 时取最小值。因此优化的过程会迫使 VAE 逐步向各向方差为 $1$ 
+均值为 $x$ 的中心靠拢。本质上将各个方向正则化了。{\bf 这里存在的一个问题是当 $\sigma_i$ 
+接近 $0$ 时计算会不稳定，借鉴 Mahananobis 的做法是增加偏置项 bias，也就是将 $\log\sigma_i^2(x)$ 
+更改为 $\log[\sigma_i^2(x) + b]$}。
+
 
 %+++++++++++++++++++++++++++++++++++++++++++
 \subsection{Learning Directed Latent Variable Models}
@@ -1443,6 +1857,107 @@ VAE 中使用神经网络来拟合高斯分布的想法独树一帜，对很多�
 
 \href{}{Understanding Variational Autoencoders}
 
+
+%+++++++++++++++++++++++++++++++++++++++++++
+\section{VAE 与 PCA}
+%-------------------------------------------
+% http://www.gwylab.com/note-vae.html
+
+VAE 要解决的问题是什么？当然是如何构造编码器和解码器，使得图片能够编码成易于表示的形态，
+并且这一形态能够尽可能无损地解码回原真实图像。这听起来与 PCA（主成分分析）有些相似，
+而PCA本身是用来做矩阵降维的：
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/pca.jpg}
+\caption{PCA}
+\label{fig:PCA_VAE}
+\end{figure}
+如图(\ref{fig:PCA_VAE})所示，$x$ 是一个矩阵，通过一个变换 $W$ 变成了低维矩阵 
+$c$。因为这一过程是线性的，所以再通过 $W^T$ 变换就能还原出一个 
+$\hat{x}$。现在我们要找到一种变换 $W$，使得 $x$ 与 $\hat{x}$ 
+能够尽可能地一致，这就是PCA做的事情。在PCA中找这个变换 $W$ 用到的方法是 
+SVD（奇异值分解）算法。而在 VAE 中不需要使用 SVD，直接用神经网络代替。
+
+回顾上述介绍，我们会发现 PCA 与我们想要构造的 AE 的相似之处是在于，如果把矩阵 $x$ 
+视作输入图像，$W$ 视作一个编码器，低维矩阵 $c$ 视作图像的编码，然后将 $W^T$ 和 $\hat{x}$ 
+分别视作解码器和生成图像，PCA 就变成了一个自编码器网络模型的雏形。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{pix/dgm/pca_2_vae.jpg}
+\caption{PCA as an AE}
+\label{fig:PCA_2_VAE}
+\end{figure}
+
+现在我们需要对这一雏形进行改进。首先一个最明显能改进的地方是用神经网络代替 $W$ 变换和 $W^T$ 
+变换，就得到了如下 Deep Auto-Encoder 模型：
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{pix/dgm/deep_AE.jpg}
+\caption{Deep AE}
+%\label{fig:PCA_2_VAE}
+\end{figure}
+
+这一替换的明显好处是，引入了神经网络强大的拟合能力，使得编码（Code）的维度能够比原始图像 $x$ 
+的维度低非常多。在一个手写数字图像的生成模型中，Deep Auto-Encoder 能够把一个 784 
+维的向量（28*28 图像）压缩到只有 30 维，并且解码回的图像具备清楚的辨认度（如下图）。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.618]{pix/dgm/deep_AE_handeritten_digit.jpg}
+\caption{Deep AE applied to handwritten digital numbers}
+%\label{fig:PCA_2_VAE}
+\end{figure}
+
+至此我们构造出了一个重构图像比较清晰的自编码模型，但是这并没有达到我们真正想要构造的生成模型的标准。
+因为，对于一个生成模型而言，解码器部分应该是单独能够提取出来的，并且对于在规定维度下任意采样的一个编码，
+都应该能通过解码器产生一张清晰且真实的图片。我们先来分析一下现有模型无法达到这一标准的原因。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{pix/dgm/deep_AE_failed_case.jpg}
+%\caption{Deep AE applied to handwritten digital numbers}
+%\label{fig:PCA_2_VAE}
+\end{figure}
+
+如上图所示，假设有两张训练图片，一张是全月图，一张是半月图，
+经过训练我们的自编码器模型已经能无损地还原这两张图片。接下来，我们在 code 空间上，
+两张图片的编码点中间处取一点，然后将这一点交给解码器，
+我们希望新的生成图片是一张清晰的图片（类似3/4全月的样子）。但是，实际的结果是，
+生成图片是模糊且无法辨认的乱码图。一个比较合理的解释是，因为编码和解码的过程使用了深度神经网络，
+这是一个非线性的变换过程，所以在 code 空间上点与点之间的迁移是非常没有规律的。
+
+如何解决这个问题呢？我们可以引入噪声，使得图片的编码区域得到扩大，从而掩盖掉失真的空白编码点。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{pix/dgm/deep_AE_with_noise.jpg}
+%\caption{Deep AE applied to handwritten digital numbers}
+%\label{fig:PCA_2_VAE}
+\end{figure}
+
+如上图所示，现在在给两张图片编码的时候加上一点噪音，使得每张图片的编码点出现在绿色箭头所示范围内，
+于是在训练模型的时候，绿色箭头范围内的点都有可能被采样到，
+这样解码器在训练时会把绿色范围内的点都尽可能还原成和原图相似的图片。然后我们可以关注之前那个失真点，
+现在它处于全月图和半月图编码的交界上，于是解码器希望它既要尽量相似于全月图，又要尽量相似于半月图，
+于是它的还原结果就是两种图的折中（3/4全月图）。
+
+由此我们发现，给编码器增添一些噪音，可以有效覆盖失真区域。不过这还并不充分，
+因为在上图的距离训练区域很远的黄色点处，它依然不会被覆盖到，仍是个失真点。为了解决这个问题，
+我们可以试图把噪音无限拉长，使得对于每一个样本，它的编码会覆盖整个编码空间，不过我们得保证，
+在原编码附近编码的概率最高，离原编码点越远，编码概率越低。在这种情况下，
+图像的编码就由原先离散的编码点变成了一条连续的编码分布曲线，如下图所示。
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.8]{pix/dgm/deep_AE_with_distribution.jpg}
+%\caption{Deep AE applied to handwritten digital numbers}
+%\label{fig:PCA_2_VAE}
+\end{figure}
+
+那么上述的这种将图像编码由离散变为连续的方法，就是变分自编码的核心思想。
 
 
 %+++++++++++++++++++++++++++++++++++++++++++
